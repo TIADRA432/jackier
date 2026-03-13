@@ -1,11 +1,19 @@
-<div align="center">
+# Le Jacquier Restaurant - Backend
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+Ce backend utilise **Application Default Credentials (ADC)** pour s'authentifier auprès de Google Cloud et Firebase.
 
-  <h1>Built with AI Studio</h2>
+## Développement Local
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+Pour fonctionner en local avec Firebase Admin SDK, vous devez vous authentifier avec Google Cloud CLI.
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+Exécutez la commande suivante dans votre terminal :
 
-</div>
+```bash
+gcloud auth application-default login
+```
+
+Cela permettra à Application Default Credentials d'utiliser vos identifiants locaux pour accéder à Firestore.
+
+## Production
+
+En production (Cloud Functions for Firebase, Firebase App Hosting, Cloud Run), Google fournit automatiquement un Service Account via ADC. Aucune configuration supplémentaire n'est requise. Le code détectera automatiquement l'environnement et s'authentifiera.
