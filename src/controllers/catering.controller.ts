@@ -1,46 +1,40 @@
 import { Request, Response } from 'express';
-import { db } from '../config/firebase';
+import { supabase } from '../config/supabase';
 
-export const getCateringEvents = async (req: Request, res: Response) => {
+const format = (row: any) => ({ id: row.id, ...(row.data || {}), status: row.status, createdAt: row.created_at });
+
+export const getCateringEvents = async (_req: Request, res: Response) => {
   try {
-    const snapshot = await db.collection('cateringEvents').orderBy('createdAt', 'desc').get();
-    const events = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    res.json(events);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch catering events' });
-  }
+    const { data, error } = await supabase.from('catering_events').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    res.json((data || []).map(format));
+  } catch { res.status(500).json({ error: 'Failed to fetch catering events' }); }
 };
 
 export const createCateringEvent = async (req: Request, res: Response) => {
   try {
-    const data = {
-      ...req.body,
-      createdAt: new Date().toISOString(),
-      status: 'pending'
-    };
-    const docRef = await db.collection('cateringEvents').add(data);
-    res.status(201).json({ id: docRef.id, ...data });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to create catering event' });
-  }
+    const payload = { ...req.body, createdAt: new Date().toISOString(), status: 'pending' };
+    const { data, error } = await supabase.from('catering_events').insert({ status: 'pending', data: payload }).select('*').single();
+    if (error) throw error;
+    res.status(201).json(format(data));
+  } catch { res.status(500).json({ error: 'Failed to create catering event' }); }
 };
 
 export const updateCateringEvent = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    await db.collection('cateringEvents').doc(id).update(req.body);
-    res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to update catering event' });
-  }
+    const { data: existing, error: readError } = await supabase.from('catering_events').select('*').eq('id', req.params.id).single();
+    if (readError) throw readError;
+    const payload = { ...(existing.data || {}), ...req.body };
+    const { data, error } = await supabase.from('catering_events').update({ status: req.body.status || existing.status, data: payload }).eq('id', req.params.id).select('*').single();
+    if (error) throw error;
+    res.json(format(data));
+  } catch { res.status(500).json({ error: 'Failed to update catering event' }); }
 };
 
 export const deleteCateringEvent = async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    await db.collection('cateringEvents').doc(id).delete();
+    const { error } = await supabase.from('catering_events').delete().eq('id', req.params.id);
+    if (error) throw error;
     res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to delete catering event' });
-  }
+  } catch { res.status(500).json({ error: 'Failed to delete catering event' }); }
 };
