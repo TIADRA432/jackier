@@ -10,31 +10,20 @@ export interface GalleryItem {
   category: string;
   uploadedAt: any;
 }
+export type GalleryImage = GalleryItem;
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class GalleryService {
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
-
-  getGalleryItems(): Observable<GalleryItem[]> {
-    return this.http.get<GalleryItem[]>(`${this.apiUrl}/gallery`);
-  }
-
-  getGalleryImages(): Observable<GalleryItem[]> {
-    return this.getGalleryItems();
-  }
-
-  uploadImage(file: File, title: string, category: string): Observable<any> {
-    const formData = new FormData();
-    formData.append('image', file);
-    formData.append('title', title);
-    formData.append('category', category);
+  getGalleryItems(): Observable<GalleryItem[]> { return this.http.get<GalleryItem[]>(`${this.apiUrl}/gallery`); }
+  getGalleryImages(): Observable<GalleryItem[]> { return this.getGalleryItems(); }
+  getImages(): Observable<GalleryItem[]> { return this.getGalleryItems(); }
+  uploadImage(file: File, title = '', category = 'gallery'): Observable<any> {
+    const formData = new FormData(); formData.append('image', file); formData.append('title', title); formData.append('category', category);
     return this.http.post<any>(`${this.apiUrl}/gallery`, formData);
   }
-
-  deleteImage(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/gallery/${id}`);
-  }
+  addGalleryImage(data: any): Observable<any> { return this.http.post<any>(`${this.apiUrl}/gallery`, data); }
+  deleteImage(id: string, _imageUrl?: string): Observable<void> { return this.http.delete<void>(`${this.apiUrl}/gallery/${id}`); }
+  deleteGalleryImage(id: string): Promise<void> { return this.deleteImage(id).toPromise().then(() => undefined); }
 }
