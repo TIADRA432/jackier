@@ -1,11 +1,8 @@
 export const environment = {
   production: false,
-  firebase: {
-    apiKey: "AIzaSyBg4k54Q0KA9SC1xtg6TaSJ4pIxpQC7nOY",
-    authDomain: "fibeg-archive.firebaseapp.com",
-    projectId: "fibeg-archive",
-    storageBucket: "fibeg-archive.firebasestorage.app",
-    messagingSenderId: "310702492888",
-    appId: "1:310702492888:web:32f89a5771d49c484edbad"
+  apiUrl: '/api',
+  supabase: {
+    url: 'https://pesraxtkhkruiipjkrty.supabase.co',
+    publishableKey: 'sb_publishable_YbO3AJ1C-Z3YMYYP_YrsLQ_9KxS_M9w'
   }
 };
