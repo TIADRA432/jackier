@@ -16,70 +16,70 @@ import { verifyToken, requireRole } from '../middleware/auth.middleware';
 
 const router = Router();
 
-// Multer config (store uploads in memory before sending them to Supabase Storage)
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
+const adminOnly = [verifyToken, requireRole(['ADMIN'])];
 
-// Setup Admin (Development only or protected in production)
+// Setup Admin (must be disabled or restricted after initial account setup)
 router.post('/setup-admin', setupAdmin);
 
 // Dashboard
-router.get('/dashboard/overview', verifyToken, requireRole(['ADMIN']), getDashboardOverview);
+router.get('/dashboard/overview', ...adminOnly, getDashboardOverview);
 
 // Reservations
-router.get('/reservations', verifyToken, requireRole(['ADMIN']), getReservations);
+router.get('/reservations', ...adminOnly, getReservations);
 router.post('/reservations', createReservation); // Public
-router.put('/reservations/:id/status', verifyToken, requireRole(['ADMIN']), updateReservationStatus);
-router.delete('/reservations/:id', verifyToken, requireRole(['ADMIN']), deleteReservation);
+router.put('/reservations/:id/status', ...adminOnly, updateReservationStatus);
+router.delete('/reservations/:id', ...adminOnly, deleteReservation);
 
 // Catering
-router.get('/catering', verifyToken, requireRole(['ADMIN']), getCateringEvents);
+router.get('/catering', ...adminOnly, getCateringEvents);
 router.post('/catering', createCateringEvent); // Public
-router.put('/catering/:id', verifyToken, requireRole(['ADMIN']), updateCateringEvent);
-router.delete('/catering/:id', verifyToken, requireRole(['ADMIN']), deleteCateringEvent);
+router.put('/catering/:id', ...adminOnly, updateCateringEvent);
+router.delete('/catering/:id', ...adminOnly, deleteCateringEvent);
 
 // School
 router.get('/school', getSchoolPrograms); // Public
-router.post('/school', verifyToken, requireRole(['ADMIN']), createSchoolProgram);
-router.put('/school/:id', verifyToken, requireRole(['ADMIN']), updateSchoolProgram);
-router.delete('/school/:id', verifyToken, requireRole(['ADMIN']), deleteSchoolProgram);
+router.post('/school', ...adminOnly, createSchoolProgram);
+router.put('/school/:id', ...adminOnly, updateSchoolProgram);
+router.delete('/school/:id', ...adminOnly, deleteSchoolProgram);
 
 // Finance
-router.get('/finance/expenses', verifyToken, requireRole(['ADMIN']), getExpenses);
-router.get('/finance/reports', verifyToken, requireRole(['ADMIN']), getReports);
-router.post('/finance/expenses', verifyToken, requireRole(['ADMIN']), addExpense);
-router.post('/finance/close', verifyToken, requireRole(['ADMIN']), dailyClose);
+router.get('/finance/expenses', ...adminOnly, getExpenses);
+router.get('/finance/reports', ...adminOnly, getReports);
+router.post('/finance/expenses', ...adminOnly, addExpense);
+router.post('/finance/close', ...adminOnly, dailyClose);
 
 // Settings & Logs
-router.get('/settings', getSettings); // Public for some parts, maybe protect later
-router.put('/settings', verifyToken, requireRole(['ADMIN']), updateSettings);
-router.get('/logs', verifyToken, requireRole(['ADMIN']), getLogs);
+router.get('/settings', getSettings);
+router.put('/settings', ...adminOnly, updateSettings);
+router.get('/logs', ...adminOnly, getLogs);
 
 // Gallery
 router.get('/gallery', getGalleryImages); // Public
-router.post('/gallery', verifyToken, requireRole(['ADMIN']), upload.single('image'), createGalleryImage);
-router.delete('/gallery/:id', verifyToken, requireRole(['ADMIN']), deleteGalleryImage);
+router.post('/gallery', ...adminOnly, upload.single('image'), createGalleryImage);
+router.delete('/gallery/:id', ...adminOnly, deleteGalleryImage);
 
 // Categories
-router.get('/categories', getCategories);
-router.post('/categories', createCategory);
-router.put('/categories/:id', updateCategory);
-router.delete('/categories/:id', deleteCategory);
+router.get('/categories', getCategories); // Public
+router.post('/categories', ...adminOnly, createCategory);
+router.put('/categories/:id', ...adminOnly, updateCategory);
+router.delete('/categories/:id', ...adminOnly, deleteCategory);
 
 // Menu Items
-router.get('/menu', getMenuItems);
-router.post('/menu', createMenuItem);
-router.put('/menu/:id', updateMenuItem);
-router.delete('/menu/:id', deleteMenuItem);
+router.get('/menu', getMenuItems); // Public
+router.post('/menu', ...adminOnly, createMenuItem);
+router.put('/menu/:id', ...adminOnly, updateMenuItem);
+router.delete('/menu/:id', ...adminOnly, deleteMenuItem);
 
 // Wines
-router.get('/wines', getWines);
-router.post('/wines', createWine);
-router.put('/wines/:id', updateWine);
-router.delete('/wines/:id', deleteWine);
+router.get('/wines', getWines); // Public
+router.post('/wines', ...adminOnly, createWine);
+router.put('/wines/:id', ...adminOnly, updateWine);
+router.delete('/wines/:id', ...adminOnly, deleteWine);
 
 // Uploads
-router.post('/upload/menu', upload.single('image'), uploadMenuImage);
-router.post('/upload/wine', upload.single('image'), uploadWineImage);
+router.post('/upload/menu', ...adminOnly, upload.single('image'), uploadMenuImage);
+router.post('/upload/wine', ...adminOnly, upload.single('image'), uploadWineImage);
 
 export default router;
