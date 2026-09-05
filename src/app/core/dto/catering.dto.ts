@@ -5,9 +5,11 @@ export interface CateringOrderDto {
   phone: string;
   eventDate: string;
   eventType: string;
+  eventName?: string;
+  date?: string;
   guests: number;
   budget: number;
   requirements?: string;
-  status: 'pending' | 'confirmed' | 'completed' | 'cancelled' | 'approved' | 'rejected';
+  status: 'pending' | 'confirmed' | 'completed' | 'cancelled' | 'approved' | 'rejected' | 'in-progress';
   createdAt?: string;
 }
