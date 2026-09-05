@@ -4,6 +4,8 @@ import { supabase } from '../config/supabase';
 const MAX_STRING_LENGTH = 1000;
 const MAX_KEYS = 40;
 const MAX_ARRAY_ITEMS = 50;
+const ALLOWED_STATUSES = new Set(['pending', 'confirmed', 'cancelled', 'completed', 'approved', 'rejected']);
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 const format = (row: any) => ({
   id: row.id,
@@ -46,6 +48,16 @@ const validateCateringPayload = (body: unknown) => {
   return validateValue(body) as Record<string, unknown>;
 };
 
+const validateUuid = (value: string | undefined) => {
+  if (!value || !UUID_PATTERN.test(value)) throw new Error('Invalid catering event id');
+};
+
+const validationResponse = (error: unknown, fallback: string, res: Response) => {
+  const message = error instanceof Error ? error.message : '';
+  const isValidationError = message.startsWith('Invalid ') || message.includes('too ') || message.includes('Too ') || message.includes('A ') || message.includes('Payload ');
+  return res.status(isValidationError ? 400 : 500).json({ error: isValidationError ? message : fallback });
+};
+
 export const getCateringEvents = async (_req: Request, res: Response) => {
   try {
     const { data, error } = await supabase.from('catering_events').select('*').order('created_at', { ascending: false });
@@ -68,32 +80,38 @@ export const createCateringEvent = async (req: Request, res: Response) => {
     if (error) throw error;
     res.status(201).json(format(data));
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Invalid catering request';
-    const isValidationError = message.startsWith('Invalid ') || message.includes('too ') || message.includes('Too ') || message.includes('A ') || message.includes('Payload ');
-    res.status(isValidationError ? 400 : 500).json({ error: isValidationError ? message : 'Failed to create catering event' });
+    return validationResponse(error, 'Failed to create catering event', res);
   }
 };
 
 export const updateCateringEvent = async (req: Request, res: Response) => {
   try {
+    validateUuid(req.params.id);
+    if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
+      throw new Error('Invalid catering payload');
+    }
+    const incoming = validateCateringPayload(req.body);
+    if ('status' in incoming && (typeof incoming.status !== 'string' || !ALLOWED_STATUSES.has(incoming.status))) {
+      throw new Error('Invalid catering status');
+    }
     const { data: existing, error: readError } = await supabase.from('catering_events').select('*').eq('id', req.params.id).single();
     if (readError) throw readError;
-    const incoming = validateCateringPayload(req.body);
     const payload = { ...(existing.data || {}), ...incoming };
-    const { data, error } = await supabase.from('catering_events').update({ status: req.body.status || existing.status, data: payload }).eq('id', req.params.id).select('*').single();
+    const { data, error } = await supabase.from('catering_events').update({ status: typeof incoming.status === 'string' ? incoming.status : existing.status, data: payload }).eq('id', req.params.id).select('*').single();
     if (error) throw error;
     res.json(format(data));
-  } catch {
-    res.status(500).json({ error: 'Failed to update catering event' });
+  } catch (error) {
+    return validationResponse(error, 'Failed to update catering event', res);
   }
 };
 
 export const deleteCateringEvent = async (req: Request, res: Response) => {
   try {
+    validateUuid(req.params.id);
     const { error } = await supabase.from('catering_events').delete().eq('id', req.params.id);
     if (error) throw error;
     res.json({ success: true });
-  } catch {
-    res.status(500).json({ error: 'Failed to delete catering event' });
+  } catch (error) {
+    return validationResponse(error, 'Failed to delete catering event', res);
   }
 };
