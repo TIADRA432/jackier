@@ -14,6 +14,9 @@ const format = (row: any) => ({
   createdAt: row.created_at,
 });
 
+const getParam = (value: string | string[] | undefined): string | undefined =>
+  Array.isArray(value) ? value[0] : value;
+
 const validateValue = (value: unknown, depth = 0): unknown => {
   if (depth > 4) throw new Error('Payload nesting is too deep');
   if (typeof value === 'string') {
@@ -48,13 +51,15 @@ const validateCateringPayload = (body: unknown) => {
   return validateValue(body) as Record<string, unknown>;
 };
 
-const validateUuid = (value: string | undefined) => {
-  if (!value || !UUID_PATTERN.test(value)) throw new Error('Invalid catering event id');
+const validateUuid = (value: string | string[] | undefined) => {
+  const id = getParam(value);
+  if (!id || !UUID_PATTERN.test(id)) throw new Error('Invalid catering event id');
+  return id;
 };
 
 const validationResponse = (error: unknown, fallback: string, res: Response) => {
   const message = error instanceof Error ? error.message : '';
-  const isValidationError = message.startsWith('Invalid ') || message.includes('too ') || message.includes('Too ') || message.includes('A ') || message.includes('Payload ');
+  const isValidationError = message.startsWith('Invalid ') || message.includes('too ') || message.includes('Too ') || message.includes('A ');
   return res.status(isValidationError ? 400 : 500).json({ error: isValidationError ? message : fallback });
 };
 
@@ -86,7 +91,7 @@ export const createCateringEvent = async (req: Request, res: Response) => {
 
 export const updateCateringEvent = async (req: Request, res: Response) => {
   try {
-    validateUuid(req.params.id);
+    const id = validateUuid(req.params.id);
     if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
       throw new Error('Invalid catering payload');
     }
@@ -94,10 +99,10 @@ export const updateCateringEvent = async (req: Request, res: Response) => {
     if ('status' in incoming && (typeof incoming.status !== 'string' || !ALLOWED_STATUSES.has(incoming.status))) {
       throw new Error('Invalid catering status');
     }
-    const { data: existing, error: readError } = await supabase.from('catering_events').select('*').eq('id', req.params.id).single();
+    const { data: existing, error: readError } = await supabase.from('catering_events').select('*').eq('id', id).single();
     if (readError) throw readError;
     const payload = { ...(existing.data || {}), ...incoming };
-    const { data, error } = await supabase.from('catering_events').update({ status: typeof incoming.status === 'string' ? incoming.status : existing.status, data: payload }).eq('id', req.params.id).select('*').single();
+    const { data, error } = await supabase.from('catering_events').update({ status: typeof incoming.status === 'string' ? incoming.status : existing.status, data: payload }).eq('id', id).select('*').single();
     if (error) throw error;
     res.json(format(data));
   } catch (error) {
@@ -107,8 +112,8 @@ export const updateCateringEvent = async (req: Request, res: Response) => {
 
 export const deleteCateringEvent = async (req: Request, res: Response) => {
   try {
-    validateUuid(req.params.id);
-    const { error } = await supabase.from('catering_events').delete().eq('id', req.params.id);
+    const id = validateUuid(req.params.id);
+    const { error } = await supabase.from('catering_events').delete().eq('id', id);
     if (error) throw error;
     res.json({ success: true });
   } catch (error) {
