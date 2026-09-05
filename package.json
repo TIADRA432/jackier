@@ -35,7 +35,7 @@
     "tailwindcss": "latest"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20260904.0",
+    "@cloudflare/workers-types": "^5.20260904.1",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/multer": "^2.1.0",
