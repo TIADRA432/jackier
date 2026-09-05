@@ -4,6 +4,7 @@ import { getCategories, createCategory, updateCategory, deleteCategory } from '.
 import { getMenuItems, createMenuItem, updateMenuItem, deleteMenuItem } from '../controllers/menu.controller';
 import { getWines, createWine, updateWine, deleteWine } from '../controllers/wine.controller';
 import { uploadMenuImage, uploadWineImage } from '../controllers/upload.controller';
+import { getGalleryImages, createGalleryImage, deleteGalleryImage } from '../controllers/gallery.controller';
 import { setupAdmin } from '../controllers/auth.controller';
 import { getDashboardOverview } from '../controllers/dashboard.controller';
 import { getReservations, createReservation, updateReservationStatus, deleteReservation } from '../controllers/reservation.controller';
@@ -15,7 +16,7 @@ import { verifyToken, requireRole } from '../middleware/auth.middleware';
 
 const router = Router();
 
-// Multer config (store in memory for sharp processing)
+// Multer config (store uploads in memory before sending them to Supabase Storage)
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
@@ -53,6 +54,11 @@ router.post('/finance/close', verifyToken, requireRole(['ADMIN']), dailyClose);
 router.get('/settings', getSettings); // Public for some parts, maybe protect later
 router.put('/settings', verifyToken, requireRole(['ADMIN']), updateSettings);
 router.get('/logs', verifyToken, requireRole(['ADMIN']), getLogs);
+
+// Gallery
+router.get('/gallery', getGalleryImages); // Public
+router.post('/gallery', verifyToken, requireRole(['ADMIN']), upload.single('image'), createGalleryImage);
+router.delete('/gallery/:id', verifyToken, requireRole(['ADMIN']), deleteGalleryImage);
 
 // Categories
 router.get('/categories', getCategories);
