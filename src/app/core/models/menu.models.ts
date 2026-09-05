@@ -13,7 +13,7 @@ export interface MenuItem {
   shortDescription: string;
   description?: string;
   price: number;
-  imageUrl: string;
+  imageUrl?: string;
   isFeatured: boolean;
   displayOrder: number;
   active: boolean;
@@ -29,7 +29,7 @@ export interface WineItem {
   pairingSuggestion?: string;
   priceBottle: number;
   priceGlass?: number;
-  imageUrl: string;
+  imageUrl?: string;
   displayOrder: number;
   active: boolean;
 }
