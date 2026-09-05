@@ -2,12 +2,14 @@ import { inject } from '@angular/core';
 import { Router, CanActivateFn } from '@angular/router';
 import { AuthService, UserRole } from '../services/auth.service';
 
-export const roleGuard: CanActivateFn = route => {
+export const roleGuard: CanActivateFn = async route => {
   const authService = inject(AuthService);
   const router = inject(Router);
   const expectedRoles = (route.data['roles'] ?? []) as UserRole[];
-  const currentUser = authService.currentUser();
 
+  await authService.waitForInitialization();
+
+  const currentUser = authService.currentUser();
   if (!currentUser) {
     return router.createUrlTree(['/login']);
   }
