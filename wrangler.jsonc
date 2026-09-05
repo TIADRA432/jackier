@@ -10,5 +10,8 @@
   },
   "vars": {
     "SUPABASE_URL": "https://pesraxtkhkruiipjkrty.supabase.co"
+  },
+  "secrets": {
+    "required": ["SUPABASE_SERVICE_ROLE_KEY"]
   }
 }
