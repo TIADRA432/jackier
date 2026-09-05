@@ -1,4 +1,4 @@
-import { Timestamp } from '@angular/fire/firestore';
+export type Timestamp = Date | string | number;
 
 export interface User {
   id: string;
@@ -12,9 +12,11 @@ export interface MenuItem {
   name: string;
   description: string;
   price: number;
-  category: 'entree' | 'plat' | 'dessert' | 'boisson';
-  imageUrl: string;
+  category: 'entree' | 'plat' | 'dessert' | 'boisson' | string;
+  imageUrl?: string;
   available: boolean;
+  active?: boolean;
+  displayOrder?: number;
   createdAt: Timestamp;
 }
 
@@ -25,7 +27,7 @@ export interface Reservation {
   email: string;
   date: Timestamp;
   guests: number;
-  status: 'pending' | 'approved' | 'rejected' | 'completed';
+  status: 'pending' | 'approved' | 'rejected' | 'completed' | 'confirmed' | 'cancelled';
   notes?: string;
   createdAt: Timestamp;
 }
@@ -33,21 +35,28 @@ export interface Reservation {
 export interface CateringOrder {
   id?: string;
   clientName: string;
+  email?: string;
+  phone?: string;
   eventDate: Timestamp;
   eventType: string;
+  eventName?: string;
+  date?: Timestamp;
   guests: number;
   budget: number;
-  status: 'pending' | 'approved' | 'in-progress' | 'completed';
+  requirements?: string;
+  status: 'pending' | 'approved' | 'in-progress' | 'completed' | 'confirmed' | 'cancelled' | 'rejected';
   createdAt: Timestamp;
 }
 
-export interface GalleryItem {
+export interface GalleryImage {
   id?: string;
   imageUrl: string;
   title: string;
   category: string;
   uploadedAt: Timestamp;
 }
+
+export type GalleryItem = GalleryImage;
 
 export interface SchoolProgram {
   id?: string;
@@ -56,9 +65,10 @@ export interface SchoolProgram {
   description: string;
   price: number;
   active: boolean;
+  startDate?: Timestamp;
 }
 
-export interface DailyFinanceReport {
+export interface FinanceReport {
   id?: string;
   date: string;
   totalRevenue: number;
@@ -67,3 +77,5 @@ export interface DailyFinanceReport {
   closedBy: string;
   closedAt: Timestamp;
 }
+
+export type DailyFinanceReport = FinanceReport;
