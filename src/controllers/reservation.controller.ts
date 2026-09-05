@@ -23,6 +23,9 @@ const format = (row: any) => ({
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
+const getParam = (value: string | string[] | undefined): string | undefined =>
+  Array.isArray(value) ? value[0] : value;
+
 const cleanString = (value: unknown, field: string, maxLength: number, required = true): string => {
   if (typeof value !== 'string') {
     if (!required && (value === undefined || value === null || value === '')) return '';
@@ -48,6 +51,7 @@ const validateReservation = (body: unknown) => {
   const date = cleanString(body.date, 'date', 10);
   const time = cleanString(body.time, 'time', 5);
   const notes = cleanString(body.notes, 'notes', MAX_NOTES, false);
+  const guests = body.guests;
 
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error('date must use YYYY-MM-DD format');
   const parsedDate = new Date(`${date}T00:00:00Z`);
@@ -56,15 +60,17 @@ const validateReservation = (body: unknown) => {
   }
   if (!/^\S+@\S+\.\S+$/.test(email)) throw new Error('Invalid email address');
   if (!ALLOWED_TIMES.has(time)) throw new Error('Invalid reservation time');
-  if (!Number.isInteger(body.guests) || body.guests < 1 || body.guests > 8) {
+  if (typeof guests !== 'number' || !Number.isInteger(guests) || guests < 1 || guests > 8) {
     throw new Error('guests must be between 1 and 8');
   }
 
-  return { name, firstName, lastName, email, phone, date, time, guests: body.guests, notes };
+  return { name, firstName, lastName, email, phone, date, time, guests, notes };
 };
 
-const validateUuid = (value: string | undefined) => {
-  if (!value || !UUID_PATTERN.test(value)) throw new Error('Invalid reservation id');
+const validateUuid = (value: string | string[] | undefined) => {
+  const id = getParam(value);
+  if (!id || !UUID_PATTERN.test(id)) throw new Error('Invalid reservation id');
+  return id;
 };
 
 export const getReservations = async (_req: Request, res: Response) => {
@@ -97,11 +103,11 @@ export const createReservation = async (req: Request, res: Response) => {
 
 export const updateReservationStatus = async (req: Request, res: Response) => {
   try {
-    validateUuid(req.params.id);
+    const id = validateUuid(req.params.id);
     if (!isRecord(req.body) || typeof req.body.status !== 'string' || !ALLOWED_STATUSES.has(req.body.status)) {
       return res.status(400).json({ error: 'Invalid reservation status' });
     }
-    const { data, error } = await supabase.from('reservations').update({ status: req.body.status }).eq('id', req.params.id).select('*').single();
+    const { data, error } = await supabase.from('reservations').update({ status: req.body.status }).eq('id', id).select('*').single();
     if (error) throw error;
     res.json(format(data));
   } catch (error) {
@@ -112,8 +118,8 @@ export const updateReservationStatus = async (req: Request, res: Response) => {
 
 export const deleteReservation = async (req: Request, res: Response) => {
   try {
-    validateUuid(req.params.id);
-    const { error } = await supabase.from('reservations').delete().eq('id', req.params.id);
+    const id = validateUuid(req.params.id);
+    const { error } = await supabase.from('reservations').delete().eq('id', id);
     if (error) throw error;
     res.json({ success: true });
   } catch (error) {
