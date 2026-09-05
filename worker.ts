@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-// cloudflare:node is provided by the Workers runtime; keep the runtime import out of Angular's type resolver.
+// cloudflare:node is provided by the Workers runtime.
 // @ts-expect-error Cloudflare runtime module
 import { httpServerHandler } from 'cloudflare:node';
 import type { Fetcher, ExecutionContext } from '@cloudflare/workers-types';
@@ -13,17 +13,15 @@ app.use(cors());
 app.use(express.json());
 app.use('/api', routes);
 app.use(errorHandler);
-
 app.listen(3000);
 const apiHandler = httpServerHandler({ port: 3000 });
-
 interface Env { ASSETS: Fetcher; }
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext) {
     const url = new URL(request.url);
     if (!url.pathname.startsWith('/api')) {
-      const assetResponse = await env.ASSETS.fetch(request);
+      const assetResponse = await env.ASSETS.fetch(request as any);
       if (assetResponse.status !== 404) return assetResponse;
     }
     return apiHandler(request, env, ctx);
