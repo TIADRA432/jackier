@@ -1,12 +1,14 @@
 import { Injectable, inject } from '@angular/core';
-import { Observable, BehaviorSubject, from, of } from 'rxjs';
+import { Observable, BehaviorSubject, from } from 'rxjs';
 import { Router } from '@angular/router';
 import { supabaseClient } from '../../../config/supabase.client';
+
+export type UserRole = 'USER' | 'ADMIN' | 'MANAGER' | 'FINANCE' | 'RECEPTION' | 'CHEF' | 'EDITOR';
 
 export interface User {
   id: string;
   email: string;
-  role: string;
+  role: UserRole;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -34,13 +36,23 @@ export class AuthService {
   }
 
   private async syncUser(id: string, email: string, token: string) {
-    let role = 'USER';
-    const { data: profile } = await supabaseClient.from('profiles').select('role').eq('id', id).maybeSingle();
-    role = profile?.role || 'USER';
+    const { data: profile } = await supabaseClient
+      .from('profiles')
+      .select('role')
+      .eq('id', id)
+      .maybeSingle();
+
+    const role = this.normalizeRole(profile?.role);
     const user: User = { id, email, role };
     this.currentUserSubject.next(user);
     localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('token', token);
+  }
+
+  private normalizeRole(role: unknown): UserRole {
+    const normalized = typeof role === 'string' ? role.toUpperCase() : 'USER';
+    const allowed: UserRole[] = ['USER', 'ADMIN', 'MANAGER', 'FINANCE', 'RECEPTION', 'CHEF', 'EDITOR'];
+    return allowed.includes(normalized as UserRole) ? normalized as UserRole : 'USER';
   }
 
   login(email: string, password: string): Observable<any> {
@@ -58,7 +70,7 @@ export class AuthService {
   }
 
   isAuthenticated(): boolean { return !!this.currentUserSubject.value; }
-  hasRole(roles: string[]): boolean {
+  hasRole(roles: UserRole[]): boolean {
     const user = this.currentUserSubject.value;
     return !!user && roles.includes(user.role);
   }
