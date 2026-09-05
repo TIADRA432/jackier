@@ -15,9 +15,20 @@ import { verifyToken, requireRole } from '../middleware/auth.middleware';
 
 const router = Router();
 
-// Multer config (store uploads in memory before sending them to Supabase Storage)
+// Multer config: keep image uploads in memory before sending them to Supabase Storage.
+// The Supabase bucket applies the same 5 MB / image MIME restrictions as a second layer.
 const storage = multer.memoryStorage();
-const upload = multer({ storage });
+const ALLOWED_IMAGE_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+const upload = multer({
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024, files: 1 },
+  fileFilter: (_req, file, cb) => {
+    if (!ALLOWED_IMAGE_MIME_TYPES.has(file.mimetype)) {
+      return cb(new Error('Only JPEG, PNG and WebP images are allowed'));
+    }
+    cb(null, true);
+  }
+});
 
 // Dashboard
 router.get('/dashboard/overview', verifyToken, requireRole(['ADMIN']), getDashboardOverview);
