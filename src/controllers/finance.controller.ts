@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import { db } from '../config/firebase';
+import { supabase } from '../config/supabase';
 
 export const getExpenses = async (req: Request, res: Response) => {
   try {
-    const snapshot = await db.collection('expenses').orderBy('createdAt', 'desc').get();
-    const expenses = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    res.json(expenses);
+    const { data, error } = await supabase.from('expenses').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    res.json((data || []).map(row => ({ id: row.id, ...(row.data || {}), amount: row.amount, date: row.date, createdAt: row.created_at })));
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch expenses' });
   }
@@ -13,9 +13,18 @@ export const getExpenses = async (req: Request, res: Response) => {
 
 export const getReports = async (req: Request, res: Response) => {
   try {
-    const snapshot = await db.collection('financeReports').orderBy('createdAt', 'desc').get();
-    const reports = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    res.json(reports);
+    const { data, error } = await supabase.from('finance_reports').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    res.json((data || []).map(row => ({
+      id: row.id,
+      date: row.date,
+      createdAt: row.created_at,
+      totalRevenue: row.total_revenue,
+      totalExpenses: row.total_expenses,
+      netIncome: row.net_income,
+      manualRevenue: row.manual_revenue,
+      revenue: row.total_revenue
+    })));
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch finance reports' });
   }
@@ -23,13 +32,15 @@ export const getReports = async (req: Request, res: Response) => {
 
 export const addExpense = async (req: Request, res: Response) => {
   try {
-    const data = {
-      ...req.body,
-      date: new Date().toISOString(),
-      createdAt: new Date().toISOString()
-    };
-    const docRef = await db.collection('expenses').add(data);
-    res.status(201).json({ id: docRef.id, ...data });
+    const now = new Date().toISOString();
+    const payload = { ...req.body, date: now, createdAt: now };
+    const { data, error } = await supabase.from('expenses').insert({
+      amount: Number(req.body.amount || 0),
+      date: now,
+      data: payload
+    }).select('*').single();
+    if (error) throw error;
+    res.status(201).json({ id: data.id, ...payload });
   } catch (error) {
     res.status(500).json({ error: 'Failed to add expense' });
   }
@@ -37,36 +48,35 @@ export const addExpense = async (req: Request, res: Response) => {
 
 export const dailyClose = async (req: Request, res: Response) => {
   try {
-    const { manualRevenue } = req.body;
+    const manualRevenue = Number(req.body.manualRevenue || 0);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const todayStr = today.toISOString();
-    const tomorrow = new Date(today.getTime() + 86400000).toISOString();
+    const tomorrow = new Date(today.getTime() + 86400000);
 
-    // Calculate total expenses for today
-    const expensesSnapshot = await db.collection('expenses')
-      .where('date', '>=', todayStr)
-      .where('date', '<', tomorrow)
-      .get();
-    
-    let totalExpenses = 0;
-    expensesSnapshot.forEach(doc => {
-      totalExpenses += doc.data().amount || 0;
-    });
+    const { data: expenses, error: expensesError } = await supabase
+      .from('expenses').select('amount,date').gte('date', today.toISOString()).lt('date', tomorrow.toISOString());
+    if (expensesError) throw expensesError;
 
-    const netIncome = manualRevenue - totalExpenses;
-
-    const data = {
-      date: new Date().toISOString(),
-      createdAt: new Date().toISOString(),
+    const totalExpenses = (expenses || []).reduce((sum, item) => sum + Number(item.amount || 0), 0);
+    const now = new Date().toISOString();
+    const report = {
+      date: now,
+      createdAt: now,
       totalRevenue: manualRevenue,
       totalExpenses,
-      netIncome,
+      netIncome: manualRevenue - totalExpenses,
       manualRevenue
     };
 
-    const docRef = await db.collection('financeReports').add(data);
-    res.status(201).json({ id: docRef.id, ...data });
+    const { data, error } = await supabase.from('finance_reports').insert({
+      date: now,
+      total_revenue: manualRevenue,
+      total_expenses: totalExpenses,
+      net_income: manualRevenue - totalExpenses,
+      manual_revenue: manualRevenue
+    }).select('*').single();
+    if (error) throw error;
+    res.status(201).json({ id: data.id, ...report, revenue: manualRevenue });
   } catch (error) {
     res.status(500).json({ error: 'Failed to perform daily close' });
   }
