@@ -7,4 +7,5 @@ export interface SchoolProgramDto {
   level?: string;
   active: boolean;
   image?: string;
+  startDate?: string;
 }
