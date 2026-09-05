@@ -20,3 +20,5 @@ jobs:
         run: npm install
       - name: Build Angular
         run: npm run build
+      - name: Type-check Worker
+        run: npx tsc --noEmit --pretty false
