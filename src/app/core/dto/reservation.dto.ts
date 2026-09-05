@@ -7,6 +7,6 @@ export interface ReservationDto {
   time: string;
   guests: number;
   notes?: string;
-  status: 'pending' | 'confirmed' | 'cancelled';
+  status: 'pending' | 'confirmed' | 'cancelled' | 'completed' | 'approved' | 'rejected';
   createdAt?: string;
 }
