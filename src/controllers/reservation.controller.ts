@@ -9,6 +9,8 @@ const ALLOWED_TIMES = new Set([
   '12:00', '12:30', '13:00', '13:30', '14:00',
   '19:00', '19:30', '20:00', '20:30', '21:00', '21:30',
 ]);
+const ALLOWED_STATUSES = new Set(['pending', 'confirmed', 'cancelled', 'completed', 'approved', 'rejected']);
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 const format = (row: any) => ({
   id: row.id,
@@ -61,6 +63,10 @@ const validateReservation = (body: unknown) => {
   return { name, firstName, lastName, email, phone, date, time, guests: body.guests, notes };
 };
 
+const validateUuid = (value: string | undefined) => {
+  if (!value || !UUID_PATTERN.test(value)) throw new Error('Invalid reservation id');
+};
+
 export const getReservations = async (_req: Request, res: Response) => {
   try {
     const { data, error } = await supabase.from('reservations').select('*').order('created_at', { ascending: false });
@@ -91,20 +97,27 @@ export const createReservation = async (req: Request, res: Response) => {
 
 export const updateReservationStatus = async (req: Request, res: Response) => {
   try {
+    validateUuid(req.params.id);
+    if (!isRecord(req.body) || typeof req.body.status !== 'string' || !ALLOWED_STATUSES.has(req.body.status)) {
+      return res.status(400).json({ error: 'Invalid reservation status' });
+    }
     const { data, error } = await supabase.from('reservations').update({ status: req.body.status }).eq('id', req.params.id).select('*').single();
     if (error) throw error;
     res.json(format(data));
-  } catch {
-    res.status(500).json({ error: 'Failed to update reservation status' });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '';
+    res.status(message.startsWith('Invalid ') ? 400 : 500).json({ error: message.startsWith('Invalid ') ? message : 'Failed to update reservation status' });
   }
 };
 
 export const deleteReservation = async (req: Request, res: Response) => {
   try {
+    validateUuid(req.params.id);
     const { error } = await supabase.from('reservations').delete().eq('id', req.params.id);
     if (error) throw error;
     res.json({ success: true });
-  } catch {
-    res.status(500).json({ error: 'Failed to delete reservation' });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : '';
+    res.status(message.startsWith('Invalid ') ? 400 : 500).json({ error: message.startsWith('Invalid ') ? message : 'Failed to delete reservation' });
   }
 };
