@@ -35,9 +35,12 @@ const cleanString = (value: unknown, field: string, maxLength: number, required 
 const validateReservation = (body: unknown) => {
   if (!isRecord(body)) throw new Error('Invalid reservation payload');
 
-  const firstName = cleanString(body.firstName, 'firstName', MAX_NAME);
-  const lastName = cleanString(body.lastName, 'lastName', MAX_NAME);
-  const name = cleanString(body.name, 'name', MAX_NAME * 2, false) || `${firstName} ${lastName}`;
+  const suppliedName = cleanString(body.name, 'name', MAX_NAME * 2, false);
+  const firstName = cleanString(body.firstName, 'firstName', MAX_NAME, false);
+  const lastName = cleanString(body.lastName, 'lastName', MAX_NAME, false);
+  const name = suppliedName || `${firstName} ${lastName}`.trim();
+  if (!name) throw new Error('name is required');
+
   const email = cleanString(body.email, 'email', MAX_EMAIL).toLowerCase();
   const phone = cleanString(body.phone, 'phone', MAX_PHONE);
   const date = cleanString(body.date, 'date', 10);
@@ -55,7 +58,7 @@ const validateReservation = (body: unknown) => {
     throw new Error('guests must be between 1 and 8');
   }
 
-  return { firstName, lastName, name, email, phone, date, time, guests: body.guests, notes };
+  return { name, firstName, lastName, email, phone, date, time, guests: body.guests, notes };
 };
 
 export const getReservations = async (_req: Request, res: Response) => {
