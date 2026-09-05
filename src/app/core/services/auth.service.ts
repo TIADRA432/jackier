@@ -16,9 +16,10 @@ export class AuthService {
   private router = inject(Router);
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
+  private readonly initializationPromise: Promise<void>;
 
   constructor() {
-    this.restoreSession();
+    this.initializationPromise = this.restoreSession();
     supabaseClient.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         void this.syncUser(session.user.id, session.user.email || '', session.access_token);
@@ -28,10 +29,16 @@ export class AuthService {
     });
   }
 
-  private async restoreSession() {
+  async waitForInitialization(): Promise<void> {
+    await this.initializationPromise;
+  }
+
+  private async restoreSession(): Promise<void> {
     const { data } = await supabaseClient.auth.getSession();
     if (data.session?.user) {
       await this.syncUser(data.session.user.id, data.session.user.email || '', data.session.access_token);
+    } else {
+      this.clearLocalUser();
     }
   }
 
