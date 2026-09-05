@@ -2,11 +2,24 @@ import { Request, Response } from 'express';
 import { supabase } from '../config/supabase';
 import { AuthenticatedRequest } from '../middleware/auth.middleware';
 
+const PUBLIC_SETTINGS_KEYS = [
+  'restaurantName',
+  'address',
+  'phone',
+  'email',
+  'openingHours',
+  'currency',
+  'socialMedia',
+] as const;
+
+const toPublicSettings = (data: Record<string, unknown>) =>
+  Object.fromEntries(PUBLIC_SETTINGS_KEYS.filter(key => key in data).map(key => [key, data[key]]));
+
 export const getSettings = async (_req: Request, res: Response) => {
   try {
     const { data, error } = await supabase.from('settings').select('data').eq('id', 'global').maybeSingle();
     if (error) throw error;
-    res.json(data?.data || {});
+    res.json(toPublicSettings((data?.data || {}) as Record<string, unknown>));
   } catch { res.status(500).json({ error: 'Failed to fetch settings' }); }
 };
 
