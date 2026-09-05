@@ -1,76 +1,55 @@
 import { Request, Response } from 'express';
-import { db } from '../config/firebase';
+import { supabase } from '../config/supabase';
 
 export const getDashboardOverview = async (req: Request, res: Response) => {
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const todayStr = today.toISOString();
-    const tomorrow = new Date(today.getTime() + 86400000).toISOString();
+    const tomorrow = new Date(today.getTime() + 86400000);
 
-    // Stats
-    const [
-      reservationsSnapshot,
-      pendingReservationsSnapshot,
-      activeDishesSnapshot,
-      activeCateringSnapshot,
-      financeReportsSnapshot,
-      logsSnapshot
-    ] = await Promise.all([
-      db.collection('reservations').where('date', '>=', todayStr).where('date', '<', tomorrow).get(),
-      db.collection('reservations').where('status', '==', 'pending').get(),
-      db.collection('menuItems').where('active', '==', true).get(),
-      db.collection('cateringEvents').where('status', 'in', ['pending', 'confirmed']).get(),
-      db.collection('financeReports').orderBy('date', 'desc').limit(30).get(),
-      db.collection('logs').orderBy('timestamp', 'desc').limit(10).get()
+    const [reservations, pendingReservations, activeDishes, activeCatering, financeReports, logs] = await Promise.all([
+      supabase.from('reservations').select('id', { count: 'exact', head: true }).gte('date', today.toISOString()).lt('date', tomorrow.toISOString()),
+      supabase.from('reservations').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
+      supabase.from('menu_items').select('id', { count: 'exact', head: true }).eq('active', true),
+      supabase.from('catering_events').select('id', { count: 'exact', head: true }).in('status', ['pending', 'confirmed']),
+      supabase.from('finance_reports').select('*').order('date', { ascending: false }).limit(30),
+      supabase.from('logs').select('*').order('timestamp', { ascending: false }).limit(10)
     ]);
+
+    const errors = [reservations, pendingReservations, activeDishes, activeCatering, financeReports, logs].filter(result => result.error);
+    if (errors.length) throw errors[0].error;
 
     let todayRevenue = 0;
     let monthlyRevenue = 0;
     const currentMonth = today.getMonth();
     const currentYear = today.getFullYear();
+    const monthlyData: Record<string, number> = {};
 
-    const revenueChart: any[] = [];
-    const monthlyData: { [key: string]: number } = {};
-
-    financeReportsSnapshot.forEach(doc => {
-      const data = doc.data();
-      const reportDate = new Date(data.date);
-      
-      if (reportDate >= today && reportDate < new Date(today.getTime() + 86400000)) {
-        todayRevenue += data.revenue || 0;
-      }
-      
-      if (reportDate.getMonth() === currentMonth && reportDate.getFullYear() === currentYear) {
-        monthlyRevenue += data.revenue || 0;
-      }
-
+    for (const report of financeReports.data || []) {
+      const reportDate = new Date(report.date);
+      const revenue = Number(report.total_revenue || 0);
+      if (reportDate >= today && reportDate < tomorrow) todayRevenue += revenue;
+      if (reportDate.getMonth() === currentMonth && reportDate.getFullYear() === currentYear) monthlyRevenue += revenue;
       const monthLabel = reportDate.toLocaleString('default', { month: 'short' });
-      monthlyData[monthLabel] = (monthlyData[monthLabel] || 0) + (data.revenue || 0);
-    });
-
-    for (const [month, total] of Object.entries(monthlyData)) {
-      revenueChart.push({ month, total });
+      monthlyData[monthLabel] = (monthlyData[monthLabel] || 0) + revenue;
     }
 
-    const recentActivities = logsSnapshot.docs.map(doc => {
-      const data = doc.data();
-      return {
-        id: doc.id,
-        type: data.action,
-        message: data.details,
-        date: data.timestamp
-      };
-    });
+    const revenueChart = Object.entries(monthlyData).map(([month, total]) => ({ month, total }));
+    const recentActivities = (logs.data || []).map(log => ({
+      id: log.id,
+      type: log.action,
+      message: log.details,
+      date: log.timestamp
+    }));
 
     res.json({
       stats: {
-        todayReservations: reservationsSnapshot.size,
-        pendingReservations: pendingReservationsSnapshot.size,
+        todayReservations: reservations.count || 0,
+        pendingReservations: pendingReservations.count || 0,
         todayRevenue,
         monthlyRevenue,
-        activeMenuItems: activeDishesSnapshot.size,
-        activeCatering: activeCateringSnapshot.size
+        activeMenuItems: activeDishes.count || 0,
+        activeCatering: activeCatering.count || 0
       },
       revenueChart,
       recentActivities
