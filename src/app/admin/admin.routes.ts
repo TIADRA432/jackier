@@ -18,42 +18,12 @@ export const ADMIN_ROUTES: Routes = [
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
-      { 
-        path: 'menu', 
-        component: MenuManagementComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['admin', 'manager', 'chef'] }
-      },
-      { 
-        path: 'reservations', 
-        component: ReservationManagementComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['admin', 'manager', 'reception'] }
-      },
-      { 
-        path: 'catering', 
-        component: CateringManagementComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['admin', 'manager', 'chef'] }
-      },
-      { 
-        path: 'school', 
-        component: SchoolManagementComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['admin', 'manager'] }
-      },
-      { 
-        path: 'finance', 
-        component: FinanceManagementComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['admin', 'finance'] }
-      },
-      { 
-        path: 'gallery', 
-        component: GalleryManagementComponent,
-        canActivate: [roleGuard],
-        data: { roles: ['admin', 'manager', 'editor'] }
-      }
+      { path: 'menu', component: MenuManagementComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'MANAGER', 'CHEF'] } },
+      { path: 'reservations', component: ReservationManagementComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'MANAGER', 'RECEPTION'] } },
+      { path: 'catering', component: CateringManagementComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'MANAGER', 'CHEF'] } },
+      { path: 'school', component: SchoolManagementComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'MANAGER'] } },
+      { path: 'finance', component: FinanceManagementComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'FINANCE'] } },
+      { path: 'gallery', component: GalleryManagementComponent, canActivate: [roleGuard], data: { roles: ['ADMIN', 'MANAGER', 'EDITOR'] } }
     ]
   }
 ];
