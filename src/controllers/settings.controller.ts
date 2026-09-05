@@ -1,43 +1,35 @@
 import { Request, Response } from 'express';
-import { db } from '../config/firebase';
+import { supabase } from '../config/supabase';
 import { AuthenticatedRequest } from '../middleware/auth.middleware';
 
-export const getSettings = async (req: Request, res: Response) => {
+export const getSettings = async (_req: Request, res: Response) => {
   try {
-    const doc = await db.collection('settings').doc('global').get();
-    if (!doc.exists) {
-      return res.json({});
-    }
-    res.json(doc.data());
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch settings' });
-  }
+    const { data, error } = await supabase.from('settings').select('data').eq('id', 'global').maybeSingle();
+    if (error) throw error;
+    res.json(data?.data || {});
+  } catch { res.status(500).json({ error: 'Failed to fetch settings' }); }
 };
 
 export const updateSettings = async (req: AuthenticatedRequest, res: Response) => {
   try {
-    await db.collection('settings').doc('global').set(req.body, { merge: true });
-    
-    // Log the action
-    await db.collection('logs').add({
+    const { data: current } = await supabase.from('settings').select('data').eq('id', 'global').maybeSingle();
+    const { error } = await supabase.from('settings').upsert({ id: 'global', data: { ...(current?.data || {}), ...req.body } });
+    if (error) throw error;
+    const { error: logError } = await supabase.from('logs').insert({
       action: 'UPDATE_SETTINGS',
       details: 'System settings updated',
-      userId: req.user?.uid || 'system',
+      user_id: req.user?.id || 'system',
       timestamp: new Date().toISOString()
     });
-
+    if (logError) console.warn('Unable to write settings log:', logError.message);
     res.json({ success: true });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to update settings' });
-  }
+  } catch { res.status(500).json({ error: 'Failed to update settings' }); }
 };
 
-export const getLogs = async (req: Request, res: Response) => {
+export const getLogs = async (_req: Request, res: Response) => {
   try {
-    const snapshot = await db.collection('logs').orderBy('timestamp', 'desc').limit(100).get();
-    const logs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    res.json(logs);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch logs' });
-  }
+    const { data, error } = await supabase.from('logs').select('*').order('timestamp', { ascending: false }).limit(100);
+    if (error) throw error;
+    res.json(data || []);
+  } catch { res.status(500).json({ error: 'Failed to fetch logs' }); }
 };
