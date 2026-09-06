@@ -26,6 +26,17 @@ export class RestaurantService {
   private galleryImages = signal<GalleryImage[]>([]);
   private schoolPrograms = signal<SchoolProgram[]>([]);
 
+  // États de chargement/erreur exposés aux pages, pour éviter l'écran figé ou les faux
+  // messages "aucun résultat" pendant que les données arrivent encore du serveur.
+  private loadingMenu = signal(true);
+  private loadingWines = signal(true);
+  private loadingGallery = signal(true);
+  private loadingSchool = signal(true);
+  private errorMenu = signal<string | null>(null);
+  private errorWines = signal<string | null>(null);
+  private errorGallery = signal<string | null>(null);
+  private errorSchool = signal<string | null>(null);
+
   // Pas de table backend dédiée pour les avis clients et l'équipe : contenu éditorial statique pour le moment.
   private reviews = signal<Review[]>([
     { author: 'Mariam C.', rating: 5, comment: 'Une expérience incroyable ! Le cadre est magnifique et les plats sont délicieux.', date: '2023-10-15' },
@@ -56,6 +67,8 @@ export class RestaurantService {
   }
 
   private async loadDishes() {
+    this.loadingMenu.set(true);
+    this.errorMenu.set(null);
     try {
       const raw = await firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/menu`));
       this.dishes.set((raw || []).map(item => ({
@@ -71,10 +84,15 @@ export class RestaurantService {
       })));
     } catch (err) {
       console.error('Impossible de charger le menu depuis l\'API', err);
+      this.errorMenu.set('Le menu n\'a pas pu être chargé. Merci de réessayer dans un instant.');
+    } finally {
+      this.loadingMenu.set(false);
     }
   }
 
   private async loadWines() {
+    this.loadingWines.set(true);
+    this.errorWines.set(null);
     try {
       const raw = await firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/wines`));
       this.wines.set((raw || []).map(item => ({
@@ -87,10 +105,15 @@ export class RestaurantService {
       })));
     } catch (err) {
       console.error('Impossible de charger les vins depuis l\'API', err);
+      this.errorWines.set('La carte des vins n\'a pas pu être chargée.');
+    } finally {
+      this.loadingWines.set(false);
     }
   }
 
   private async loadGallery() {
+    this.loadingGallery.set(true);
+    this.errorGallery.set(null);
     try {
       const raw = await firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/gallery`));
       this.galleryImages.set((raw || []).map(item => ({
@@ -102,15 +125,23 @@ export class RestaurantService {
       })));
     } catch (err) {
       console.error('Impossible de charger la galerie depuis l\'API', err);
+      this.errorGallery.set('La galerie n\'a pas pu être chargée.');
+    } finally {
+      this.loadingGallery.set(false);
     }
   }
 
   private async loadSchoolPrograms() {
+    this.loadingSchool.set(true);
+    this.errorSchool.set(null);
     try {
       const raw = await firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/school`));
       this.schoolPrograms.set(raw || []);
     } catch (err) {
       console.error('Impossible de charger les programmes école depuis l\'API', err);
+      this.errorSchool.set('Les programmes de l\'école n\'ont pas pu être chargés.');
+    } finally {
+      this.loadingSchool.set(false);
     }
   }
 
@@ -122,6 +153,21 @@ export class RestaurantService {
   getTeam() { return this.team.asReadonly(); }
   getCateringServices() { return this.cateringServices.asReadonly(); }
   getSchoolPrograms() { return this.schoolPrograms.asReadonly(); }
+
+  // États de chargement/erreur (lecture seule) pour piloter spinners/messages côté pages
+  isLoadingMenu() { return this.loadingMenu.asReadonly(); }
+  isLoadingWines() { return this.loadingWines.asReadonly(); }
+  isLoadingGallery() { return this.loadingGallery.asReadonly(); }
+  isLoadingSchool() { return this.loadingSchool.asReadonly(); }
+  getMenuError() { return this.errorMenu.asReadonly(); }
+  getWinesError() { return this.errorWines.asReadonly(); }
+  getGalleryError() { return this.errorGallery.asReadonly(); }
+  getSchoolError() { return this.errorSchool.asReadonly(); }
+
+  /** Relance le chargement du menu après une erreur (bouton "Réessayer"). */
+  retryLoadDishes() { return this.loadDishes(); }
+  retryLoadGallery() { return this.loadGallery(); }
+  retryLoadSchoolPrograms() { return this.loadSchoolPrograms(); }
 
   getDailySpecial() {
     const list = this.dishes();
