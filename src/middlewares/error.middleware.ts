@@ -5,6 +5,14 @@ export const errorHandler = (err: any, _req: Request, res: Response, next: NextF
 
   console.error('API Error:', err);
 
+  if (err?.code === 'CORS_ORIGIN_DENIED') {
+    return res.status(403).json({
+      success: false,
+      error: 'Origin is not allowed',
+      code: 'CORS_ORIGIN_DENIED',
+    });
+  }
+
   if (err?.type === 'entity.too.large') {
     return res.status(413).json({ success: false, error: 'Request body is too large', code: 'PAYLOAD_TOO_LARGE' });
   }

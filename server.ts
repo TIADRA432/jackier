@@ -1,16 +1,16 @@
 import express from 'express';
-import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import routes from './src/routes/index';
 import { errorHandler } from './src/middlewares/error.middleware';
+import { configureSecurity } from './src/middlewares/security.middleware';
 import './src/config/supabase';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 
-app.use(cors());
+configureSecurity(app);
 app.use(express.json({ limit: '64kb' }));
 app.use('/api', routes);
 app.use(errorHandler);

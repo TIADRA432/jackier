@@ -12,6 +12,7 @@ import { getSchoolPrograms, createSchoolProgram, updateSchoolProgram, deleteScho
 import { getExpenses, getReports, addExpense, dailyClose } from '../controllers/finance.controller';
 import { getSettings, updateSettings, getLogs } from '../controllers/settings.controller';
 import { verifyToken, requireRole } from '../middleware/auth.middleware';
+import { publicWriteRateLimiter } from '../middlewares/security.middleware';
 
 const router = Router();
 
@@ -35,13 +36,13 @@ router.get('/dashboard/overview', verifyToken, requireRole(['ADMIN']), getDashbo
 
 // Reservations
 router.get('/reservations', verifyToken, requireRole(['ADMIN']), getReservations);
-router.post('/reservations', createReservation); // Public
+router.post('/reservations', publicWriteRateLimiter, createReservation); // Public
 router.put('/reservations/:id/status', verifyToken, requireRole(['ADMIN']), updateReservationStatus);
 router.delete('/reservations/:id', verifyToken, requireRole(['ADMIN']), deleteReservation);
 
 // Catering
 router.get('/catering', verifyToken, requireRole(['ADMIN']), getCateringEvents);
-router.post('/catering', createCateringEvent); // Public
+router.post('/catering', publicWriteRateLimiter, createCateringEvent); // Public
 router.put('/catering/:id', verifyToken, requireRole(['ADMIN']), updateCateringEvent);
 router.delete('/catering/:id', verifyToken, requireRole(['ADMIN']), deleteCateringEvent);
 
