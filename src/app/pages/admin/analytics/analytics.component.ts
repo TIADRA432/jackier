@@ -14,7 +14,8 @@ import { CommonModule } from "@angular/common";
           <p class="text-gray-400 text-sm mt-1">Intelligence d'affaires et prévisions</p>
         </div>
         <div class="flex gap-3">
-          <select class="bg-[#1a1a1a] border border-gray-800 text-white text-xs rounded-xl px-4 py-2 outline-none focus:border-jacquier-gold">
+          <label class="sr-only" for="analytics-period">Période d'analyse</label>
+          <select id="analytics-period" class="bg-[#1a1a1a] border border-gray-800 text-white text-xs rounded-xl px-4 py-2 outline-none focus:border-jacquier-gold">
             <option>Derniers 30 jours</option>
             <option>Trimestre en cours</option>
             <option>Année 2024</option>
@@ -30,8 +31,8 @@ import { CommonModule } from "@angular/common";
           <h3 class="text-lg font-serif font-bold text-white mb-6">Répartition du CA par Segment</h3>
           <div class="flex items-center justify-center h-64 relative">
             <!-- Mock Donut Chart -->
-            <div class="w-48 h-48 rounded-full border-[20px] border-gray-800 relative">
-              <div class="absolute inset-0 rounded-full border-[20px] border-jacquier-gold border-t-transparent border-r-transparent rotate-45"></div>
+            <div class="w-48 h-48 rounded-full border-[20px] border-gray-800 relative" role="img" aria-label="Graphique en anneau: répartition du chiffre d'affaires par segment">
+              <div class="absolute inset-0 rounded-full border-[20px] border-jacquier-gold border-t-transparent border-r-transparent rotate-45" aria-hidden="true"></div>
               <div class="absolute inset-0 flex flex-col items-center justify-center">
                 <p class="text-2xl font-serif font-bold text-white">124M</p>
                 <p class="text-[10px] text-gray-500 uppercase font-bold">Total FG</p>
@@ -40,17 +41,17 @@ import { CommonModule } from "@angular/common";
           </div>
           <div class="grid grid-cols-3 gap-4 mt-8">
             <div class="text-center">
-              <div class="w-3 h-3 bg-jacquier-gold rounded-full mx-auto mb-2"></div>
+              <div class="w-3 h-3 bg-jacquier-gold rounded-full mx-auto mb-2" aria-hidden="true"></div>
               <p class="text-xs text-gray-400">Restaurant</p>
               <p class="text-sm font-bold text-white">65%</p>
             </div>
             <div class="text-center">
-              <div class="w-3 h-3 bg-blue-500 rounded-full mx-auto mb-2"></div>
+              <div class="w-3 h-3 bg-blue-500 rounded-full mx-auto mb-2" aria-hidden="true"></div>
               <p class="text-xs text-gray-400">Traiteur</p>
               <p class="text-sm font-bold text-white">22%</p>
             </div>
             <div class="text-center">
-              <div class="w-3 h-3 bg-purple-500 rounded-full mx-auto mb-2"></div>
+              <div class="w-3 h-3 bg-purple-500 rounded-full mx-auto mb-2" aria-hidden="true"></div>
               <p class="text-xs text-gray-400">École</p>
               <p class="text-sm font-bold text-white">13%</p>
             </div>
@@ -66,7 +67,7 @@ import { CommonModule } from "@angular/common";
                   <span class="text-sm text-white font-medium">{{ day.label }}</span>
                   <span class="text-xs text-jacquier-gold font-bold">{{ day.percentage }}% attendu</span>
                 </div>
-                <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+                <div class="h-2 bg-gray-800 rounded-full overflow-hidden" role="progressbar" [attr.aria-valuenow]="day.percentage" aria-valuemin="0" aria-valuemax="100" [attr.aria-label]="day.label">
                   <div class="h-full bg-jacquier-gold transition-all duration-1000" [style.width]="day.percentage + '%'"></div>
                 </div>
                 <p class="text-[10px] text-gray-500 mt-2 uppercase font-bold tracking-widest">{{ day.insight }}</p>
@@ -82,12 +83,12 @@ import { CommonModule } from "@angular/common";
           @for (staff of staffPerformance(); track staff.name) {
             <div class="text-center group">
               <div class="w-20 h-20 rounded-full bg-gray-800 mx-auto mb-4 overflow-hidden border-2 border-transparent group-hover:border-jacquier-gold transition-all">
-                <img [src]="staff.image" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all">
+                <img [src]="staff.image" [alt]="'Photo de ' + staff.name" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all">
               </div>
               <p class="text-sm font-bold text-white">{{ staff.name }}</p>
               <p class="text-xs text-gray-500 mb-2">{{ staff.role }}</p>
               <div class="flex justify-center items-center gap-1 text-jacquier-gold">
-                <i class="material-icons text-sm">star</i>
+                <i class="material-icons text-sm" aria-hidden="true">star</i>
                 <span class="text-xs font-bold">{{ staff.rating }}</span>
               </div>
               <p class="text-[10px] text-gray-600 mt-2 uppercase font-bold">CA Généré: {{ staff.sales }}M</p>
