@@ -1,0 +1,21 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "jackier",
+  "main": "worker.ts",
+  "compatibility_date": "2026-09-04",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  },
+  "vars": {
+    "SUPABASE_URL": "https://pesraxtkhkruiipjkrty.supabase.co"
+  },
+  "secrets": {
+    "required": ["SUPABASE_SERVICE_ROLE_KEY"]
+  },
+  "observability": {
+    "logs": { "enabled": true, "head_sampling_rate": 1, "invocation_logs": true },
+    "traces": { "enabled": true, "head_sampling_rate": 1 }
+  }
+}
