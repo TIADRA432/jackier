@@ -34,7 +34,7 @@ import { CommonModule } from "@angular/common";
               @for (post of posts(); track post.id) {
                 <div class="flex gap-4 p-4 rounded-xl hover:bg-gray-800/50 transition-colors group">
                   <div class="w-24 h-24 rounded-lg bg-gray-800 overflow-hidden shrink-0">
-                    <img [src]="post.image" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
+                    <img [src]="post.image" [alt]="post.title" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
                   </div>
                   <div class="flex-1 min-w-0">
                     <div class="flex justify-between items-start">
@@ -47,13 +47,13 @@ import { CommonModule } from "@angular/common";
                     <div class="flex items-center gap-4 mt-3">
                       <span class="text-[10px] text-gray-600 uppercase font-bold">{{ post.date }}</span>
                       <span class="text-[10px] text-gray-600 uppercase font-bold flex items-center gap-1">
-                        <i class="material-icons text-[12px]">visibility</i> {{ post.views }}
+                        <i class="material-icons text-[12px]" aria-hidden="true">visibility</i> {{ post.views }} vues
                       </span>
                     </div>
                   </div>
                   <div class="flex flex-col gap-2">
-                    <button class="p-2 text-gray-500 hover:text-jacquier-gold transition-colors"><i class="material-icons text-lg">edit</i></button>
-                    <button class="p-2 text-gray-500 hover:text-red-500 transition-colors"><i class="material-icons text-lg">delete</i></button>
+                    <button class="p-2 text-gray-500 hover:text-jacquier-gold transition-colors" [attr.aria-label]="'Modifier ' + post.title"><i class="material-icons text-lg" aria-hidden="true">edit</i></button>
+                    <button class="p-2 text-gray-500 hover:text-red-500 transition-colors" [attr.aria-label]="'Supprimer ' + post.title"><i class="material-icons text-lg" aria-hidden="true">delete</i></button>
                   </div>
                 </div>
               }
