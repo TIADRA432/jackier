@@ -60,5 +60,9 @@ export const routes: Routes = [
       { path: 'restaurant', loadComponent: () => import('./pages/admin/restaurant/restaurant.component').then(m => m.AdminRestaurantComponent), title: 'Admin - Restaurant' }
     ]
   },
-  { path: '**', redirectTo: '' }
+  {
+    path: '**',
+    loadComponent: () => import('./pages/not-found/not-found.component').then(m => m.NotFoundComponent),
+    title: 'Le Jacquier - Page introuvable'
+  }
 ];
