@@ -1,6 +1,6 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "le-jacquier-restaurant",
+  "name": "jackier",
   "main": "worker.ts",
   "compatibility_date": "2026-09-04",
   "assets": {
