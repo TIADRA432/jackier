@@ -10,7 +10,8 @@
     "not_found_handling": "single-page-application"
   },
   "vars": {
-    "SUPABASE_URL": "https://pesraxtkhkruiipjkrty.supabase.co"
+    "SUPABASE_URL": "https://pesraxtkhkruiipjkrty.supabase.co",
+    "CORS_ORIGINS": "https://jackier.abdourahmane591.workers.dev"
   },
   "secrets": {
     "required": ["SUPABASE_SERVICE_ROLE_KEY"]
