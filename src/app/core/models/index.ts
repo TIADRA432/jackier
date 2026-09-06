@@ -11,6 +11,23 @@ export interface Dish {
   isLocalSpecialty?: boolean;
 }
 
+export interface Wine {
+  id: string;
+  name: string;
+  description: string;
+  priceBottle: number;
+  priceGlass?: number;
+  image: string;
+}
+
+export interface GalleryImage {
+  id: string;
+  imageUrl: string;
+  title: string;
+  category: string;
+  uploadedAt: string;
+}
+
 export interface Review {
   author: string;
   rating: number;
@@ -25,6 +42,7 @@ export interface Reservation {
   date: string;
   time: string;
   guests: number;
+  notes?: string;
 }
 
 export interface TeamMember {
