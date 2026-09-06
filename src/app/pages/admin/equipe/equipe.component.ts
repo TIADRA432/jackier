@@ -65,7 +65,7 @@ import { CommonModule } from "@angular/common";
                   <td class="py-4">
                     <div class="flex items-center gap-3">
                       <div class="w-10 h-10 rounded-full bg-gray-800 overflow-hidden">
-                        <img [src]="member.image" class="w-full h-full object-cover">
+                        <img [src]="member.image" [alt]="'Photo de ' + member.name" class="w-full h-full object-cover">
                       </div>
                       <div>
                         <p class="text-white font-medium">{{ member.name }}</p>
@@ -82,13 +82,13 @@ import { CommonModule } from "@angular/common";
                   </td>
                   <td class="py-4">
                     <div class="flex items-center gap-1 text-jacquier-gold">
-                      <i class="material-icons text-sm">star</i>
+                      <i class="material-icons text-sm" aria-hidden="true">star</i>
                       <span class="font-bold">{{ member.rating }}</span>
                     </div>
                   </td>
                   <td class="py-4 text-right">
-                    <button class="p-2 text-gray-500 hover:text-jacquier-gold transition-colors">
-                      <i class="material-icons text-lg">more_vert</i>
+                    <button class="p-2 text-gray-500 hover:text-jacquier-gold transition-colors" [attr.aria-label]="'Actions pour ' + member.name">
+                      <i class="material-icons text-lg" aria-hidden="true">more_vert</i>
                     </button>
                   </td>
                 </tr>
