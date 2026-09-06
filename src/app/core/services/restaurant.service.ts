@@ -1,12 +1,17 @@
 
-import { Injectable, signal } from '@angular/core';
-import { Dish, Review, TeamMember, CateringService, SchoolProgram } from '../models';
+import { Injectable, signal, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { Dish, Review, TeamMember, CateringService, SchoolProgram, Wine, GalleryImage } from '../models';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RestaurantService {
-  
+  private http = inject(HttpClient);
+  private apiUrl = environment.apiUrl;
+
   readonly info = {
     name: 'Le Jacquier',
     address: 'Face au Lycée Kipé / T2 Carrefour Métal Guinée, Conakry',
@@ -16,128 +21,12 @@ export class RestaurantService {
     location: { lat: 9.608, lng: -13.626 } // Approx coordinates for Kipé
   };
 
-  private dishes = signal<Dish[]>([
-    {
-      id: '1',
-      name: 'Salade de Chèvre Chaud',
-      description: 'Toast de chèvre sur lit de salade fraîche, noix et miel.',
-      price: 85000,
-      category: 'entree',
-      image: 'https://picsum.photos/seed/salad/400/300',
-      isVegetarian: true
-    },
-    {
-      id: '2',
-      name: 'Carpaccio de Capitaine',
-      description: 'Fines tranches de poisson capitaine mariné au citron vert et baies roses.',
-      price: 95000,
-      category: 'entree',
-      image: 'https://picsum.photos/seed/carpaccio/400/300',
-      isLocalSpecialty: true
-    },
-    {
-      id: '3',
-      name: 'Poulet Yassa "Le Jacquier"',
-      description: 'Cuisse de poulet braisée, sauce aux oignons confits, riz blanc.',
-      price: 120000,
-      category: 'local',
-      image: 'https://picsum.photos/seed/yassa/400/300',
-      isLocalSpecialty: true,
-      isSpicy: true
-    },
-    {
-      id: '4',
-      name: 'Filet de Bœuf Rossini',
-      description: 'Tournedos de bœuf, foie gras poêlé, sauce truffe.',
-      price: 180000,
-      category: 'plat',
-      image: 'https://picsum.photos/seed/beef/400/300'
-    },
-    {
-      id: '5',
-      name: 'Risotto aux Champignons des Bois',
-      description: 'Riz arborio crémeux, mélange forestier, parmesan.',
-      price: 110000,
-      category: 'plat',
-      image: 'https://picsum.photos/seed/risotto/400/300',
-      isVegetarian: true
-    },
-    {
-      id: '6',
-      name: 'Moelleux au Chocolat',
-      description: 'Cœur coulant, glace vanille de Madagascar.',
-      price: 75000,
-      category: 'dessert',
-      image: 'https://picsum.photos/seed/choc/400/300'
-    },
-    {
-      id: '7',
-      name: 'Déclinaison de Mangue',
-      description: 'Sorbet, mousse et fruits frais selon la saison.',
-      price: 70000,
-      category: 'dessert',
-      image: 'https://picsum.photos/seed/mango/400/300',
-      isLocalSpecialty: true
-    },
-    {
-      id: '8',
-      name: 'Jus de Bissap Maison',
-      description: 'Fleur d\'hibiscus, menthe fraîche, peu sucré.',
-      price: 25000,
-      category: 'boisson',
-      image: 'https://picsum.photos/seed/bissap/400/300',
-      isLocalSpecialty: true
-    },
-    // New Seafood Items
-    {
-      id: '9',
-      name: 'Gambas Grillées à la Guinéenne',
-      description: 'Gambas géantes grillées aux épices locales, alloco.',
-      price: 190000,
-      category: 'fruits_de_mer',
-      image: 'https://picsum.photos/seed/gambas/400/300',
-      isLocalSpecialty: true,
-      isSpicy: true
-    },
-    {
-      id: '10',
-      name: 'Pavé de Thon Rouge',
-      description: 'Thon mi-cuit, sésame, purée de patates douces.',
-      price: 160000,
-      category: 'fruits_de_mer',
-      image: 'https://picsum.photos/seed/tuna/400/300'
-    },
-    // New Local Items
-    {
-      id: '11',
-      name: 'Sauce Feuille au Poisson Fumé',
-      description: 'Plat traditionnel revisité, servi avec riz blanc ou fonio.',
-      price: 90000,
-      category: 'local',
-      image: 'https://picsum.photos/seed/leafsauce/400/300',
-      isLocalSpecialty: true,
-      isSpicy: true
-    },
-    {
-      id: '12',
-      name: 'Riz Gras Royal',
-      description: 'Le classique des fêtes, garni de viandes et légumes.',
-      price: 110000,
-      category: 'local',
-      image: 'https://picsum.photos/seed/jollof/400/300',
-      isLocalSpecialty: true
-    },
-    // Wines
-    {
-      id: '13',
-      name: 'Château Margaux 2015',
-      description: 'Grand cru classé, notes de fruits noirs et épices.',
-      price: 950000,
-      category: 'vin',
-      image: 'https://picsum.photos/seed/wine/400/300'
-    }
-  ]);
+  private dishes = signal<Dish[]>([]);
+  private wines = signal<Wine[]>([]);
+  private galleryImages = signal<GalleryImage[]>([]);
+  private schoolPrograms = signal<SchoolProgram[]>([]);
 
+  // Pas de table backend dédiée pour les avis clients et l'équipe : contenu éditorial statique pour le moment.
   private reviews = signal<Review[]>([
     { author: 'Mariam C.', rating: 5, comment: 'Une expérience incroyable ! Le cadre est magnifique et les plats sont délicieux.', date: '2023-10-15' },
     { author: 'Jean-Pierre L.', rating: 4, comment: 'Très bonne cuisine fusion. Le service est impeccable.', date: '2023-11-02' },
@@ -151,28 +40,96 @@ export class RestaurantService {
     { id: '4', name: 'Kadiatou Camara', role: 'Responsable Traiteur', image: 'https://picsum.photos/seed/staff4/300/300', bio: 'Organisatrice de vos plus beaux événements.' }
   ]);
 
+  // Cartes marketing statiques présentées sur la page traiteur (distinctes des demandes de devis, qui elles sont envoyées via /api/catering).
   private cateringServices = signal<CateringService[]>([
     { id: '1', title: 'Mariages & Cérémonies', description: 'Des menus sur-mesure pour votre grand jour.', icon: '💍' },
-    { id: '2', title: 'Événements d\'Entreprise', description: 'Cocktails, buffets et déjeuners d\'affaires.', icon: 'guinée' },
+    { id: '2', title: 'Événements d\'Entreprise', description: 'Cocktails, buffets et déjeuners d\'affaires.', icon: '🏢' },
     { id: '3', title: 'Dîners Privés', description: 'L\'expérience Le Jacquier directement chez vous.', icon: '🍽️' },
     { id: '4', title: 'Location Matériel', description: 'Tables, chaises, vaisselle et décoration.', icon: '🎪' }
   ]);
 
-  private schoolPrograms = signal<SchoolProgram[]>([
-    { id: '1', title: 'Cuisine Guinéenne & Africaine', duration: '6 Mois', description: 'Maîtrisez les classiques et la modernisation.', level: 'Débutant à Intermédiaire' },
-    { id: '2', title: 'Pâtisserie & Boulangerie', duration: '3 Mois', description: 'Techniques françaises et ingrédients locaux.', level: 'Tous niveaux' },
-    { id: '3', title: 'Hygiène & Sécurité (HACCP)', duration: '1 Semaine', description: 'Certification indispensable pour les pros.', level: 'Professionnel' }
-  ]);
+  constructor() {
+    this.loadDishes();
+    this.loadWines();
+    this.loadGallery();
+    this.loadSchoolPrograms();
+  }
+
+  private async loadDishes() {
+    try {
+      const raw = await firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/menu`));
+      this.dishes.set((raw || []).map(item => ({
+        id: item.id,
+        name: item.name,
+        description: item.shortDescription ?? item.description ?? '',
+        price: item.price,
+        category: item.category,
+        image: item.imageUrl ?? item.image ?? '',
+        isVegetarian: item.isVegetarian,
+        isSpicy: item.isSpicy,
+        isLocalSpecialty: item.isLocalSpecialty
+      })));
+    } catch (err) {
+      console.error('Impossible de charger le menu depuis l\'API', err);
+    }
+  }
+
+  private async loadWines() {
+    try {
+      const raw = await firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/wines`));
+      this.wines.set((raw || []).map(item => ({
+        id: item.id,
+        name: item.name,
+        description: item.description ?? '',
+        priceBottle: item.priceBottle,
+        priceGlass: item.priceGlass,
+        image: item.imageUrl ?? ''
+      })));
+    } catch (err) {
+      console.error('Impossible de charger les vins depuis l\'API', err);
+    }
+  }
+
+  private async loadGallery() {
+    try {
+      const raw = await firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/gallery`));
+      this.galleryImages.set((raw || []).map(item => ({
+        id: item.id,
+        imageUrl: item.imageUrl,
+        title: item.title,
+        category: item.category,
+        uploadedAt: item.uploadedAt
+      })));
+    } catch (err) {
+      console.error('Impossible de charger la galerie depuis l\'API', err);
+    }
+  }
+
+  private async loadSchoolPrograms() {
+    try {
+      const raw = await firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/school`));
+      this.schoolPrograms.set(raw || []);
+    } catch (err) {
+      console.error('Impossible de charger les programmes école depuis l\'API', err);
+    }
+  }
 
   // Readonly exposures
   getDishes() { return this.dishes.asReadonly(); }
+  getWines() { return this.wines.asReadonly(); }
+  getGalleryImages() { return this.galleryImages.asReadonly(); }
   getReviews() { return this.reviews.asReadonly(); }
   getTeam() { return this.team.asReadonly(); }
   getCateringServices() { return this.cateringServices.asReadonly(); }
   getSchoolPrograms() { return this.schoolPrograms.asReadonly(); }
 
   getDailySpecial() {
-    // Return a random dish as daily special for demo
-    return this.dishes()[2]; // Poulet Yassa
+    const list = this.dishes();
+    return list.length ? list[Math.min(2, list.length - 1)] : undefined;
+  }
+
+  /** Soumet une demande de devis traiteur/événement vers /api/catering (endpoint public). */
+  async submitCateringRequest(payload: Record<string, unknown>) {
+    return firstValueFrom(this.http.post(`${this.apiUrl}/catering`, payload));
   }
 }
