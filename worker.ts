@@ -5,7 +5,7 @@ import { httpServerHandler } from 'cloudflare:node';
 import type { Fetcher, ExecutionContext } from '@cloudflare/workers-types';
 import routes from './src/routes/index';
 import { errorHandler } from './src/middlewares/error.middleware';
-import { configureSecurity } from './src/middlewares/security.middleware';
+import { configureSecurity, staticAssetSecurityHeaders } from './src/middlewares/security.middleware';
 import './src/config/supabase';
 
 const app = express();
@@ -22,12 +22,24 @@ interface Env {
   ASSETS: Fetcher;
 }
 
+const withStaticSecurityHeaders = (response: Response): Response => {
+  const headers = new Headers(response.headers);
+  for (const [name, value] of Object.entries(staticAssetSecurityHeaders)) {
+    headers.set(name, value);
+  }
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+};
+
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext) {
     const url = new URL(request.url);
     if (!url.pathname.startsWith('/api')) {
       const assetResponse = await env.ASSETS.fetch(request as any);
-      if (assetResponse.status !== 404) return assetResponse;
+      if (assetResponse.status !== 404) return withStaticSecurityHeaders(assetResponse);
     }
     return apiHandler(request, env, ctx);
   },

@@ -45,6 +45,34 @@ const corsOptions: CorsOptions = {
   optionsSuccessStatus: 204,
 };
 
+const contentSecurityPolicy = [
+  "default-src 'self'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'none'",
+  "object-src 'none'",
+  "script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://esm.sh",
+  "script-src-attr 'none'",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' data: https://fonts.gstatic.com",
+  "img-src 'self' data: blob: https:",
+  `connect-src 'self' ${SUPABASE_ORIGIN} ${SUPABASE_ORIGIN.replace('https://', 'wss://')}`,
+].join('; ');
+
+// Cloudflare serves static assets before the Express app. Apply equivalent
+// headers in worker.ts so the HTML document receives the same protection.
+export const staticAssetSecurityHeaders: Readonly<Record<string, string>> = {
+  'Content-Security-Policy': `${contentSecurityPolicy}; upgrade-insecure-requests`,
+  'Cross-Origin-Opener-Policy': 'same-origin',
+  'Cross-Origin-Resource-Policy': 'same-origin',
+  'Origin-Agent-Cluster': '?1',
+  'Referrer-Policy': 'no-referrer',
+  'Strict-Transport-Security': 'max-age=15552000; includeSubDomains',
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'X-Permitted-Cross-Domain-Policies': 'none',
+};
+
 export const configureSecurity = (app: Application): void => {
   // Cloudflare/other reverse proxies provide the client address through
   // X-Forwarded-For, allowing the limiter to identify callers correctly.
