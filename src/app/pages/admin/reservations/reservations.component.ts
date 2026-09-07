@@ -23,9 +23,9 @@ import { CommonModule } from "@angular/common";
           <div class="p-6 border-b border-gray-800 flex justify-between items-center">
             <h3 class="text-lg font-serif font-bold text-white">Planning du jour</h3>
             <div class="flex gap-2">
-              <button class="p-2 bg-gray-800 rounded-lg text-gray-400 hover:text-white"><i class="material-icons">chevron_left</i></button>
+              <button class="p-2 bg-gray-800 rounded-lg text-gray-400 hover:text-white" aria-label="Voir le jour précédent"><i class="material-icons" aria-hidden="true">chevron_left</i></button>
               <span class="px-4 py-2 text-sm font-bold text-white">Aujourd'hui</span>
-              <button class="p-2 bg-gray-800 rounded-lg text-gray-400 hover:text-white"><i class="material-icons">chevron_right</i></button>
+              <button class="p-2 bg-gray-800 rounded-lg text-gray-400 hover:text-white" aria-label="Voir le jour suivant"><i class="material-icons" aria-hidden="true">chevron_right</i></button>
             </div>
           </div>
           
@@ -61,8 +61,8 @@ import { CommonModule } from "@angular/common";
                       </span>
                     </td>
                     <td class="py-4 text-right">
-                      <button class="p-2 text-gray-500 hover:text-jacquier-gold transition-colors">
-                        <i class="material-icons text-lg">more_vert</i>
+                      <button class="p-2 text-gray-500 hover:text-jacquier-gold transition-colors" [attr.aria-label]="'Actions pour ' + res.client">
+                        <i class="material-icons text-lg" aria-hidden="true">more_vert</i>
                       </button>
                     </td>
                   </tr>
