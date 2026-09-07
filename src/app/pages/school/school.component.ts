@@ -51,7 +51,7 @@ import { RestaurantService } from '../../core/services/restaurant.service';
              <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
           </div>
           <!-- Decorative element -->
-          <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-jacquier-gold/20 rounded-full blur-2xl -z-10"></div>
+          <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-jacquier-gold/20 rounded-full blur-2xl -z-10" aria-hidden="true"></div>
         </div>
       </div>
     </section>
@@ -63,43 +63,74 @@ import { RestaurantService } from '../../core/services/restaurant.service';
           <span class="text-jacquier-gold font-bold tracking-widest uppercase text-sm block mb-2">Cursus d'Excellence</span>
           <h2 class="text-4xl md:text-5xl font-serif font-bold text-jacquier-primary">Nos Programmes de Formation</h2>
         </div>
-        
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          @for (program of programs(); track program.id) {
-            <div class="bg-white p-10 rounded-3xl shadow-lg border border-gray-100 hover:-translate-y-2 transition-all duration-300 group relative overflow-hidden">
-              <div class="absolute top-0 left-0 w-full h-2 bg-jacquier-primary transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-              
-              <div class="mb-6 flex justify-between items-start">
-                <h3 class="text-2xl font-serif font-bold text-jacquier-dark pr-4">{{ program.title }}</h3>
-                <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-jacquier-cream text-jacquier-primary font-bold shrink-0">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-                </span>
+
+        <!-- Loading skeleton -->
+        @if (isLoading()) {
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" role="status" aria-live="polite" aria-label="Chargement des programmes">
+            @for (i of skeletonPlaceholders; track i) {
+              <div class="bg-white p-10 rounded-3xl shadow-lg border border-gray-100 animate-pulse space-y-4">
+                <div class="h-6 bg-gray-200 rounded w-2/3"></div>
+                <div class="h-4 bg-gray-200 rounded w-1/3"></div>
+                <div class="h-16 bg-gray-200 rounded"></div>
               </div>
-              
-              <span class="inline-block bg-jacquier-cream text-jacquier-primary text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full mb-6">{{ program.level }}</span>
-              
-              <p class="text-gray-600 font-light leading-relaxed mb-8 min-h-[4.5rem]">{{ program.description }}</p>
-              
-              <div class="flex justify-between items-center border-t border-gray-100 pt-6 mt-auto">
-                <span class="font-bold text-jacquier-dark flex items-center text-sm">
-                  <svg class="w-4 h-4 mr-2 text-jacquier-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                  {{ program.duration }}
-                </span>
-                <button class="text-jacquier-primary font-bold text-sm hover:text-jacquier-gold transition-colors flex items-center group-hover:underline">
-                  Détails 
-                  <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                </button>
+            }
+          </div>
+        }
+
+        <!-- Error state -->
+        @else if (loadError()) {
+          <div class="text-center py-24 bg-white rounded-3xl shadow-lg border border-red-100">
+            <p class="text-red-600 text-xl mb-6 font-light">{{ loadError() }}</p>
+            <button (click)="retry()" class="px-8 py-3 bg-jacquier-primary text-white rounded-xl font-bold uppercase tracking-wide hover:bg-jacquier-burgundy transition-colors min-h-[44px]">Réessayer</button>
+          </div>
+        }
+
+        <!-- Empty state -->
+        @else if (programs().length === 0) {
+          <div class="text-center py-24 bg-white rounded-3xl shadow-lg border border-gray-100">
+            <p class="text-jacquier-text text-xl font-light">Les programmes seront bientôt annoncés — revenez vite !</p>
+          </div>
+        }
+
+        <!-- Grid -->
+        @else {
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            @for (program of programs(); track program.id) {
+              <div class="bg-white p-10 rounded-3xl shadow-lg border border-gray-100 hover:-translate-y-2 transition-all duration-300 group relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-2 bg-jacquier-primary transform origin-left scale-x-0 group-hover:scale-x-100 transition-transform duration-500" aria-hidden="true"></div>
+
+                <div class="mb-6 flex justify-between items-start">
+                  <h3 class="text-2xl font-serif font-bold text-jacquier-dark pr-4">{{ program.title }}</h3>
+                  <span class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-jacquier-cream text-jacquier-primary font-bold shrink-0" aria-hidden="true">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+                  </span>
+                </div>
+
+                <span class="inline-block bg-jacquier-cream text-jacquier-primary text-xs font-bold uppercase tracking-wider px-3 py-1.5 rounded-full mb-6">{{ program.level }}</span>
+
+                <p class="text-gray-600 font-light leading-relaxed mb-8 min-h-[4.5rem]">{{ program.description }}</p>
+
+                <div class="flex justify-between items-center border-t border-gray-100 pt-6 mt-auto">
+                  <span class="font-bold text-jacquier-dark flex items-center text-sm">
+                    <svg class="w-4 h-4 mr-2 text-jacquier-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    {{ program.duration }}
+                  </span>
+                  <a routerLink="/contact" class="text-jacquier-primary font-bold text-sm hover:text-jacquier-gold transition-colors flex items-center group-hover:underline">
+                    Détails
+                    <svg class="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                  </a>
+                </div>
               </div>
-            </div>
-          }
-        </div>
+            }
+          </div>
+        }
       </div>
     </section>
 
     <!-- Call to Action -->
     <section class="py-24 bg-jacquier-primary text-white text-center px-4 relative overflow-hidden">
       <div class="absolute inset-0 opacity-10">
-        <img ngSrc="https://picsum.photos/seed/kitchen_pattern/1920/1080" fill class="object-cover" alt="Kitchen pattern" referrerPolicy="no-referrer">
+        <img ngSrc="https://picsum.photos/seed/kitchen_pattern/1920/1080" fill class="object-cover" alt="" aria-hidden="true" referrerPolicy="no-referrer">
       </div>
       <div class="max-w-3xl mx-auto relative z-10">
         <span class="text-jacquier-gold font-bold tracking-widest uppercase text-sm mb-4 block">Admissions</span>
@@ -117,4 +148,11 @@ import { RestaurantService } from '../../core/services/restaurant.service';
 export class SchoolComponent {
   restaurantService = inject(RestaurantService);
   programs = this.restaurantService.getSchoolPrograms();
+  isLoading = this.restaurantService.isLoadingSchool();
+  loadError = this.restaurantService.getSchoolError();
+  skeletonPlaceholders = Array.from({ length: 3 }, (_, i) => i);
+
+  retry() {
+    this.restaurantService.retryLoadSchoolPrograms();
+  }
 }
