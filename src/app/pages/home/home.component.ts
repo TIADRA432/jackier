@@ -1,5 +1,5 @@
 
-import { Component, inject, computed, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, computed, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { RestaurantService } from '../../core/services/restaurant.service';
 import { DailySpecialComponent } from '../../shared/components/daily-special/daily-special.component';
@@ -46,7 +46,21 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
           <span class="text-jacquier-gold font-bold tracking-widest uppercase text-sm">Notre Suggestion</span>
           <h2 class="text-4xl md:text-5xl font-serif font-bold text-jacquier-primary mt-2">Le Plat du Jour</h2>
         </div>
-        <app-daily-special [dish]="dailyDish()" />
+        @if (dailyDish(); as dish) {
+          <app-daily-special [dish]="dish" />
+        } @else if (isMenuLoading()) {
+          <div class="bg-jacquier-dark rounded-3xl overflow-hidden shadow-2xl animate-pulse" role="status" aria-live="polite" aria-label="Chargement de la suggestion du jour">
+            <div class="grid md:grid-cols-2">
+              <div class="p-10 md:p-16 space-y-6">
+                <div class="h-6 bg-gray-700 rounded w-40"></div>
+                <div class="h-10 bg-gray-700 rounded w-2/3"></div>
+                <div class="h-4 bg-gray-700 rounded w-full"></div>
+                <div class="h-4 bg-gray-700 rounded w-1/2"></div>
+              </div>
+              <div class="h-80 md:h-auto bg-gray-700"></div>
+            </div>
+          </div>
+        }
       </div>
     </section>
 
@@ -68,7 +82,7 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
             </p>
             <a routerLink="/menu" class="inline-flex items-center text-jacquier-primary font-bold hover:text-jacquier-gold transition-colors group">
               Explorer nos spécialités locales
-              <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
               </svg>
             </a>
@@ -80,25 +94,37 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
     <!-- Seafood Section -->
     <section class="py-24 bg-jacquier-primary text-jacquier-light relative overflow-hidden px-4">
       <div class="absolute inset-0 opacity-10">
-        <img ngSrc="https://picsum.photos/seed/ocean_pattern/1920/1080" fill class="object-cover" alt="Ocean pattern" referrerPolicy="no-referrer">
+        <img ngSrc="https://picsum.photos/seed/ocean_pattern/1920/1080" fill class="object-cover" alt="" aria-hidden="true" referrerPolicy="no-referrer">
       </div>
       <div class="max-w-7xl mx-auto relative z-10">
         <div class="text-center mb-16">
           <span class="text-jacquier-gold font-bold tracking-widest uppercase text-sm">Fraîcheur Océane</span>
           <h2 class="text-4xl md:text-5xl font-serif font-bold mt-2">Spécialités de la Mer</h2>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          @for (dish of seafoodDishes(); track dish.id) {
-            <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-colors">
-              <div class="relative h-48 rounded-xl overflow-hidden mb-6">
-                <img [ngSrc]="dish.image" fill class="object-cover" [alt]="dish.name" referrerPolicy="no-referrer">
+        @if (seafoodDishes().length > 0) {
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            @for (dish of seafoodDishes(); track dish.id) {
+              <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-colors">
+                <div class="relative h-48 rounded-xl overflow-hidden mb-6">
+                  <img [ngSrc]="dish.image" fill class="object-cover" [alt]="dish.name" referrerPolicy="no-referrer">
+                </div>
+                <h3 class="text-2xl font-serif font-bold mb-2">{{ dish.name }}</h3>
+                <p class="text-gray-300 font-light mb-4 line-clamp-2">{{ dish.description }}</p>
+                <div class="text-jacquier-gold font-bold">{{ dish.price | number:'1.0-0' }} FG</div>
               </div>
-              <h3 class="text-2xl font-serif font-bold mb-2">{{ dish.name }}</h3>
-              <p class="text-gray-300 font-light mb-4 line-clamp-2">{{ dish.description }}</p>
-              <div class="text-jacquier-gold font-bold">{{ dish.price | number:'1.0-0' }} FG</div>
-            </div>
-          }
-        </div>
+            }
+          </div>
+        } @else if (isMenuLoading()) {
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" role="status" aria-live="polite" aria-label="Chargement des spécialités de la mer">
+            @for (i of [0,1,2]; track i) {
+              <div class="bg-white/5 rounded-2xl p-6 border border-white/10 animate-pulse">
+                <div class="h-48 rounded-xl bg-white/10 mb-6"></div>
+                <div class="h-5 bg-white/10 rounded w-2/3 mb-3"></div>
+                <div class="h-3 bg-white/10 rounded w-full"></div>
+              </div>
+            }
+          </div>
+        }
       </div>
     </section>
 
@@ -117,13 +143,13 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
             </p>
             <ul class="space-y-4 mb-8">
               <li class="flex items-center text-jacquier-dark font-medium">
-                <span class="w-2 h-2 bg-jacquier-gold rounded-full mr-4"></span> Cocktails Signature
+                <span class="w-2 h-2 bg-jacquier-gold rounded-full mr-4" aria-hidden="true"></span> Cocktails Signature
               </li>
               <li class="flex items-center text-jacquier-dark font-medium">
-                <span class="w-2 h-2 bg-jacquier-gold rounded-full mr-4"></span> Jus Naturels & Bissap
+                <span class="w-2 h-2 bg-jacquier-gold rounded-full mr-4" aria-hidden="true"></span> Jus Naturels & Bissap
               </li>
               <li class="flex items-center text-jacquier-dark font-medium">
-                <span class="w-2 h-2 bg-jacquier-gold rounded-full mr-4"></span> Cave à Vins d'Exception
+                <span class="w-2 h-2 bg-jacquier-gold rounded-full mr-4" aria-hidden="true"></span> Cave à Vins d'Exception
               </li>
             </ul>
             <a routerLink="/menu" class="px-6 py-3 bg-jacquier-primary text-white rounded-xl font-bold uppercase tracking-wide hover:bg-jacquier-burgundy transition-colors inline-block">
@@ -179,15 +205,15 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
         <span class="text-jacquier-gold font-bold tracking-widest uppercase text-sm mb-8 block">Nos Distinctions</span>
         <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-70 grayscale hover:grayscale-0 transition-all duration-500">
           <div class="flex flex-col items-center">
-            <svg class="w-12 h-12 mb-2 text-jacquier-primary" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="w-12 h-12 mb-2 text-jacquier-primary" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             <span class="font-serif font-bold text-sm">Guide Gastronomique 2023</span>
           </div>
           <div class="flex flex-col items-center">
-            <svg class="w-12 h-12 mb-2 text-jacquier-primary" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="w-12 h-12 mb-2 text-jacquier-primary" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             <span class="font-serif font-bold text-sm">Meilleur Restaurant Conakry</span>
           </div>
           <div class="flex flex-col items-center">
-            <svg class="w-12 h-12 mb-2 text-jacquier-primary" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            <svg class="w-12 h-12 mb-2 text-jacquier-primary" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
             <span class="font-serif font-bold text-sm">Prix d'Excellence Culinaire</span>
           </div>
         </div>
@@ -207,7 +233,7 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
               <h3 class="text-2xl font-serif font-bold text-jacquier-dark">La Fondation</h3>
               <p class="text-gray-500 font-light mt-2">Ouverture des portes avec une vision : marier la France et la Guinée.</p>
             </div>
-            <div class="absolute left-[-9px] md:left-1/2 md:-ml-[9px] w-4 h-4 rounded-full bg-jacquier-gold border-4 border-white shadow"></div>
+            <div class="absolute left-[-9px] md:left-1/2 md:-ml-[9px] w-4 h-4 rounded-full bg-jacquier-gold border-4 border-white shadow" aria-hidden="true"></div>
             <div class="md:w-5/12 md:pl-8 text-left">
               <span class="text-jacquier-orange font-bold text-xl">2010</span>
               <div class="md:hidden mt-2">
@@ -223,7 +249,7 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
               <h3 class="text-2xl font-serif font-bold text-jacquier-dark">L'École de Gastronomie</h3>
               <p class="text-gray-500 font-light mt-2">Transmission du savoir-faire aux nouvelles générations de chefs.</p>
             </div>
-            <div class="absolute left-[-9px] md:left-1/2 md:-ml-[9px] w-4 h-4 rounded-full bg-jacquier-gold border-4 border-white shadow"></div>
+            <div class="absolute left-[-9px] md:left-1/2 md:-ml-[9px] w-4 h-4 rounded-full bg-jacquier-gold border-4 border-white shadow" aria-hidden="true"></div>
             <div class="md:w-5/12 md:pr-8 text-left md:text-right">
               <span class="text-jacquier-orange font-bold text-xl">2015</span>
               <div class="md:hidden mt-2">
@@ -239,7 +265,7 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
               <h3 class="text-2xl font-serif font-bold text-jacquier-dark">L'Excellence Reconnue</h3>
               <p class="text-gray-500 font-light mt-2">Devenu une institution incontournable de la capitale guinéenne.</p>
             </div>
-            <div class="absolute left-[-9px] md:left-1/2 md:-ml-[9px] w-4 h-4 rounded-full bg-jacquier-gold border-4 border-white shadow"></div>
+            <div class="absolute left-[-9px] md:left-1/2 md:-ml-[9px] w-4 h-4 rounded-full bg-jacquier-gold border-4 border-white shadow" aria-hidden="true"></div>
             <div class="md:w-5/12 md:pl-8 text-left">
               <span class="text-jacquier-orange font-bold text-xl">Aujourd'hui</span>
               <div class="md:hidden mt-2">
@@ -250,7 +276,7 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
           </div>
           
           <!-- Desktop Center Line -->
-          <div class="hidden md:block absolute top-0 bottom-0 left-1/2 w-0.5 bg-jacquier-gold/30 -translate-x-1/2 -z-10"></div>
+          <div class="hidden md:block absolute top-0 bottom-0 left-1/2 w-0.5 bg-jacquier-gold/30 -translate-x-1/2 -z-10" aria-hidden="true"></div>
         </div>
       </div>
     </section>
@@ -258,9 +284,19 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
 })
 export class HomeComponent {
   restaurantService = inject(RestaurantService);
-  dailyDish = signal(this.restaurantService.getDailySpecial());
+  isMenuLoading = this.restaurantService.isLoadingMenu();
+
+  // computed() (et non signal() figé) : le plat du jour dépend du menu chargé de manière
+  // asynchrone côté service, il doit donc se recalculer automatiquement une fois les
+  // données arrivées, plutôt que de rester bloqué sur la valeur (souvent undefined) prise
+  // au moment de la construction du composant.
+  dailyDish = computed(() => {
+    const dishes = this.restaurantService.getDishes()();
+    return dishes.length ? this.restaurantService.getDailySpecial() : undefined;
+  });
+
   team = this.restaurantService.getTeam();
-  
+
   seafoodDishes = computed(() => {
     return this.restaurantService.getDishes()().filter(d => d.category === 'fruits_de_mer').slice(0, 3);
   });
