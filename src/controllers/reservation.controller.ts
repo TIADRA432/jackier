@@ -37,7 +37,7 @@ const cleanString = (value: unknown, field: string, maxLength: number, required 
   return result;
 };
 
-const validateReservation = (body: unknown) => {
+export const validateReservation = (body: unknown) => {
   if (!isRecord(body)) throw new Error('Invalid reservation payload');
 
   const suppliedName = cleanString(body.name, 'name', MAX_NAME * 2, false);

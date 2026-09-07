@@ -1,0 +1,37 @@
+name: Quality checks
+
+on:
+  pull_request:
+  push:
+    branches:
+      - '**'
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    name: Test, type-check and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # This repository intentionally has no lockfile. Do not replace this with npm ci.
+      - name: Install dependencies
+        run: npm install --no-package-lock
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Type-check server code
+        run: npm run lint
+
+      - name: Build Angular application
+        run: npm run build

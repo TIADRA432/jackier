@@ -44,7 +44,7 @@ const validateValue = (value: unknown, depth = 0): unknown => {
   throw new Error('Invalid payload value');
 };
 
-const validateCateringPayload = (body: unknown) => {
+export const validateCateringPayload = (body: unknown) => {
   if (typeof body !== 'object' || body === null || Array.isArray(body)) {
     throw new Error('Invalid catering payload');
   }

@@ -2,8 +2,8 @@
 
 **Dépôt :** `TIADRA432/jackier`
 **Branche cible :** `integration/backend-supabase`
-**HEAD au moment de cette mise à jour :** `456a925edd1c5f34cfb0725d9c0e8807d847b38f`
-**Statut :** Phases 1 et 2 de l'audit exécutées et poussées. Phase 3 (tests, CI) non commencée.
+**HEAD au moment de cette mise à jour :** consulter `git log -1` (ce document est mis à jour dans le même commit que la phase 3).
+**Statut :** Phases 1 et 2 exécutées et poussées. Phase 3 (tests, CI) implémentée ; l’exécution locale reste à rejouer car le téléchargement npm a subi des timeouts réseau.
 Ce document reflète l'état réel vérifié à cette date — les sections précédentes marquées
 « à revalider » ont été confirmées, corrigées, ou requalifiées ci-dessous.
 
@@ -35,7 +35,7 @@ retirant plutôt qu'en le régénérant à la main.
 | SEO | hash routing, pas de robots/sitemap/canonical/OG | **Corrigé** — `withHashLocation()` retiré, `public/robots.txt`, `public/sitemap.xml`, OG/Twitter/canonical dans `index.html` |
 | Accessibilité | alt/aria-label manquants | **Corrigé** en zone admin + header mobile (bouton fermeture, `aria-expanded`) |
 | UX — chargement | pas de chargement visible | **Corrigé** — signaux `loading`/`error` centralisés dans `RestaurantService`, appliqués à Menu, Galerie, École, Accueil |
-| Qualité | pas de specs ni CI | **Confirmé, toujours vrai** — Phase 3 non commencée |
+| Qualité | pas de specs ni CI | **Corrigé** — tests ciblés Node/TS pour validations publiques et middleware sécurité ; workflow GitHub Actions test + type-check + build |
 | tsconfig serveur | non audité initialement | **Corrigé** — `esModuleInterop` manquant + `module` incompatible avec `import.meta`, causait des erreurs `tsc --noEmit` |
 
 ## Découvertes hors périmètre initial de l'audit — bugs métier critiques
@@ -85,7 +85,7 @@ Ceci constitue un épique séparé, non commencé :
   rejet non automatisés (aucun test écrit — validation manuelle uniquement).
 - **Phase 2** (SEO/a11y/UX) : **Terminée** pour le front public. Zone admin : a11y
   statique corrigée, mais données réelles non câblées (cf. épique ci-dessus).
-- **Phase 3** (tests, CI) : **Non commencée.**
+- **Phase 3** (tests, CI) : **Implémentée.** `npm test` exécute les contrôles de validation métier et de sécurité ; `npm run lint` lance le type-check serveur ; `.github/workflows/quality.yml` exécute test, type-check et build sous Node 22. Le contrôle local de cette livraison n’a pas pu s’achever : npm a échoué après plusieurs reprises réseau (`ECONNRESET` / `ETIMEDOUT`), sans créer de lockfile.
 
 ## Rapport — validations exécutées cette session
 
@@ -109,3 +109,8 @@ Ceci constitue un épique séparé, non commencé :
 3. **Favicon** : référencé dans `index.html` mais absent du dossier `public/` → 404
    silencieux, non corrigé (mineur).
 4. Aucun secret n'a été ajouté au dépôt au cours de cette session.
+
+
+## Navigation Graphify pour les agents
+
+Le projet intègre maintenant `AGENTS.md` et le rapport versionné dans `graphify-out/`. Voir [`GRAPHIFY.md`](./GRAPHIFY.md) pour les requêtes et le périmètre. Exécuter `graphify extract . --code-only` lorsque `graphify-out/graph.json` doit être régénéré localement.
