@@ -78,7 +78,14 @@ Les appels `/api/*` reçoivent le Bearer token ; les routes Express conservent l
 vérification du token et du rôle. Le garde échoue fermé : erreur Auth, RLS ou profil
 absent redirige vers la connexion.
 
-Épique restant : câblage progressif des ~10 sous-pages admin sur les endpoints réels.
+Le premier câblage métier est terminé pour **Réservations** :
+`admin-data.service.ts` lit `GET /api/reservations` et envoie les changements de
+statut vers `PUT /api/reservations/:id/status`. L'écran affiche des états de
+chargement/erreur, les notes client et ne modifie la liste locale qu'après réponse
+API. La CI a validé ce flux avec le commit `bc6b7dc`.
+
+Épique restant : câblage progressif des autres sous-pages admin sur les endpoints réels
+(commencer par dashboard, puis traiteur/école/restaurant).
 
 ## Plan d'exécution — état d'avancement
 
@@ -115,7 +122,8 @@ mode sans fournisseur LLM.
 ## Risques résiduels et décisions requises de l'utilisateur
 
 1. **Priorité** : câbler progressivement les données réelles de l'admin (commencer par
-   dashboard et réservations). L'accès est protégé, mais les écrans restent factices.
+   dashboard). L'accès est protégé et Réservations est connecté, mais les autres écrans
+   restent majoritairement factices.
 2. **Tailwind CDN en production** (`<script src="https://cdn.tailwindcss.com">` dans
    `index.html`) : repéré comme risque de performance (JIT recompilé à chaque
    chargement), non corrigé — nécessite de vérifier qu'un pipeline de build CSS
