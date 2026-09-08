@@ -112,6 +112,20 @@ import { AdminAuthService } from '../../core/services/admin-auth.service';
                 Restaurant & Menu
               </a>
               <a
+                routerLink="/admin/categories"
+                routerLinkActive="text-jacquier-gold"
+                class="ml-8 mt-1 block rounded-lg px-4 py-2 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+              >
+                Catégories du menu
+              </a>
+              <a
+                routerLink="/admin/vins"
+                routerLinkActive="text-jacquier-gold"
+                class="ml-8 mt-1 block rounded-lg px-4 py-2 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+              >
+                Carte des vins
+              </a>
+              <a
                 routerLink="/admin/reservations"
                 routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold"
                 class="flex items-center px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-colors border-l-2 border-transparent group mt-1"

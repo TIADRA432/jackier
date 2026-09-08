@@ -103,3 +103,18 @@ test('category and wine writes whitelist their payloads and validate identifiers
   assert.match(validation, /UUID_PATTERN/);
   assert.match(validation, /CatalogValidationError/);
 });
+
+test('category and wine admin screens use the authenticated catalogue API', async () => {
+  const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+  const categories = await source('src', 'app', 'pages', 'admin', 'categories', 'categories.component.ts');
+  const wines = await source('src', 'app', 'pages', 'admin', 'wines', 'wines.component.ts');
+
+  assert.match(service, /get<MenuCategory\[\]>\(`\$\{this\.apiUrl\}\/categories`\)/);
+  assert.match(service, /post<MenuCategory>\(`\$\{this\.apiUrl\}\/categories`, payload\)/);
+  assert.match(service, /get<WineItem\[\]>\(`\$\{this\.apiUrl\}\/wines`\)/);
+  assert.match(service, /post<WineItem>\(`\$\{this\.apiUrl\}\/wines`, payload\)/);
+  assert.match(categories, /this\.adminData\.createCategory/);
+  assert.match(categories, /this\.adminData\.deleteCategory/);
+  assert.match(wines, /this\.adminData\.createWine/);
+  assert.match(wines, /this\.adminData\.deleteWine/);
+});

@@ -61,6 +61,22 @@ export interface MenuItem {
   displayOrder?: number;
 }
 
+export interface MenuCategory {
+  id: string;
+  name: string;
+  order?: number;
+}
+
+export interface WineItem {
+  id: string;
+  name: string;
+  description?: string;
+  priceBottle: number;
+  priceGlass?: number;
+  imageUrl?: string;
+  displayOrder?: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminDataService {
   private readonly http = inject(HttpClient);
@@ -92,6 +108,38 @@ export class AdminDataService {
 
   async updateMenuItem(id: string, payload: { active: boolean }): Promise<MenuItem> {
     return firstValueFrom(this.http.put<MenuItem>(`${this.apiUrl}/menu/${id}`, payload));
+  }
+
+  async getCategories(): Promise<MenuCategory[]> {
+    return firstValueFrom(this.http.get<MenuCategory[]>(`${this.apiUrl}/categories`));
+  }
+
+  async createCategory(payload: Omit<MenuCategory, 'id'>): Promise<MenuCategory> {
+    return firstValueFrom(this.http.post<MenuCategory>(`${this.apiUrl}/categories`, payload));
+  }
+
+  async updateCategory(id: string, payload: Omit<MenuCategory, 'id'>): Promise<MenuCategory> {
+    return firstValueFrom(this.http.put<MenuCategory>(`${this.apiUrl}/categories/${id}`, payload));
+  }
+
+  async deleteCategory(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`${this.apiUrl}/categories/${id}`));
+  }
+
+  async getWines(): Promise<WineItem[]> {
+    return firstValueFrom(this.http.get<WineItem[]>(`${this.apiUrl}/wines`));
+  }
+
+  async createWine(payload: Omit<WineItem, 'id'>): Promise<WineItem> {
+    return firstValueFrom(this.http.post<WineItem>(`${this.apiUrl}/wines`, payload));
+  }
+
+  async updateWine(id: string, payload: Omit<WineItem, 'id'>): Promise<WineItem> {
+    return firstValueFrom(this.http.put<WineItem>(`${this.apiUrl}/wines/${id}`, payload));
+  }
+
+  async deleteWine(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`${this.apiUrl}/wines/${id}`));
   }
 
   async updateReservationStatus(id: string, status: ReservationStatus): Promise<AdminReservation> {

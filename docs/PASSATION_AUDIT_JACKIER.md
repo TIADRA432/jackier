@@ -106,8 +106,10 @@ Les écritures `POST`/`PUT`/`DELETE` de catégories et de vins sont protégées 
 RBAC `ADMIN` et utilisent désormais la validation commune `catalog.validation.ts` :
 whitelist stricte des champs, bornes de longueur/prix/ordre, URL d’image HTTP(S) et UUID
 des ressources. Les erreurs de contrat répondent en `400`; les erreurs de persistance
-restent en `500`. L’interface d’administration des catégories et des vins n’est pas
-encore branchée : ne pas annoncer de CRUD visuel tant qu’elle ne l’est pas.
+restent en `500`. Les écrans protégés `/admin/categories` et `/admin/vins` sont
+connectés : liste, création, modification et suppression confirmée, avec états de
+chargement/erreur. Ils utilisent exclusivement `AdminDataService` — aucun catalogue
+fictif ne doit y être réintroduit.
 
 ## Plan d'exécution — état d'avancement
 
