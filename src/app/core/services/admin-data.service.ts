@@ -41,6 +41,14 @@ export interface CateringEvent {
   status: ReservationStatus;
 }
 
+export interface SchoolProgram {
+  id: string;
+  title?: string;
+  description?: string;
+  duration?: string;
+  level?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminDataService {
   private readonly http = inject(HttpClient);
@@ -60,6 +68,10 @@ export class AdminDataService {
 
   async updateCateringStatus(id: string, status: ReservationStatus): Promise<CateringEvent> {
     return firstValueFrom(this.http.put<CateringEvent>(`${this.apiUrl}/catering/${id}`, { status }));
+  }
+
+  async getSchoolPrograms(): Promise<SchoolProgram[]> {
+    return firstValueFrom(this.http.get<SchoolProgram[]>(`${this.apiUrl}/school`));
   }
 
   async updateReservationStatus(id: string, status: ReservationStatus): Promise<AdminReservation> {

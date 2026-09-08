@@ -58,3 +58,12 @@ test('the catering screen reads and updates only the protected catering API', as
   assert.match(component, /this\.adminData\.getCateringEvents\(\)/);
   assert.match(component, /this\.adminData\.updateCateringStatus/);
 });
+
+test('the school screen displays real programs instead of fictitious students', async () => {
+  const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+  const component = await source('src', 'app', 'pages', 'admin', 'school', 'school.component.ts');
+
+  assert.match(service, /get<SchoolProgram\[\]>\(`\$\{this\.apiUrl\}\/school`\)/);
+  assert.match(component, /this\.adminData\.getSchoolPrograms\(\)/);
+  assert.match(component, /gestion des étudiants n’est pas encore modélisée/);
+});
