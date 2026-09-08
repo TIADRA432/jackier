@@ -100,6 +100,15 @@ mise à jour optimiste. Avant le déploiement, appliquer la migration avec `supa
 (une seule personne à la fois), puis vérifier que les politiques RLS du projet autorisent
 le rôle de service backend, sans exposer de clé de service dans le front.
 
+### Contrat Catalogue — catégories et vins (2026-09-08)
+
+Les écritures `POST`/`PUT`/`DELETE` de catégories et de vins sont protégées par le
+RBAC `ADMIN` et utilisent désormais la validation commune `catalog.validation.ts` :
+whitelist stricte des champs, bornes de longueur/prix/ordre, URL d’image HTTP(S) et UUID
+des ressources. Les erreurs de contrat répondent en `400`; les erreurs de persistance
+restent en `500`. L’interface d’administration des catégories et des vins n’est pas
+encore branchée : ne pas annoncer de CRUD visuel tant qu’elle ne l’est pas.
+
 ## Plan d'exécution — état d'avancement
 
 - **Phase 0** (base vérifiable) : implicitement couverte — build/lint vérifiés à

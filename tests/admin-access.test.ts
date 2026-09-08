@@ -90,3 +90,16 @@ test('menu availability has a public-safe contract and protected admin catalogue
   assert.match(routes, /router\.get\('\/admin\/menu', verifyToken, requireRole\(\['ADMIN'\]\), getMenuItems\)/);
   assert.match(publicService, /filter\(item => item\.active !== false\)/);
 });
+
+test('category and wine writes whitelist their payloads and validate identifiers', async () => {
+  const category = await source('src', 'controllers', 'category.controller.ts');
+  const wine = await source('src', 'controllers', 'wine.controller.ts');
+  const validation = await source('src', 'controllers', 'catalog.validation.ts');
+
+  assert.match(category, /requireKnownFields/);
+  assert.match(category, /validateUuid\(req\.params\.id, 'category'\)/);
+  assert.match(wine, /requireKnownFields/);
+  assert.match(wine, /validateUuid\(req\.params\.id, 'wine'\)/);
+  assert.match(validation, /UUID_PATTERN/);
+  assert.match(validation, /CatalogValidationError/);
+});
