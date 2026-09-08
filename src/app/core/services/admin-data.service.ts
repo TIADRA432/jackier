@@ -57,6 +57,8 @@ export interface MenuItem {
   imageUrl?: string;
   image?: string;
   description?: string;
+  active?: boolean;
+  displayOrder?: number;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -85,7 +87,11 @@ export class AdminDataService {
   }
 
   async getMenuItems(): Promise<MenuItem[]> {
-    return firstValueFrom(this.http.get<MenuItem[]>(`${this.apiUrl}/menu`));
+    return firstValueFrom(this.http.get<MenuItem[]>(`${this.apiUrl}/admin/menu`));
+  }
+
+  async updateMenuItem(id: string, payload: { active: boolean }): Promise<MenuItem> {
+    return firstValueFrom(this.http.put<MenuItem>(`${this.apiUrl}/menu/${id}`, payload));
   }
 
   async updateReservationStatus(id: string, status: ReservationStatus): Promise<AdminReservation> {

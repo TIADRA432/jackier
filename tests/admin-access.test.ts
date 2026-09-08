@@ -68,11 +68,25 @@ test('the school screen displays real programs instead of fictitious students', 
   assert.match(component, /gestion des étudiants n’est pas encore modélisée/);
 });
 
-test('the restaurant screen reads menu data and keeps undefined availability read-only', async () => {
+test('the restaurant screen reads all protected menu data and persists availability changes', async () => {
   const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
   const component = await source('src', 'app', 'pages', 'admin', 'restaurant', 'restaurant.component.ts');
 
-  assert.match(service, /get<MenuItem\[\]>\(`\$\{this\.apiUrl\}\/menu`\)/);
+  assert.match(service, /get<MenuItem\[\]>\(`\$\{this\.apiUrl\}\/admin\/menu`\)/);
+  assert.match(service, /put<MenuItem>\(`\$\{this\.apiUrl\}\/menu\/\$\{id\}`, payload\)/);
   assert.match(component, /this\.adminData\.getMenuItems\(\)/);
-  assert.match(component, /modification de disponibilité reste désactivée/);
+  assert.match(component, /this\.adminData\.updateMenuItem/);
+  assert.match(component, /toggleAvailability/);
+});
+
+test('menu availability has a public-safe contract and protected admin catalogue', async () => {
+  const controller = await source('src', 'controllers', 'menu.controller.ts');
+  const routes = await source('src', 'routes', 'index.ts');
+  const publicService = await source('src', 'app', 'core', 'services', 'restaurant.service.ts');
+
+  assert.match(controller, /item\.active !== false/);
+  assert.match(controller, /active: payload\.active \?\? true/);
+  assert.match(controller, /validateMenuPayload/);
+  assert.match(routes, /router\.get\('\/admin\/menu', verifyToken, requireRole\(\['ADMIN'\]\), getMenuItems\)/);
+  assert.match(publicService, /filter\(item => item\.active !== false\)/);
 });

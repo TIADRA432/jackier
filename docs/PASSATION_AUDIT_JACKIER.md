@@ -87,6 +87,19 @@ API. La CI a validé ce flux avec le commit `bc6b7dc`.
 Épique restant : câblage progressif des autres sous-pages admin sur les endpoints réels
 (commencer par dashboard, puis traiteur/école/restaurant).
 
+### Contrat Menu — disponibilité formalisée (2026-09-08)
+
+La disponibilité est désormais le booléen `menu_items.active`, et non un champ
+`isAvailable` parallèle. La migration `20260908030000_formalize_menu_active_status.sql`
+backfill les anciens plats à `true`, puis rend la colonne obligatoire avec défaut `true`.
+`GET /api/menu` est strictement public et écarte uniquement `active = false` ;
+`GET /api/admin/menu` est réservé à `ADMIN` et conserve les plats indisponibles pour
+l’administration. `PUT /api/menu/:id` reste protégé et valide/whitelist les champs avant
+toute écriture. Le tableau Restaurant admin utilise ce contrat pour basculer l’état sans
+mise à jour optimiste. Avant le déploiement, appliquer la migration avec `supabase db push`
+(une seule personne à la fois), puis vérifier que les politiques RLS du projet autorisent
+le rôle de service backend, sans exposer de clé de service dans le front.
+
 ## Plan d'exécution — état d'avancement
 
 - **Phase 0** (base vérifiable) : implicitement couverte — build/lint vérifiés à
@@ -132,4 +145,3 @@ mode sans fournisseur LLM.
 3. **Favicon** : référencé dans `index.html` mais absent du dossier `public/` → 404
    silencieux, non corrigé (mineur).
 4. Aucun secret n'a été ajouté au dépôt au cours de cette session.
-

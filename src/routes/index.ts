@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import multer from 'multer';
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../controllers/category.controller';
-import { getMenuItems, createMenuItem, updateMenuItem, deleteMenuItem } from '../controllers/menu.controller';
+import { getMenuItems, getPublicMenuItems, createMenuItem, updateMenuItem, deleteMenuItem } from '../controllers/menu.controller';
 import { getWines, createWine, updateWine, deleteWine } from '../controllers/wine.controller';
 import { uploadMenuImage, uploadWineImage } from '../controllers/upload.controller';
 import { getGalleryImages, createGalleryImage, deleteGalleryImage } from '../controllers/gallery.controller';
@@ -74,8 +74,9 @@ router.post('/categories', verifyToken, requireRole(['ADMIN']), createCategory);
 router.put('/categories/:id', verifyToken, requireRole(['ADMIN']), updateCategory);
 router.delete('/categories/:id', verifyToken, requireRole(['ADMIN']), deleteCategory);
 
-// Menu Items
-router.get('/menu', getMenuItems);
+// Menu Items. The public catalogue never exposes temporarily unavailable dishes.
+router.get('/menu', getPublicMenuItems);
+router.get('/admin/menu', verifyToken, requireRole(['ADMIN']), getMenuItems);
 router.post('/menu', verifyToken, requireRole(['ADMIN']), createMenuItem);
 router.put('/menu/:id', verifyToken, requireRole(['ADMIN']), updateMenuItem);
 router.delete('/menu/:id', verifyToken, requireRole(['ADMIN']), deleteMenuItem);

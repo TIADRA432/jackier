@@ -71,7 +71,9 @@ export class RestaurantService {
     this.errorMenu.set(null);
     try {
       const raw = await firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/menu`));
-      this.dishes.set((raw || []).map(item => ({
+      // The public endpoint already applies this policy. Keep the client-side guard
+      // as defence in depth if a stale proxy response is ever served.
+      this.dishes.set((raw || []).filter(item => item.active !== false).map(item => ({
         id: item.id,
         name: item.name,
         description: item.shortDescription ?? item.description ?? '',
