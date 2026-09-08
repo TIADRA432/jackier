@@ -174,3 +174,20 @@ test('analytics reuses the protected dashboard overview instead of fabricated fo
   assert.doesNotMatch(component, /Prévisions de Fréquentation/);
   assert.doesNotMatch(component, /Générer Rapport PDF/);
 });
+
+test('inventory is backed by a protected API and validates writes before persistence', async () => {
+  const controller = await source('src', 'controllers', 'inventory.controller.ts');
+  const routes = await source('src', 'routes', 'index.ts');
+  const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+  const component = await source('src', 'app', 'pages', 'admin', 'stock', 'stock.component.ts');
+
+  assert.match(controller, /requireKnownFields\(body, INVENTORY_FIELDS\)/);
+  assert.match(controller, /validateUuid\(req\.params\.id, 'inventory item'\)/);
+  assert.match(routes, /router\.get\('\/inventory', verifyToken, requireRole\(\['ADMIN'\]\), getInventoryItems\)/);
+  assert.match(routes, /router\.post\('\/inventory', verifyToken, requireRole\(\['ADMIN'\]\), createInventoryItem\)/);
+  assert.match(service, /get<InventoryItem\[\]>\(`\$\{this\.apiUrl\}\/inventory`\)/);
+  assert.match(component, /this\.adminData\.getInventoryItems\(\)/);
+  assert.match(component, /this\.adminData\.updateInventoryItem/);
+  assert.match(component, /this\.adminData\.deleteInventoryItem/);
+  assert.doesNotMatch(component, /Gambas Tigrées/);
+});

@@ -169,6 +169,19 @@ appliquée. Elle conserve strictement la politique `Users read own profile`, mai
 `auth.uid() = id` par `(select auth.uid()) = id` afin que l'identité soit évaluée une fois
 par requête, conformément à l'advisor de performance Supabase.
 
+### Contrat Stock — inventaire réel (2026-09-08)
+
+`inventory_items` est le modèle minimal de l'inventaire : libellé, catégorie, unité,
+quantité, seuil de réapprovisionnement, coût unitaire facultatif et état actif. La
+migration `20260908112637_create_inventory_items.sql` est appliquée au projet Supabase
+actif, active RLS et n'autorise les opérations directes qu'au rôle `service_role` ; le
+front ne reçoit aucun secret et passe par les routes Express réservées à `ADMIN`.
+`/api/inventory` valide strictement le payload et les UUID. L'écran `/admin/stock`
+affiche les données réelles, calcule la valeur seulement pour les coûts renseignés, signale
+les seuils, et permet la création, modification et suppression confirmée. La prédiction,
+les fournisseurs et l'impact automatique sur les plats restent hors contrat tant qu’un
+modèle métier dédié n’est pas défini.
+
 ## Plan d'exécution — état d'avancement
 
 - **Phase 0** (base vérifiable) : implicitement couverte — build/lint vérifiés à

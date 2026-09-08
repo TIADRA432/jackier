@@ -114,6 +114,19 @@ export interface GalleryMedia {
   uploadedAt: string;
 }
 
+export interface InventoryItem {
+  id: string;
+  name: string;
+  category: string;
+  unit: string;
+  quantity: number;
+  reorderLevel: number;
+  unitCost?: number;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminDataService {
   private readonly http = inject(HttpClient);
@@ -213,6 +226,22 @@ export class AdminDataService {
 
   async deleteGalleryMedia(id: string): Promise<void> {
     await firstValueFrom(this.http.delete(`${this.apiUrl}/gallery/${id}`));
+  }
+
+  async getInventoryItems(): Promise<InventoryItem[]> {
+    return firstValueFrom(this.http.get<InventoryItem[]>(`${this.apiUrl}/inventory`));
+  }
+
+  async createInventoryItem(payload: Omit<InventoryItem, 'id' | 'createdAt' | 'updatedAt'>): Promise<InventoryItem> {
+    return firstValueFrom(this.http.post<InventoryItem>(`${this.apiUrl}/inventory`, payload));
+  }
+
+  async updateInventoryItem(id: string, payload: Partial<Omit<InventoryItem, 'id' | 'createdAt' | 'updatedAt'>>): Promise<InventoryItem> {
+    return firstValueFrom(this.http.put<InventoryItem>(`${this.apiUrl}/inventory/${id}`, payload));
+  }
+
+  async deleteInventoryItem(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`${this.apiUrl}/inventory/${id}`));
   }
 
   async updateReservationStatus(id: string, status: ReservationStatus): Promise<AdminReservation> {

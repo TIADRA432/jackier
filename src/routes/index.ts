@@ -11,6 +11,7 @@ import { getCateringEvents, createCateringEvent, updateCateringEvent, deleteCate
 import { getSchoolPrograms, createSchoolProgram, updateSchoolProgram, deleteSchoolProgram } from '../controllers/school.controller';
 import { getExpenses, getReports, addExpense, dailyClose } from '../controllers/finance.controller';
 import { getSettings, updateSettings, getLogs } from '../controllers/settings.controller';
+import { createInventoryItem, deleteInventoryItem, getInventoryItems, updateInventoryItem } from '../controllers/inventory.controller';
 import { verifyToken, requireRole } from '../middleware/auth.middleware';
 import { publicWriteRateLimiter } from '../middlewares/security.middleware';
 
@@ -57,6 +58,12 @@ router.get('/finance/expenses', verifyToken, requireRole(['ADMIN']), getExpenses
 router.get('/finance/reports', verifyToken, requireRole(['ADMIN']), getReports);
 router.post('/finance/expenses', verifyToken, requireRole(['ADMIN']), addExpense);
 router.post('/finance/close', verifyToken, requireRole(['ADMIN']), dailyClose);
+
+// Inventory
+router.get('/inventory', verifyToken, requireRole(['ADMIN']), getInventoryItems);
+router.post('/inventory', verifyToken, requireRole(['ADMIN']), createInventoryItem);
+router.put('/inventory/:id', verifyToken, requireRole(['ADMIN']), updateInventoryItem);
+router.delete('/inventory/:id', verifyToken, requireRole(['ADMIN']), deleteInventoryItem);
 
 // Settings & Logs
 router.get('/settings', getSettings); // Public for some parts, maybe protect later
