@@ -49,6 +49,16 @@ export interface SchoolProgram {
   level?: string;
 }
 
+export interface MenuItem {
+  id: string;
+  name?: string;
+  category?: string;
+  price?: number | string;
+  imageUrl?: string;
+  image?: string;
+  description?: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminDataService {
   private readonly http = inject(HttpClient);
@@ -72,6 +82,10 @@ export class AdminDataService {
 
   async getSchoolPrograms(): Promise<SchoolProgram[]> {
     return firstValueFrom(this.http.get<SchoolProgram[]>(`${this.apiUrl}/school`));
+  }
+
+  async getMenuItems(): Promise<MenuItem[]> {
+    return firstValueFrom(this.http.get<MenuItem[]>(`${this.apiUrl}/menu`));
   }
 
   async updateReservationStatus(id: string, status: ReservationStatus): Promise<AdminReservation> {

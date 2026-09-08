@@ -67,3 +67,12 @@ test('the school screen displays real programs instead of fictitious students', 
   assert.match(component, /this\.adminData\.getSchoolPrograms\(\)/);
   assert.match(component, /gestion des étudiants n’est pas encore modélisée/);
 });
+
+test('the restaurant screen reads menu data and keeps undefined availability read-only', async () => {
+  const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+  const component = await source('src', 'app', 'pages', 'admin', 'restaurant', 'restaurant.component.ts');
+
+  assert.match(service, /get<MenuItem\[\]>\(`\$\{this\.apiUrl\}\/menu`\)/);
+  assert.match(component, /this\.adminData\.getMenuItems\(\)/);
+  assert.match(component, /modification de disponibilité reste désactivée/);
+});
