@@ -164,3 +164,13 @@ test('gallery writes validate image URLs and the CMS manages persisted media onl
   assert.match(component, /this\.adminData\.deleteGalleryMedia/);
   assert.doesNotMatch(component, /Lancement de la nouvelle carte d'été/);
 });
+
+test('analytics reuses the protected dashboard overview instead of fabricated forecasts', async () => {
+  const component = await source('src', 'app', 'pages', 'admin', 'analytics', 'analytics.component.ts');
+
+  assert.match(component, /this\.adminData\.getDashboardOverview\(\)/);
+  assert.match(component, /overview\(\)\.revenueChart/);
+  assert.match(component, /overview\(\)\.recentActivities/);
+  assert.doesNotMatch(component, /Prévisions de Fréquentation/);
+  assert.doesNotMatch(component, /Générer Rapport PDF/);
+});

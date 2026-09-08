@@ -144,6 +144,15 @@ Les erreurs de contrat répondent en `400`; les erreurs de stockage ou de base r
 en `500`. L'upload de fichier JPEG/PNG/WebP existant conserve son contrôle de signature
 MIME avant stockage Supabase.
 
+### Contrat Analytics — indicateurs opérationnels (2026-09-08)
+
+L'écran `/admin/analytics` réutilise `GET /api/dashboard/overview`, réservé à `ADMIN`.
+Il affiche uniquement le CA issu des clôtures, les réservations, les événements traiteur,
+la courbe des rapports disponibles et le journal d'activité. Les prévisions, la
+performance nominative du personnel et l'export PDF ont été retirés : le backend ne
+produit pas encore ces données ni ce document. Aucun chiffre décoratif ne doit être
+réintroduit tant qu'un contrat API et ses contrôles ne sont pas définis.
+
 ## Plan d'exécution — état d'avancement
 
 - **Phase 0** (base vérifiable) : implicitement couverte — build/lint vérifiés à

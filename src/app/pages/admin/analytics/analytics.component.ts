@@ -1,125 +1,101 @@
-import { Component, ChangeDetectionStrategy, signal } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { AdminDataService, DashboardOverview } from '../../../core/services/admin-data.service';
+
+const EMPTY_OVERVIEW: DashboardOverview = {
+  stats: { todayReservations: 0, pendingReservations: 0, todayRevenue: 0, monthlyRevenue: 0, activeMenuItems: 0, activeCatering: 0 },
+  revenueChart: [],
+  recentActivities: []
+};
 
 @Component({
-  selector: "app-admin-analytics",
+  selector: 'app-admin-analytics',
   standalone: true,
   imports: [CommonModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="space-y-6 animate-fade-in">
-      <div class="flex justify-between items-center">
+      <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div>
-          <h1 class="text-2xl font-serif font-bold text-white">Analyses Avancées</h1>
-          <p class="text-gray-400 text-sm mt-1">Intelligence d'affaires et prévisions</p>
+          <h1 class="text-2xl font-serif font-bold text-white">Analyses opérationnelles</h1>
+          <p class="mt-1 text-sm text-gray-400">Données issues des réservations, clôtures et journaux enregistrés</p>
         </div>
-        <div class="flex gap-3">
-          <label class="sr-only" for="analytics-period">Période d'analyse</label>
-          <select id="analytics-period" class="bg-[#1a1a1a] border border-gray-800 text-white text-xs rounded-xl px-4 py-2 outline-none focus:border-jacquier-gold">
-            <option>Derniers 30 jours</option>
-            <option>Trimestre en cours</option>
-            <option>Année 2024</option>
-          </select>
-          <button class="px-4 py-2 bg-jacquier-gold text-jacquier-dark rounded-xl text-sm font-bold hover:bg-white transition-colors shadow-lg shadow-jacquier-gold/20">
-            Générer Rapport PDF
-          </button>
-        </div>
+        <button type="button" (click)="load()" [disabled]="loading()" class="rounded-xl border border-gray-700 px-4 py-2 text-sm font-bold text-gray-200 hover:border-jacquier-gold hover:text-jacquier-gold disabled:opacity-60">
+          {{ loading() ? 'Actualisation…' : 'Actualiser' }}
+        </button>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="bg-[#1a1a1a] p-8 rounded-2xl border border-gray-800">
-          <h3 class="text-lg font-serif font-bold text-white mb-6">Répartition du CA par Segment</h3>
-          <div class="flex items-center justify-center h-64 relative">
-            <!-- Mock Donut Chart -->
-            <div class="w-48 h-48 rounded-full border-[20px] border-gray-800 relative" role="img" aria-label="Graphique en anneau: répartition du chiffre d'affaires par segment">
-              <div class="absolute inset-0 rounded-full border-[20px] border-jacquier-gold border-t-transparent border-r-transparent rotate-45" aria-hidden="true"></div>
-              <div class="absolute inset-0 flex flex-col items-center justify-center">
-                <p class="text-2xl font-serif font-bold text-white">124M</p>
-                <p class="text-[10px] text-gray-500 uppercase font-bold">Total FG</p>
-              </div>
-            </div>
-          </div>
-          <div class="grid grid-cols-3 gap-4 mt-8">
-            <div class="text-center">
-              <div class="w-3 h-3 bg-jacquier-gold rounded-full mx-auto mb-2" aria-hidden="true"></div>
-              <p class="text-xs text-gray-400">Restaurant</p>
-              <p class="text-sm font-bold text-white">65%</p>
-            </div>
-            <div class="text-center">
-              <div class="w-3 h-3 bg-blue-500 rounded-full mx-auto mb-2" aria-hidden="true"></div>
-              <p class="text-xs text-gray-400">Traiteur</p>
-              <p class="text-sm font-bold text-white">22%</p>
-            </div>
-            <div class="text-center">
-              <div class="w-3 h-3 bg-purple-500 rounded-full mx-auto mb-2" aria-hidden="true"></div>
-              <p class="text-xs text-gray-400">École</p>
-              <p class="text-sm font-bold text-white">13%</p>
-            </div>
-          </div>
-        </div>
+      @if (errorMessage()) {
+        <p class="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200" role="alert">{{ errorMessage() }}</p>
+      }
 
-        <div class="bg-[#1a1a1a] p-8 rounded-2xl border border-gray-800">
-          <h3 class="text-lg font-serif font-bold text-white mb-6">Prévisions de Fréquentation</h3>
-          <div class="space-y-6">
-            @for (day of forecasts(); track day.label) {
-              <div class="group">
-                <div class="flex justify-between items-center mb-2">
-                  <span class="text-sm text-white font-medium">{{ day.label }}</span>
-                  <span class="text-xs text-jacquier-gold font-bold">{{ day.percentage }}% attendu</span>
-                </div>
-                <div class="h-2 bg-gray-800 rounded-full overflow-hidden" role="progressbar" [attr.aria-valuenow]="day.percentage" aria-valuemin="0" aria-valuemax="100" [attr.aria-label]="day.label">
-                  <div class="h-full bg-jacquier-gold transition-all duration-1000" [style.width]="day.percentage + '%'"></div>
-                </div>
-                <p class="text-[10px] text-gray-500 mt-2 uppercase font-bold tracking-widest">{{ day.insight }}</p>
-              </div>
-            }
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-[#1a1a1a] p-8 rounded-2xl border border-gray-800">
-        <h3 class="text-lg font-serif font-bold text-white mb-8">Performance des Serveurs</h3>
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-          @for (staff of staffPerformance(); track staff.name) {
-            <div class="text-center group">
-              <div class="w-20 h-20 rounded-full bg-gray-800 mx-auto mb-4 overflow-hidden border-2 border-transparent group-hover:border-jacquier-gold transition-all">
-                <img [src]="staff.image" [alt]="'Photo de ' + staff.name" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all">
-              </div>
-              <p class="text-sm font-bold text-white">{{ staff.name }}</p>
-              <p class="text-xs text-gray-500 mb-2">{{ staff.role }}</p>
-              <div class="flex justify-center items-center gap-1 text-jacquier-gold">
-                <i class="material-icons text-sm" aria-hidden="true">star</i>
-                <span class="text-xs font-bold">{{ staff.rating }}</span>
-              </div>
-              <p class="text-[10px] text-gray-600 mt-2 uppercase font-bold">CA Généré: {{ staff.sales }}M</p>
-            </div>
+      @if (loading()) {
+        <p class="rounded-2xl border border-gray-800 bg-[#1a1a1a] p-12 text-center text-sm text-gray-400" role="status">Chargement des indicateurs…</p>
+      } @else {
+        <section class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+          @for (stat of stats(); track stat.label) {
+            <article class="rounded-2xl border border-gray-800 bg-[#1a1a1a] p-6"><p class="text-xs font-bold uppercase tracking-widest text-gray-500">{{ stat.label }}</p><p class="mt-3 text-2xl font-serif font-bold text-white">{{ stat.value }}</p><p class="mt-2 text-xs text-gray-400">{{ stat.description }}</p></article>
           }
-        </div>
-      </div>
+        </section>
+
+        <section class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+          <article class="lg:col-span-2 rounded-2xl border border-gray-800 bg-[#1a1a1a] p-8">
+            <h2 class="text-lg font-serif font-bold text-white">Revenus par mois</h2>
+            <p class="mt-1 text-xs uppercase tracking-widest text-gray-500">Clôtures disponibles sur les 30 derniers rapports</p>
+            @if (overview().revenueChart.length) {
+              <div class="mt-8 flex h-64 items-end gap-4">
+                @for (point of overview().revenueChart; track point.month) {
+                  <div class="flex flex-1 flex-col items-center gap-3"><span class="text-xs text-gray-400">{{ formatCurrency(point.total) }}</span><div class="w-full rounded-t-lg bg-jacquier-gold/25" [style.height.%]="chartHeight(point.total)"><div class="h-1 w-full bg-jacquier-gold"></div></div><span class="text-xs font-bold uppercase text-gray-500">{{ point.month }}</span></div>
+                }
+              </div>
+            } @else {
+              <p class="py-16 text-center text-sm text-gray-400">Aucun rapport de clôture n’est disponible pour le moment.</p>
+            }
+          </article>
+
+          <article class="rounded-2xl border border-gray-800 bg-[#1a1a1a]">
+            <div class="border-b border-gray-800 p-6"><h2 class="text-lg font-serif font-bold text-white">Activité récente</h2></div>
+            <div class="space-y-5 p-6">
+              @for (activity of overview().recentActivities; track activity.id) {
+                <div class="border-l-2 border-jacquier-gold pl-4"><p class="text-sm font-bold text-white">{{ activity.type }}</p><p class="mt-1 text-xs text-gray-400">{{ activity.message || 'Aucun détail disponible.' }}</p><p class="mt-1 text-[10px] uppercase text-gray-600">{{ formatDate(activity.date) }}</p></div>
+              } @empty {
+                <p class="text-sm text-gray-400">Aucune activité enregistrée.</p>
+              }
+            </div>
+          </article>
+        </section>
+      }
     </div>
   `,
-  styles: [`
-    .animate-fade-in {
-      animation: fadeIn 0.6s ease-out forwards;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `]
+  styles: [`.animate-fade-in { animation: fadeIn .6s ease-out forwards; } @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }`]
 })
 export class AnalyticsComponent {
-  forecasts = signal([
-    { label: 'Vendredi Soir', percentage: 85, insight: 'Forte demande - Prévoir renfort' },
-    { label: 'Samedi Midi', percentage: 45, insight: 'Normal' },
-    { label: 'Samedi Soir', percentage: 100, insight: 'Complet - Liste d\'attente active' },
-    { label: 'Dimanche Midi', percentage: 70, insight: 'Brunch familial - Stocker viennoiseries' },
-  ]);
+  private readonly adminData = inject(AdminDataService);
+  readonly overview = signal<DashboardOverview>(EMPTY_OVERVIEW);
+  readonly loading = signal(true);
+  readonly errorMessage = signal('');
+  readonly maximumRevenue = computed(() => Math.max(...this.overview().revenueChart.map(({ total }) => total), 1));
+  readonly stats = computed(() => {
+    const value = this.overview().stats;
+    return [
+      { label: 'CA aujourd’hui', value: this.formatCurrency(value.todayRevenue), description: 'Clôtures du jour' },
+      { label: 'CA mensuel', value: this.formatCurrency(value.monthlyRevenue), description: 'Mois en cours' },
+      { label: 'Réservations du jour', value: String(value.todayReservations), description: `${value.pendingReservations} en attente` },
+      { label: 'Événements traiteur', value: String(value.activeCatering), description: 'En attente ou confirmés' },
+    ];
+  });
 
-  staffPerformance = signal([
-    { name: 'Ousmane B.', role: 'Serveur Principal', rating: 4.9, sales: 12.5, image: 'https://picsum.photos/seed/staff1/100/100' },
-    { name: 'Aissatou D.', role: 'Serveuse', rating: 4.8, sales: 10.2, image: 'https://picsum.photos/seed/staff2/100/100' },
-    { name: 'Mamadou S.', role: 'Serveur', rating: 4.7, sales: 9.8, image: 'https://picsum.photos/seed/staff3/100/100' },
-    { name: 'Binta K.', role: 'Apprentie', rating: 4.6, sales: 5.4, image: 'https://picsum.photos/seed/staff4/100/100' },
-  ]);
+  constructor() { void this.load(); }
+
+  async load(): Promise<void> {
+    this.loading.set(true);
+    this.errorMessage.set('');
+    try { this.overview.set(await this.adminData.getDashboardOverview()); }
+    catch { this.errorMessage.set('Impossible de charger les analyses. Vérifiez votre session puis réessayez.'); }
+    finally { this.loading.set(false); }
+  }
+
+  chartHeight(total: number): number { return Math.max(4, Math.round((total / this.maximumRevenue()) * 100)); }
+  formatCurrency(value: number): string { return new Intl.NumberFormat('fr-GN', { style: 'currency', currency: 'GNF', maximumFractionDigits: 0 }).format(value); }
+  formatDate(value: string): string { return new Intl.DateTimeFormat('fr-FR', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(value)); }
 }
