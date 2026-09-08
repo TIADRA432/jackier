@@ -1,0 +1,62 @@
+name: Update Graphify knowledge graph
+
+on:
+  push:
+    branches:
+      - '**'
+    # The workflow's own generated commit must not trigger another run.
+    paths-ignore:
+      - 'graphify-out/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: graphify-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  graphify:
+    # A second safety net against commit loops when the workflow uses GITHUB_TOKEN.
+    if: github.actor != 'github-actions[bot]'
+    name: Map repository structure
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout the triggering branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Use Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Graphify
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --user graphifyy
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Build the code-only knowledge graph
+        run: graphify extract . --code-only
+
+      - name: Commit updated graph artefacts
+        run: |
+          test -f graphify-out/graph.json
+          test -f graphify-out/GRAPH_REPORT.md
+          git add graphify-out/graph.json graphify-out/GRAPH_REPORT.md
+          if test -f graphify-out/graph.html; then git add graphify-out/graph.html; fi
+
+          if git diff --cached --quiet; then
+            echo "Graphify output is already current."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore(graphify): update knowledge graph [skip ci]"
+          git push origin "HEAD:${{ github.ref_name }}"
