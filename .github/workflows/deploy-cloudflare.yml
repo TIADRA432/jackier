@@ -39,8 +39,28 @@ jobs:
           npm run lint
           npm run build
 
+      - name: Verify deployment credentials
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || {
+            echo "::error title=Missing Cloudflare token::Add CLOUDFLARE_API_TOKEN to this repository's GitHub Actions secrets."
+            exit 1
+          }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || {
+            echo "::error title=Missing Cloudflare account ID::Add CLOUDFLARE_ACCOUNT_ID to this repository's GitHub Actions secrets."
+            exit 1
+          }
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Validate Worker configuration
+        run: npx wrangler deploy --dry-run --keep-vars
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
       - name: Deploy Worker and static assets
-        run: npx wrangler deploy
+        run: npx wrangler deploy --keep-vars
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
