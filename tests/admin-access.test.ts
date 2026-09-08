@@ -149,3 +149,18 @@ test('settings writes accept only validated public settings and the admin view p
   assert.match(component, /this\.adminData\.updateSettings/);
   assert.doesNotMatch(component, /Réinitialiser les données/);
 });
+
+test('gallery writes validate image URLs and the CMS manages persisted media only', async () => {
+  const controller = await source('src', 'controllers', 'gallery.controller.ts');
+  const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+  const component = await source('src', 'app', 'pages', 'admin', 'cms', 'cms.component.ts');
+
+  assert.match(controller, /optionalImageUrl\(body\.imageUrl\)/);
+  assert.match(controller, /validateUuid\(req\.params\.id, 'gallery image'\)/);
+  assert.match(service, /get<GalleryMedia\[\]>\(`\$\{this\.apiUrl\}\/gallery`\)/);
+  assert.match(service, /post<GalleryMedia>\(`\$\{this\.apiUrl\}\/gallery`, payload\)/);
+  assert.match(component, /this\.adminData\.getGalleryMedia\(\)/);
+  assert.match(component, /this\.adminData\.createGalleryMedia/);
+  assert.match(component, /this\.adminData\.deleteGalleryMedia/);
+  assert.doesNotMatch(component, /Lancement de la nouvelle carte d'été/);
+});

@@ -106,6 +106,14 @@ export interface PublicSettings {
   socialMedia?: Record<string, string>;
 }
 
+export interface GalleryMedia {
+  id: string;
+  imageUrl: string;
+  title: string;
+  category: string;
+  uploadedAt: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminDataService {
   private readonly http = inject(HttpClient);
@@ -193,6 +201,18 @@ export class AdminDataService {
 
   async updateSettings(payload: PublicSettings): Promise<void> {
     await firstValueFrom(this.http.put(`${this.apiUrl}/settings`, payload));
+  }
+
+  async getGalleryMedia(): Promise<GalleryMedia[]> {
+    return firstValueFrom(this.http.get<GalleryMedia[]>(`${this.apiUrl}/gallery`));
+  }
+
+  async createGalleryMedia(payload: Omit<GalleryMedia, 'id' | 'uploadedAt'>): Promise<GalleryMedia> {
+    return firstValueFrom(this.http.post<GalleryMedia>(`${this.apiUrl}/gallery`, payload));
+  }
+
+  async deleteGalleryMedia(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`${this.apiUrl}/gallery/${id}`));
   }
 
   async updateReservationStatus(id: string, status: ReservationStatus): Promise<AdminReservation> {

@@ -133,6 +133,17 @@ L'écran `/admin/settings` charge et sauvegarde ces données réelles avec des �
 chargement, succès et erreur. Les paramètres sans modèle API (sécurité, facturation,
 intégrations et commandes destructrices) ne sont plus présentés comme fonctionnels.
 
+### Contrat CMS — galerie des médias (2026-09-08)
+
+L'écran `/admin/cms` est désormais une gestion de la galerie réellement persistée, et
+non une maquette d'articles ou de promotions. Il liste les médias, ajoute une image via
+une URL HTTP(S) validée et impose une confirmation avant suppression. Côté API, les
+écritures de galerie restent réservées à `ADMIN`; le payload est limité à `imageUrl`,
+`title` et `category`, avec bornes de longueur, et la suppression exige un UUID valide.
+Les erreurs de contrat répondent en `400`; les erreurs de stockage ou de base restent
+en `500`. L'upload de fichier JPEG/PNG/WebP existant conserve son contrôle de signature
+MIME avant stockage Supabase.
+
 ## Plan d'exécution — état d'avancement
 
 - **Phase 0** (base vérifiable) : implicitement couverte — build/lint vérifiés à
