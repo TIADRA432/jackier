@@ -15,6 +15,19 @@ export interface AdminReservation {
   status: ReservationStatus;
 }
 
+export interface DashboardOverview {
+  stats: {
+    todayReservations: number;
+    pendingReservations: number;
+    todayRevenue: number;
+    monthlyRevenue: number;
+    activeMenuItems: number;
+    activeCatering: number;
+  };
+  revenueChart: Array<{ month: string; total: number }>;
+  recentActivities: Array<{ id: string; type: string; message: string; date: string }>;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminDataService {
   private readonly http = inject(HttpClient);
@@ -22,6 +35,10 @@ export class AdminDataService {
 
   async getReservations(): Promise<AdminReservation[]> {
     return firstValueFrom(this.http.get<AdminReservation[]>(`${this.apiUrl}/reservations`));
+  }
+
+  async getDashboardOverview(): Promise<DashboardOverview> {
+    return firstValueFrom(this.http.get<DashboardOverview>(`${this.apiUrl}/dashboard/overview`));
   }
 
   async updateReservationStatus(id: string, status: ReservationStatus): Promise<AdminReservation> {

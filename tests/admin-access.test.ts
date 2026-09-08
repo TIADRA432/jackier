@@ -39,3 +39,12 @@ test('the reservations screen uses protected API data and persists only allowed 
   assert.match(component, /this\.adminData\.updateReservationStatus/);
   assert.match(component, /this\.statuses\.includes/);
 });
+
+test('the dashboard reads its operational metrics from the protected overview endpoint', async () => {
+  const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+  const component = await source('src', 'app', 'pages', 'admin', 'dashboard', 'dashboard.component.ts');
+
+  assert.match(service, /get<DashboardOverview>\(`\$\{this\.apiUrl\}\/dashboard\/overview`\)/);
+  assert.match(component, /this\.adminData\.getDashboardOverview\(\)/);
+  assert.match(component, /Aucun rapport financier disponible/);
+});
