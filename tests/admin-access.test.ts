@@ -191,3 +191,20 @@ test('inventory is backed by a protected API and validates writes before persist
   assert.match(component, /this\.adminData\.deleteInventoryItem/);
   assert.doesNotMatch(component, /Gambas Tigrées/);
 });
+
+test('the internal team directory uses protected data without storing sensitive HR fields', async () => {
+  const controller = await source('src', 'controllers', 'team.controller.ts');
+  const routes = await source('src', 'routes', 'index.ts');
+  const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+  const component = await source('src', 'app', 'pages', 'admin', 'equipe', 'equipe.component.ts');
+
+  assert.match(controller, /requireKnownFields\(body, TEAM_FIELDS\)/);
+  assert.match(controller, /validateUuid\(req\.params\.id, 'team member'\)/);
+  assert.match(routes, /router\.get\('\/team', verifyToken, requireRole\(\['ADMIN'\]\), getTeamMembers\)/);
+  assert.match(routes, /router\.post\('\/team', verifyToken, requireRole\(\['ADMIN'\]\), createTeamMember\)/);
+  assert.match(service, /get<AdminTeamMember\[\]>\(`\$\{this\.apiUrl\}\/team`\)/);
+  assert.match(component, /this\.adminData\.getTeamMembers\(\)/);
+  assert.match(component, /this\.adminData\.updateTeamMember/);
+  assert.doesNotMatch(component, /Masse Salariale/);
+  assert.doesNotMatch(component, /Présents Aujourd'hui/);
+});

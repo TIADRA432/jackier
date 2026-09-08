@@ -182,6 +182,18 @@ les seuils, et permet la création, modification et suppression confirmée. La p
 les fournisseurs et l'impact automatique sur les plats restent hors contrat tant qu’un
 modèle métier dédié n’est pas défini.
 
+### Contrat Équipe — annuaire interne minimal (2026-09-08)
+
+`team_members` est un annuaire interne minimal : nom, fonction, URL de photo facultative
+et état actif. Il n’enregistre ni e-mail, téléphone, rémunération, présence ni planning.
+La migration `20260908123125_create_team_members.sql` active RLS et restreint les accès
+directs au `service_role`. Les routes `/api/team` sont toutes réservées à `ADMIN`, valident
+strictement les champs autorisés et les UUID, puis passent par le backend ; aucune donnée
+de cet annuaire n’est exposée publiquement. L’écran `/admin/equipe` gère la liste, la
+création, la modification et la suppression confirmée, avec états de chargement et erreurs.
+Le bloc public existant reste indépendant tant qu’un contrat explicite de publication des
+profils n’est pas validé.
+
 ## Plan d'exécution — état d'avancement
 
 - **Phase 0** (base vérifiable) : implicitement couverte — build/lint vérifiés à

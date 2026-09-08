@@ -12,6 +12,7 @@ import { getSchoolPrograms, createSchoolProgram, updateSchoolProgram, deleteScho
 import { getExpenses, getReports, addExpense, dailyClose } from '../controllers/finance.controller';
 import { getSettings, updateSettings, getLogs } from '../controllers/settings.controller';
 import { createInventoryItem, deleteInventoryItem, getInventoryItems, updateInventoryItem } from '../controllers/inventory.controller';
+import { createTeamMember, deleteTeamMember, getTeamMembers, updateTeamMember } from '../controllers/team.controller';
 import { verifyToken, requireRole } from '../middleware/auth.middleware';
 import { publicWriteRateLimiter } from '../middlewares/security.middleware';
 
@@ -64,6 +65,12 @@ router.get('/inventory', verifyToken, requireRole(['ADMIN']), getInventoryItems)
 router.post('/inventory', verifyToken, requireRole(['ADMIN']), createInventoryItem);
 router.put('/inventory/:id', verifyToken, requireRole(['ADMIN']), updateInventoryItem);
 router.delete('/inventory/:id', verifyToken, requireRole(['ADMIN']), deleteInventoryItem);
+
+// Internal team directory
+router.get('/team', verifyToken, requireRole(['ADMIN']), getTeamMembers);
+router.post('/team', verifyToken, requireRole(['ADMIN']), createTeamMember);
+router.put('/team/:id', verifyToken, requireRole(['ADMIN']), updateTeamMember);
+router.delete('/team/:id', verifyToken, requireRole(['ADMIN']), deleteTeamMember);
 
 // Settings & Logs
 router.get('/settings', getSettings); // Public for some parts, maybe protect later

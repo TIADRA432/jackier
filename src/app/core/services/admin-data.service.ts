@@ -127,6 +127,16 @@ export interface InventoryItem {
   updatedAt: string;
 }
 
+export interface AdminTeamMember {
+  id: string;
+  name: string;
+  role: string;
+  photoUrl?: string | null;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminDataService {
   private readonly http = inject(HttpClient);
@@ -242,6 +252,22 @@ export class AdminDataService {
 
   async deleteInventoryItem(id: string): Promise<void> {
     await firstValueFrom(this.http.delete(`${this.apiUrl}/inventory/${id}`));
+  }
+
+  async getTeamMembers(): Promise<AdminTeamMember[]> {
+    return firstValueFrom(this.http.get<AdminTeamMember[]>(`${this.apiUrl}/team`));
+  }
+
+  async createTeamMember(payload: Omit<AdminTeamMember, 'id' | 'createdAt' | 'updatedAt'>): Promise<AdminTeamMember> {
+    return firstValueFrom(this.http.post<AdminTeamMember>(`${this.apiUrl}/team`, payload));
+  }
+
+  async updateTeamMember(id: string, payload: Partial<Omit<AdminTeamMember, 'id' | 'createdAt' | 'updatedAt'>>): Promise<AdminTeamMember> {
+    return firstValueFrom(this.http.put<AdminTeamMember>(`${this.apiUrl}/team/${id}`, payload));
+  }
+
+  async deleteTeamMember(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`${this.apiUrl}/team/${id}`));
   }
 
   async updateReservationStatus(id: string, status: ReservationStatus): Promise<AdminReservation> {

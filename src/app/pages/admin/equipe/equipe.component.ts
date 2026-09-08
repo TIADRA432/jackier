@@ -1,119 +1,59 @@
-import { Component, ChangeDetectionStrategy, signal } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { AdminDataService, AdminTeamMember } from '../../../core/services/admin-data.service';
+
+type TeamDraft = { name: string; role: string; photoUrl: string; active: boolean };
+const emptyDraft = (): TeamDraft => ({ name: '', role: '', photoUrl: '', active: true });
 
 @Component({
-  selector: "app-admin-equipe",
-  standalone: true,
-  imports: [CommonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-admin-equipe', standalone: true, imports: [CommonModule, FormsModule], changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="space-y-6 animate-fade-in">
-      <div class="flex justify-between items-center">
-        <div>
-          <h1 class="text-2xl font-serif font-bold text-white">Équipe & RH</h1>
-          <p class="text-gray-400 text-sm mt-1">Gestion du personnel et des plannings</p>
-        </div>
-        <button class="px-4 py-2 bg-jacquier-gold text-jacquier-dark rounded-xl text-sm font-bold hover:bg-white transition-colors shadow-lg shadow-jacquier-gold/20">
-          Ajouter un Membre
-        </button>
+      <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+        <div><h1 class="text-2xl font-serif font-bold text-white">Équipe</h1><p class="mt-1 text-sm text-gray-400">Annuaire interne minimal et protégé</p></div>
+        <div class="flex gap-3"><button type="button" (click)="load()" [disabled]="loading()" class="rounded-xl border border-gray-700 px-4 py-2 text-sm font-bold text-gray-200 hover:border-jacquier-gold hover:text-jacquier-gold disabled:opacity-60">Actualiser</button><button type="button" (click)="startCreate()" class="rounded-xl bg-jacquier-gold px-4 py-2 text-sm font-bold text-jacquier-dark hover:bg-white">Ajouter un membre</button></div>
       </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-[#1a1a1a] p-6 rounded-2xl border border-gray-800">
-          <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1">Effectif Total</p>
-          <h3 class="text-2xl font-serif font-bold text-white">24 Employés</h3>
-          <p class="text-xs text-gray-500 mt-2">18 CDI • 6 Extras</p>
-        </div>
-        <div class="bg-[#1a1a1a] p-6 rounded-2xl border border-gray-800">
-          <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1">Présents Aujourd'hui</p>
-          <h3 class="text-2xl font-serif font-bold text-green-500">16 Membres</h3>
-          <p class="text-xs text-gray-500 mt-2">Service Midi & Soir</p>
-        </div>
-        <div class="bg-[#1a1a1a] p-6 rounded-2xl border border-gray-800">
-          <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1">Masse Salariale</p>
-          <h3 class="text-2xl font-serif font-bold text-white">48.5M FG</h3>
-          <p class="text-xs text-gray-500 mt-2">Estimation mensuelle</p>
-        </div>
-      </div>
-
-      <div class="bg-[#1a1a1a] rounded-2xl border border-gray-800 overflow-hidden">
-        <div class="p-6 border-b border-gray-800 flex justify-between items-center">
-          <h3 class="text-lg font-serif font-bold text-white">Annuaire du Personnel</h3>
-          <div class="flex gap-2">
-            <button class="px-3 py-1 bg-gray-800 rounded-lg text-xs font-bold text-white">Tous</button>
-            <button class="px-3 py-1 text-xs font-bold text-gray-500 hover:text-white">Cuisine</button>
-            <button class="px-3 py-1 text-xs font-bold text-gray-500 hover:text-white">Salle</button>
-            <button class="px-3 py-1 text-xs font-bold text-gray-500 hover:text-white">Admin</button>
-          </div>
-        </div>
-        
-        <div class="p-6 overflow-x-auto">
-          <table class="w-full text-left border-collapse">
-            <thead>
-              <tr class="text-[10px] font-bold text-gray-500 uppercase tracking-widest border-b border-gray-800">
-                <th class="pb-4">Employé</th>
-                <th class="pb-4">Poste</th>
-                <th class="pb-4">Département</th>
-                <th class="pb-4">Statut</th>
-                <th class="pb-4">Performance</th>
-                <th class="pb-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody class="text-sm">
-              @for (member of team(); track member.id) {
-                <tr class="border-b border-gray-800/50 hover:bg-gray-800/20 transition-colors group">
-                  <td class="py-4">
-                    <div class="flex items-center gap-3">
-                      <div class="w-10 h-10 rounded-full bg-gray-800 overflow-hidden">
-                        <img [src]="member.image" [alt]="'Photo de ' + member.name" class="w-full h-full object-cover">
-                      </div>
-                      <div>
-                        <p class="text-white font-medium">{{ member.name }}</p>
-                        <p class="text-[10px] text-gray-500">{{ member.email }}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td class="py-4 text-gray-300">{{ member.role }}</td>
-                  <td class="py-4 text-gray-400">{{ member.dept }}</td>
-                  <td class="py-4">
-                    <span [class]="'px-2 py-1 rounded-md text-[10px] font-bold uppercase ' + member.statusClass">
-                      {{ member.status }}
-                    </span>
-                  </td>
-                  <td class="py-4">
-                    <div class="flex items-center gap-1 text-jacquier-gold">
-                      <i class="material-icons text-sm" aria-hidden="true">star</i>
-                      <span class="font-bold">{{ member.rating }}</span>
-                    </div>
-                  </td>
-                  <td class="py-4 text-right">
-                    <button class="p-2 text-gray-500 hover:text-jacquier-gold transition-colors" [attr.aria-label]="'Actions pour ' + member.name">
-                      <i class="material-icons text-lg" aria-hidden="true">more_vert</i>
-                    </button>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <p class="rounded-xl border border-gray-800 bg-[#1a1a1a] px-4 py-3 text-sm text-gray-400">Seuls le nom, la fonction, une photo facultative et l’état actif sont gérés ici. Aucun e-mail, salaire, planning ou statut de présence n’est enregistré.</p>
+      @if (errorMessage()) { <p class="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200" role="alert">{{ errorMessage() }}</p> }
+      <section class="grid gap-5 sm:grid-cols-2">
+        <article class="rounded-2xl border border-gray-800 bg-[#1a1a1a] p-6"><p class="text-xs font-bold uppercase tracking-widest text-gray-500">Membres enregistrés</p><p class="mt-3 text-2xl font-serif font-bold text-white">{{ members().length }}</p></article>
+        <article class="rounded-2xl border border-gray-800 bg-[#1a1a1a] p-6"><p class="text-xs font-bold uppercase tracking-widest text-gray-500">Membres actifs</p><p class="mt-3 text-2xl font-serif font-bold text-jacquier-gold">{{ activeCount() }}</p></article>
+      </section>
+      @if (showForm()) {
+        <form (ngSubmit)="save()" class="grid gap-4 rounded-2xl border border-jacquier-gold/30 bg-[#1a1a1a] p-6 md:grid-cols-2">
+          <h2 class="text-lg font-serif font-bold text-white md:col-span-2">{{ editingId() ? 'Modifier le membre' : 'Nouveau membre' }}</h2>
+          <label class="text-sm text-gray-300">Nom<input [(ngModel)]="draft.name" name="name" maxlength="160" required class="mt-2 w-full rounded-xl bg-gray-900 px-3 py-2 text-white outline-none ring-jacquier-gold focus:ring-1" /></label>
+          <label class="text-sm text-gray-300">Fonction<input [(ngModel)]="draft.role" name="role" maxlength="120" required class="mt-2 w-full rounded-xl bg-gray-900 px-3 py-2 text-white outline-none ring-jacquier-gold focus:ring-1" /></label>
+          <label class="text-sm text-gray-300 md:col-span-2">URL de photo <span class="text-gray-500">(facultatif, HTTP(S))</span><input [(ngModel)]="draft.photoUrl" name="photoUrl" type="url" maxlength="2000" class="mt-2 w-full rounded-xl bg-gray-900 px-3 py-2 text-white outline-none ring-jacquier-gold focus:ring-1" /></label>
+          <label class="flex items-center gap-3 text-sm text-gray-300"><input type="checkbox" [(ngModel)]="draft.active" name="active" class="h-4 w-4 accent-yellow-500" /> Membre actif</label>
+          <div class="flex justify-end gap-3 md:col-span-2"><button type="button" (click)="cancelEdit()" class="rounded-xl border border-gray-700 px-4 py-2 text-sm text-gray-300">Annuler</button><button type="submit" [disabled]="saving()" class="rounded-xl bg-jacquier-gold px-4 py-2 text-sm font-bold text-jacquier-dark disabled:opacity-60">{{ saving() ? 'Enregistrement…' : 'Enregistrer' }}</button></div>
+        </form>
+      }
+      <section class="overflow-x-auto rounded-2xl border border-gray-800 bg-[#1a1a1a]">
+        @if (loading()) { <p class="p-12 text-center text-sm text-gray-400" role="status">Chargement de l’annuaire…</p> }
+        @else if (!members().length) { <p class="p-12 text-center text-sm text-gray-400">Aucun membre n’est encore enregistré.</p> }
+        @else { <table class="w-full min-w-[650px] text-left text-sm"><thead class="border-b border-gray-800 bg-[#121212] text-xs uppercase text-gray-500"><tr><th class="px-6 py-4">Membre</th><th class="px-6 py-4">Fonction</th><th class="px-6 py-4">État</th><th class="px-6 py-4 text-right"><span class="sr-only">Actions</span></th></tr></thead><tbody>
+          @for (member of members(); track member.id) { <tr class="border-b border-gray-800/60"><td class="px-6 py-4"><div class="flex items-center gap-3">@if (member.photoUrl) { <img [src]="member.photoUrl" [alt]="'Photo de ' + member.name" class="h-10 w-10 rounded-full object-cover" /> } @else { <span class="flex h-10 w-10 items-center justify-center rounded-full bg-gray-800 text-sm font-bold text-jacquier-gold" aria-hidden="true">{{ initials(member.name) }}</span> }<p class="font-bold text-white">{{ member.name }}</p></div></td><td class="px-6 py-4 text-gray-300">{{ member.role }}</td><td class="px-6 py-4"><span [class]="member.active ? 'rounded bg-green-500/10 px-2 py-1 text-xs font-bold text-green-300' : 'rounded bg-gray-500/10 px-2 py-1 text-xs font-bold text-gray-400'">{{ member.active ? 'Actif' : 'Inactif' }}</span></td><td class="px-6 py-4 text-right">@if (pendingDeleteId() === member.id) { <button type="button" (click)="delete(member)" [disabled]="saving()" class="mr-2 rounded-lg bg-red-900 px-3 py-2 text-xs font-bold text-white">Confirmer</button><button type="button" (click)="pendingDeleteId.set(null)" class="rounded-lg border border-gray-700 px-3 py-2 text-xs text-gray-300">Annuler</button> } @else { <button type="button" (click)="edit(member)" class="mr-2 rounded-lg border border-gray-700 px-3 py-2 text-xs font-bold text-gray-200">Modifier</button><button type="button" (click)="pendingDeleteId.set(member.id)" [attr.aria-label]="'Supprimer ' + member.name" class="rounded-lg border border-red-900/70 px-3 py-2 text-xs font-bold text-red-200">Supprimer</button> }</td></tr> }
+        </tbody></table> }
+      </section>
     </div>
   `,
-  styles: [`
-    .animate-fade-in {
-      animation: fadeIn 0.6s ease-out forwards;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `]
+  styles: [`.animate-fade-in { animation: fadeIn .6s ease-out forwards; } @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }`]
 })
 export class AdminEquipeComponent {
-  team = signal([
-    { id: 1, name: 'Amadou Diallo', email: 'amadou@lejacquier.com', role: 'Directeur Général', dept: 'Direction', status: 'Présent', statusClass: 'bg-green-500/10 text-green-500', rating: 5.0, image: 'https://picsum.photos/seed/staff1/100/100' },
-    { id: 2, name: 'Chef Ousmane', email: 'chef@lejacquier.com', role: 'Chef Exécutif', dept: 'Cuisine', status: 'Présent', statusClass: 'bg-green-500/10 text-green-500', rating: 4.9, image: 'https://picsum.photos/seed/staff2/100/100' },
-    { id: 3, name: 'Aissatou Barry', email: 'aissatou@lejacquier.com', role: 'Maître d\'Hôtel', dept: 'Salle', status: 'Repos', statusClass: 'bg-gray-500/10 text-gray-500', rating: 4.8, image: 'https://picsum.photos/seed/staff3/100/100' },
-    { id: 4, name: 'Moussa Camara', email: 'moussa@lejacquier.com', role: 'Responsable Stock', dept: 'Logistique', status: 'Présent', statusClass: 'bg-green-500/10 text-green-500', rating: 4.7, image: 'https://picsum.photos/seed/staff4/100/100' },
-  ]);
+  private readonly adminData = inject(AdminDataService);
+  readonly members = signal<AdminTeamMember[]>([]);
+  readonly loading = signal(true); readonly saving = signal(false); readonly showForm = signal(false);
+  readonly editingId = signal<string | null>(null); readonly pendingDeleteId = signal<string | null>(null); readonly errorMessage = signal('');
+  readonly activeCount = computed(() => this.members().filter(member => member.active).length);
+  draft = emptyDraft();
+  constructor() { void this.load(); }
+  async load(): Promise<void> { this.loading.set(true); this.errorMessage.set(''); try { this.members.set(await this.adminData.getTeamMembers()); } catch { this.errorMessage.set('Impossible de charger l’annuaire. Réessayez dans un instant.'); } finally { this.loading.set(false); } }
+  startCreate(): void { this.draft = emptyDraft(); this.editingId.set(null); this.showForm.set(true); }
+  edit(member: AdminTeamMember): void { this.draft = { name: member.name, role: member.role, photoUrl: member.photoUrl ?? '', active: member.active }; this.editingId.set(member.id); this.showForm.set(true); this.pendingDeleteId.set(null); }
+  cancelEdit(): void { this.showForm.set(false); this.editingId.set(null); this.draft = emptyDraft(); }
+  async save(): Promise<void> { if (!this.draft.name.trim() || !this.draft.role.trim()) return; this.saving.set(true); this.errorMessage.set(''); const payload = { ...this.draft, name: this.draft.name.trim(), role: this.draft.role.trim(), photoUrl: this.draft.photoUrl.trim() || null }; try { const id = this.editingId(); if (id) { const updated = await this.adminData.updateTeamMember(id, payload); this.members.update(members => members.map(member => member.id === id ? updated : member)); } else { const created = await this.adminData.createTeamMember(payload); this.members.update(members => [...members, created].sort((a, b) => a.name.localeCompare(b.name))); } this.cancelEdit(); } catch { this.errorMessage.set('Impossible d’enregistrer ce membre. Vérifiez les valeurs saisies.'); } finally { this.saving.set(false); } }
+  async delete(member: AdminTeamMember): Promise<void> { this.saving.set(true); this.errorMessage.set(''); try { await this.adminData.deleteTeamMember(member.id); this.members.update(members => members.filter(candidate => candidate.id !== member.id)); this.pendingDeleteId.set(null); } catch { this.errorMessage.set('Impossible de supprimer ce membre. Réessayez dans un instant.'); } finally { this.saving.set(false); } }
+  initials(name: string): string { return name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join('').toUpperCase(); }
 }
