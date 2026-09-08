@@ -154,6 +154,16 @@ performance nominative du personnel et l'export PDF ont été retirés : le back
 produit pas encore ces données ni ce document. Aucun chiffre décoratif ne doit être
 réintroduit tant qu'un contrat API et ses contrôles ne sont pas définis.
 
+### Maintenance Supabase — index catalogue (2026-09-08)
+
+La migration `20260908102215_add_menu_items_category_index.sql` est appliquée au
+projet Supabase actif. Elle crée l'index `menu_items_category_id_idx` sur la clé
+étrangère `menu_items.category_id`, signalée par l'advisor de performance. L'index a été
+contrôlé dans `pg_indexes`; il couvre les filtres et jointures par catégorie sans modifier
+les données. L'advisor de sécurité signale encore que la protection contre les mots de
+passe compromis est désactivée : activer ce réglage dans Supabase Auth est une action de
+console, non exposée par le connecteur actuel.
+
 ## Plan d'exécution — état d'avancement
 
 - **Phase 0** (base vérifiable) : implicitement couverte — build/lint vérifiés à
