@@ -28,3 +28,14 @@ test('only first-party API requests receive the bearer token', async () => {
   assert.match(interceptor, /request\.url\.startsWith\('\/api\/'\)/);
   assert.match(interceptor, /Authorization: `Bearer \$\{accessToken\}`/);
 });
+
+test('the reservations screen uses protected API data and persists only allowed status changes', async () => {
+  const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+  const component = await source('src', 'app', 'pages', 'admin', 'reservations', 'reservations.component.ts');
+
+  assert.match(service, /get<AdminReservation\[\]>\(`\$\{this\.apiUrl\}\/reservations`\)/);
+  assert.match(service, /put<AdminReservation>\(`\$\{this\.apiUrl\}\/reservations\/\$\{id\}\/status`, \{ status \}\)/);
+  assert.match(component, /this\.adminData\.getReservations\(\)/);
+  assert.match(component, /this\.adminData\.updateReservationStatus/);
+  assert.match(component, /this\.statuses\.includes/);
+});
