@@ -122,6 +122,17 @@ protégées des dépenses et des rapports : les indicateurs mensuels sont calcul
 des clôtures enregistrées. Il permet aussi l'ajout d'une dépense et une clôture explicite
 du jour, sans données financières fictives ni mise à jour optimiste.
 
+### Contrat Paramètres — données publiques (2026-09-08)
+
+`GET /api/settings` n'expose que les informations publiques de l'établissement.
+`PUT /api/settings` reste réservé au rôle `ADMIN` et accepte désormais une whitelist
+stricte : identité, coordonnées, horaires, devise et liens sociaux. Les champs inconnus,
+les valeurs textuelles invalides et l'adresse e-mail incorrecte sont rejetés en `400`;
+la mise à jour fusionne les seules valeurs contrôlées avec l'enregistrement existant.
+L'écran `/admin/settings` charge et sauvegarde ces données réelles avec des états de
+chargement, succès et erreur. Les paramètres sans modèle API (sécurité, facturation,
+intégrations et commandes destructrices) ne sont plus présentés comme fonctionnels.
+
 ## Plan d'exécution — état d'avancement
 
 - **Phase 0** (base vérifiable) : implicitement couverte — build/lint vérifiés à

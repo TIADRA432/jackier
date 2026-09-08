@@ -134,3 +134,18 @@ test('finance writes validate a narrow payload and the admin screen uses protect
   assert.match(component, /this\.adminData\.closeDay/);
   assert.doesNotMatch(component, /342\.5M FG/);
 });
+
+test('settings writes accept only validated public settings and the admin view persists them', async () => {
+  const controller = await source('src', 'controllers', 'settings.controller.ts');
+  const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+  const component = await source('src', 'app', 'pages', 'admin', 'settings', 'settings.component.ts');
+
+  assert.match(controller, /requireKnownFields\(body, SETTINGS_FIELDS\)/);
+  assert.match(controller, /Invalid email/);
+  assert.match(controller, /validateSocialMedia/);
+  assert.match(service, /get<PublicSettings>\(`\$\{this\.apiUrl\}\/settings`\)/);
+  assert.match(service, /put\(`\$\{this\.apiUrl\}\/settings`, payload\)/);
+  assert.match(component, /this\.adminData\.getSettings\(\)/);
+  assert.match(component, /this\.adminData\.updateSettings/);
+  assert.doesNotMatch(component, /Réinitialiser les données/);
+});

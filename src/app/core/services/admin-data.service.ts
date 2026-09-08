@@ -96,6 +96,16 @@ export interface FinanceReport {
   manualRevenue: number;
 }
 
+export interface PublicSettings {
+  restaurantName?: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+  openingHours?: string;
+  currency?: string;
+  socialMedia?: Record<string, string>;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminDataService {
   private readonly http = inject(HttpClient);
@@ -175,6 +185,14 @@ export class AdminDataService {
 
   async closeDay(manualRevenue: number): Promise<FinanceReport> {
     return firstValueFrom(this.http.post<FinanceReport>(`${this.apiUrl}/finance/close`, { manualRevenue }));
+  }
+
+  async getSettings(): Promise<PublicSettings> {
+    return firstValueFrom(this.http.get<PublicSettings>(`${this.apiUrl}/settings`));
+  }
+
+  async updateSettings(payload: PublicSettings): Promise<void> {
+    await firstValueFrom(this.http.put(`${this.apiUrl}/settings`, payload));
   }
 
   async updateReservationStatus(id: string, status: ReservationStatus): Promise<AdminReservation> {
