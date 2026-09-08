@@ -164,6 +164,11 @@ les données. L'advisor de sécurité signale encore que la protection contre le
 passe compromis est désactivée : activer ce réglage dans Supabase Auth est une action de
 console, non exposée par le connecteur actuel.
 
+La migration `20260908102436_optimize_profiles_rls_identity_lookup.sql` est également
+appliquée. Elle conserve strictement la politique `Users read own profile`, mais remplace
+`auth.uid() = id` par `(select auth.uid()) = id` afin que l'identité soit évaluée une fois
+par requête, conformément à l'advisor de performance Supabase.
+
 ## Plan d'exécution — état d'avancement
 
 - **Phase 0** (base vérifiable) : implicitement couverte — build/lint vérifiés à
