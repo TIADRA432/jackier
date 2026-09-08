@@ -1,5 +1,6 @@
 
 import { Routes } from '@angular/router';
+import { adminAuthGuard } from './core/guards/admin-auth.guard';
 
 export const routes: Routes = [
   {
@@ -43,8 +44,15 @@ export const routes: Routes = [
     title: 'Le Jacquier - Contact'
   },
   {
+    path: 'admin/login',
+    loadComponent: () => import('./pages/admin/login/admin-login.component').then(m => m.AdminLoginComponent),
+    title: 'Le Jacquier - Connexion administration'
+  },
+  {
     path: 'admin',
     loadComponent: () => import('./pages/admin/admin.component').then(m => m.AdminComponent),
+    canActivate: [adminAuthGuard],
+    canActivateChild: [adminAuthGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', loadComponent: () => import('./pages/admin/dashboard/dashboard.component').then(m => m.DashboardComponent), title: 'Admin - Dashboard' },
