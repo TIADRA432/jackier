@@ -2,8 +2,9 @@
 
 **Dépôt :** `TIADRA432/jackier`
 **Branche cible :** `integration/backend-supabase`
-**HEAD au moment de cette mise à jour :** consulter `git log -1` (ce document est mis à jour dans le même commit que la phase 3).
-**Statut :** Phases 1 et 2 exécutées et poussées. Phase 3 (tests, CI) implémentée ; l’exécution locale reste à rejouer car le téléchargement npm a subi des timeouts réseau.
+**HEAD au moment de cette mise à jour :** `5df32d9` (commit "test: add quality checks and Graphify handoff")
+**Statut :** Phases 1, 2 et 3 de l'audit terminées et validées. Sprint 2 (méthode Scrum,
+épique Authentification admin) planifié et en cours de démarrage.
 Ce document reflète l'état réel vérifié à cette date — les sections précédentes marquées
 « à revalider » ont été confirmées, corrigées, ou requalifiées ci-dessous.
 
@@ -19,24 +20,25 @@ Aucun lockfile suivi sur la branche distante :
 npm régénère le lockfile à chaque build Cloudflare (`npm install` sans `--ci`). C'est
 intentionnel : un lockfile désynchronisé avait précédemment bloqué un déploiement
 (conflit `typescript@~5.8.2` vs `@angular/build` exigeant `>=5.9`), résolu en le
-retirant plutôt qu'en le régénérant à la main.
+retirant plutôt qu'en le régénérant à la main. `.github/workflows/quality.yml` utilise
+`npm install --no-package-lock` en conséquence — ne pas remplacer par `npm ci`.
 
 ## Tableau constat confirmé / infirmé / corrigé
 
 | Domaine | Constat initial | Statut réel |
 | --- | --- | --- |
 | Sécurité des templates | aucun `innerHTML`/`bypassSecurityTrust` | **Confirmé**, toujours vrai |
-| Images publiques | `NgOptimizedImage` largement employé | **Confirmé** ; 4 images admin sans `alt` → **Corrigé** (equipe, school, cms, analytics) |
-| Validation API | `/reservations`, `/catering` valident formats/longueurs/statuts/UUID | **Confirmé**, déjà robuste avant cette session |
+| Images publiques | `NgOptimizedImage` largement employé | **Confirmé** ; images admin/dashboard sans `alt` → **Corrigé** |
+| Validation API | `/reservations`, `/catering` valident formats/longueurs/statuts/UUID | **Confirmé**, couvert par `tests/public-api-validation.test.ts` |
 | Uploads | Multer 5 Mo, JPEG/PNG/WebP | **Confirmé** |
-| CORS | `cors()` sans liste blanche | **Corrigé** — whitelist via `CORS_ORIGINS` (var d'env, `security.middleware.ts`) |
+| CORS | `cors()` sans liste blanche | **Corrigé** — whitelist via `CORS_ORIGINS` (var d'env, `security.middleware.ts`), couvert par `tests/security.middleware.test.ts` |
 | Protection HTTP | pas de Helmet/CSP | **Corrigé** — `helmet@^8.3.0` avec CSP, appliqué dans `worker.ts`/`server.ts` |
-| Anti-abus | pas de rate limit | **Corrigé** — `express-rate-limit@^8.7.0`, 5 req/15 min sur `/reservations` et `/catering` |
-| SEO | hash routing, pas de robots/sitemap/canonical/OG | **Corrigé** — `withHashLocation()` retiré, `public/robots.txt`, `public/sitemap.xml`, OG/Twitter/canonical dans `index.html` |
-| Accessibilité | alt/aria-label manquants | **Corrigé** en zone admin + header mobile (bouton fermeture, `aria-expanded`) |
+| Anti-abus | pas de rate limit | **Corrigé** — `express-rate-limit@^8.7.0`, 5 req/15 min sur `/reservations` et `/catering`, testé |
+| SEO | hash routing, pas de robots/sitemap/canonical/OG | **Corrigé** — `withHashLocation()` retiré, `public/robots.txt`, `public/sitemap.xml`, OG/Twitter/canonical + `public/og-image.png` dans `index.html` |
+| Accessibilité | alt/aria-label manquants | **Corrigé** en zone admin (equipe, school, cms, analytics, dashboard, reservations) + header mobile |
 | UX — chargement | pas de chargement visible | **Corrigé** — signaux `loading`/`error` centralisés dans `RestaurantService`, appliqués à Menu, Galerie, École, Accueil |
-| Qualité | pas de specs ni CI | **Corrigé** — tests ciblés Node/TS pour validations publiques et middleware sécurité ; workflow GitHub Actions test + type-check + build |
-| tsconfig serveur | non audité initialement | **Corrigé** — `esModuleInterop` manquant + `module` incompatible avec `import.meta`, causait des erreurs `tsc --noEmit` |
+| Qualité | pas de specs ni CI | **Corrigé et validé** — voir Phase 3 ci-dessous |
+| tsconfig serveur | non audité initialement | **Corrigé** — `esModuleInterop` manquant + `module` incompatible avec `import.meta` |
 
 ## Découvertes hors périmètre initial de l'audit — bugs métier critiques
 
@@ -63,54 +65,70 @@ réelle de données client :
    appelle `dish().name` sans garde. → Corrigé : passage en `computed()` réactif +
    garde `@if` côté template.
 
-## Découverte majeure non traitée — nouvel épique requis
-
-**Le panneau admin entier (dashboard, réservations, stock, cms, analytics, traiteur,
-école, finance, équipe, settings, restaurant) est une maquette statique**, non
-connectée aux endpoints backend existants (`GET /api/dashboard/overview`,
-`GET /api/reservations`, etc.), **et il n'existe aucune authentification sur `/admin`** :
-pas de page de connexion, pas de garde de route, pas d'intercepteur HTTP pour le
-token Supabase. N'importe qui visitant `/admin` accède à l'interface (actuellement
-sans conséquence puisque les données sont fictives, mais bloquant dès le câblage réel).
-
-Ceci constitue un épique séparé, non commencé :
-- Authentification admin (login Supabase Auth, `CanActivate`, intercepteur Bearer token)
-- Câblage des ~10 sous-pages admin sur les endpoints réels
-
 ## Plan d'exécution — état d'avancement
 
-- **Phase 0** (base vérifiable) : implicitement couverte — build/lint vérifiés à
-  chaque commit de cette session, aucun changement fonctionnel accidentel constaté.
-- **Phase 1** (sécurité) : **Terminée.** CORS, Helmet/CSP, rate limiting, tests de
-  rejet non automatisés (aucun test écrit — validation manuelle uniquement).
-- **Phase 2** (SEO/a11y/UX) : **Terminée** pour le front public. Zone admin : a11y
-  statique corrigée, mais données réelles non câblées (cf. épique ci-dessus).
-- **Phase 3** (tests, CI) : **Implémentée.** `npm test` exécute les contrôles de validation métier et de sécurité ; `npm run lint` lance le type-check serveur ; `.github/workflows/quality.yml` exécute test, type-check et build sous Node 22. Le contrôle local de cette livraison n’a pas pu s’achever : npm a échoué après plusieurs reprises réseau (`ECONNRESET` / `ETIMEDOUT`), sans créer de lockfile.
+- **Phase 0** (base vérifiable) : couverte — build/lint/tests vérifiés à chaque
+  commit significatif.
+- **Phase 1** (sécurité) : **Terminée et testée.** CORS, Helmet/CSP, rate limiting,
+  couverts par `tests/security.middleware.test.ts` (6 tests, tous verts).
+- **Phase 2** (SEO/a11y/UX) : **Terminée** pour le front public et la zone admin
+  (a11y statique). Données réelles admin non câblées : voir épique Sprint 2 ci-dessous.
+- **Phase 3** (tests, CI) : **Terminée et validée localement dans cette session.**
+  `npm test` (`tsx --test tests/*.test.ts`) : **6/6 tests passent**
+  (validation réservation/catering, CORS, rate limiting, headers de sécurité).
+  `npm run lint` (`tsc --project tsconfig.server.json --noEmit`) : **0 erreur.**
+  `npx ng build --configuration=development` : **0 erreur.**
+  `.github/workflows/quality.yml` : exécute test + lint + build sur push/PR, Node 22,
+  installation sans lockfile (`npm install --no-package-lock`, volontairement pas
+  `npm ci`). Le doute réseau signalé dans une version précédente de ce document est
+  levé : les trois commandes ont été rejouées avec succès dans cette session.
 
-## Rapport — validations exécutées cette session
+## Sprint 2 (méthode Scrum) — Authentification admin + données réelles
 
-- `npm install` (sans lockfile) : succès, 499 paquets
-- `npx ng build --configuration=development` : succès, 0 erreur, après chaque lot de
-  changements significatif (vérifié à 5 reprises au fil de la session)
-- `npx tsc --project tsconfig.server.json --noEmit` : échec initial (`esModuleInterop`,
-  `import.meta`) → corrigé → succès (exit 0)
-- Aucun test automatisé exécuté : aucun n'existe sur cette branche
+**Décision actée par l'utilisateur : Option A**, priorisée avant tout travail
+supplémentaire de tests/CI (Phase 3 étant déjà achevée entre-temps par ailleurs).
+
+**Sprint Goal :** *Un administrateur peut se connecter avec ses identifiants
+Supabase, et voit les vraies données du restaurant (réservations, aperçu du
+dashboard) au lieu de données fictives. Personne ne peut accéder à `/admin` sans
+être connecté.*
+
+**Definition of Done du sprint :** code poussé sur `integration/backend-supabase`,
+build local vérifié (`ng build` sans erreur), pas de régression sur les
+fonctionnalités existantes, déployé et vérifié visuellement avant clôture.
+
+**Sprint Backlog :**
+
+| # | Story | Statut |
+| --- | --- | --- |
+| 2.1 | Page de connexion admin (email/mdp via Supabase Auth) | À faire |
+| 2.2 | Garde de route (`CanActivate`) sur `/admin/**` | À faire |
+| 2.3 | Intercepteur HTTP (token Bearer sur les appels `/api/*` admin) | À faire |
+| 2.4 | Bouton déconnexion + gestion session expirée | À faire |
+| 2.5 | Câblage Dashboard admin sur `GET /api/dashboard/overview` | À faire |
+| 2.6 | Câblage Réservations admin sur `GET/PUT/DELETE /api/reservations` | À faire |
+
+Contexte technique confirmé pour ce sprint : le middleware backend `verifyToken` /
+`requireRole(['ADMIN'])` existe déjà (`src/middleware/auth.middleware.ts`), tout
+comme le client Supabase Auth côté frontend (`src/config/supabase.client.ts`,
+`environment.supabase`). Il ne manque que la couche Angular (login, garde, intercepteur)
+et le câblage des pages admin elles-mêmes.
 
 ## Risques résiduels et décisions requises de l'utilisateur
 
-1. **Priorité** : attaquer l'épique Authentification admin + câblage données réelles
-   (bloquant pour toute utilisation réelle du panneau admin), ou Phase 3
-   (tests + CI) d'abord ?
+1. ~~Priorité Sprint 2~~ — **Tranché : Option A (authentification admin).**
 2. **Tailwind CDN en production** (`<script src="https://cdn.tailwindcss.com">` dans
-   `index.html`) : repéré comme risque de performance (JIT recompilé à chaque
-   chargement), non corrigé — nécessite de vérifier qu'un pipeline de build CSS
+   `index.html`) : toujours en place, risque de performance (JIT recompilé à chaque
+   chargement) non traité — nécessite de vérifier qu'un pipeline de build CSS
    compilé peut le remplacer sans casser le style existant. Décision requise avant
    d'y toucher.
-3. **Favicon** : référencé dans `index.html` mais absent du dossier `public/` → 404
-   silencieux, non corrigé (mineur).
-4. Aucun secret n'a été ajouté au dépôt au cours de cette session.
-
+3. **Favicon** : référencé dans `index.html`, présence dans `public/` à reconfirmer
+   après les derniers ajouts (`og-image.png` y a été ajouté entre-temps).
+4. Aucun secret n'a été ajouté au dépôt au cours des sessions successives.
 
 ## Navigation Graphify pour les agents
 
-Le projet intègre maintenant `AGENTS.md` et le rapport versionné dans `graphify-out/`. Voir [`GRAPHIFY.md`](./GRAPHIFY.md) pour les requêtes et le périmètre. Exécuter `graphify extract . --code-only` lorsque `graphify-out/graph.json` doit être régénéré localement.
+Le projet intègre `AGENTS.md` et le rapport versionné dans `graphify-out/`. Voir
+[`GRAPHIFY.md`](./GRAPHIFY.md) pour les requêtes et le périmètre. Exécuter
+`graphify extract . --code-only` lorsque `graphify-out/graph.json` doit être
+régénéré localement.
