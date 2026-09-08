@@ -118,3 +118,19 @@ test('category and wine admin screens use the authenticated catalogue API', asyn
   assert.match(wines, /this\.adminData\.createWine/);
   assert.match(wines, /this\.adminData\.deleteWine/);
 });
+
+test('finance writes validate a narrow payload and the admin screen uses protected finance data', async () => {
+  const controller = await source('src', 'controllers', 'finance.controller.ts');
+  const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+  const component = await source('src', 'app', 'pages', 'admin', 'finance', 'finance.component.ts');
+
+  assert.match(controller, /requireKnownFields\(body, EXPENSE_FIELDS\)/);
+  assert.match(controller, /amount must be greater than zero/);
+  assert.match(controller, /requireKnownFields\(body, DAILY_CLOSE_FIELDS\)/);
+  assert.match(service, /get<FinanceExpense\[\]>\(`\$\{this\.apiUrl\}\/finance\/expenses`\)/);
+  assert.match(service, /post<FinanceReport>\(`\$\{this\.apiUrl\}\/finance\/close`, \{ manualRevenue \}\)/);
+  assert.match(component, /this\.adminData\.getExpenses\(\)/);
+  assert.match(component, /this\.adminData\.addExpense/);
+  assert.match(component, /this\.adminData\.closeDay/);
+  assert.doesNotMatch(component, /342\.5M FG/);
+});

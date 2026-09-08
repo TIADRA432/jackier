@@ -77,6 +77,25 @@ export interface WineItem {
   displayOrder?: number;
 }
 
+export interface FinanceExpense {
+  id: string;
+  label: string;
+  category?: string;
+  amount: number;
+  date: string;
+  createdAt?: string;
+}
+
+export interface FinanceReport {
+  id: string;
+  date: string;
+  createdAt: string;
+  totalRevenue: number;
+  totalExpenses: number;
+  netIncome: number;
+  manualRevenue: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminDataService {
   private readonly http = inject(HttpClient);
@@ -140,6 +159,22 @@ export class AdminDataService {
 
   async deleteWine(id: string): Promise<void> {
     await firstValueFrom(this.http.delete(`${this.apiUrl}/wines/${id}`));
+  }
+
+  async getExpenses(): Promise<FinanceExpense[]> {
+    return firstValueFrom(this.http.get<FinanceExpense[]>(`${this.apiUrl}/finance/expenses`));
+  }
+
+  async getFinanceReports(): Promise<FinanceReport[]> {
+    return firstValueFrom(this.http.get<FinanceReport[]>(`${this.apiUrl}/finance/reports`));
+  }
+
+  async addExpense(payload: Pick<FinanceExpense, 'label' | 'category' | 'amount'>): Promise<FinanceExpense> {
+    return firstValueFrom(this.http.post<FinanceExpense>(`${this.apiUrl}/finance/expenses`, payload));
+  }
+
+  async closeDay(manualRevenue: number): Promise<FinanceReport> {
+    return firstValueFrom(this.http.post<FinanceReport>(`${this.apiUrl}/finance/close`, { manualRevenue }));
   }
 
   async updateReservationStatus(id: string, status: ReservationStatus): Promise<AdminReservation> {

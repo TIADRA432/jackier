@@ -111,6 +111,17 @@ connectés : liste, création, modification et suppression confirmée, avec éta
 chargement/erreur. Ils utilisent exclusivement `AdminDataService` — aucun catalogue
 fictif ne doit y être réintroduit.
 
+### Contrat Finance — dépenses et clôtures (2026-09-08)
+
+Les routes Finance sont strictement réservées à `ADMIN`. `POST /api/finance/expenses`
+accepte uniquement `label`, `category` (facultatif) et `amount` : les champs inconnus,
+les libellés invalides et les montants nuls, négatifs ou hors borne sont rejetés en
+`400`. `POST /api/finance/close` n'accepte que `manualRevenue`, contrôlé comme un
+montant fini et borné. L'écran `/admin/finance` utilise exclusivement les listes
+protégées des dépenses et des rapports : les indicateurs mensuels sont calculés à partir
+des clôtures enregistrées. Il permet aussi l'ajout d'une dépense et une clôture explicite
+du jour, sans données financières fictives ni mise à jour optimiste.
+
 ## Plan d'exécution — état d'avancement
 
 - **Phase 0** (base vérifiable) : implicitement couverte — build/lint vérifiés à
