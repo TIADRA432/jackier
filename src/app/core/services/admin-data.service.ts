@@ -28,6 +28,19 @@ export interface DashboardOverview {
   recentActivities: Array<{ id: string; type: string; message: string; date: string }>;
 }
 
+export interface CateringEvent {
+  id: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  eventType?: string;
+  date?: string;
+  guests?: number | string;
+  budget?: string | number;
+  message?: string;
+  status: ReservationStatus;
+}
+
 @Injectable({ providedIn: 'root' })
 export class AdminDataService {
   private readonly http = inject(HttpClient);
@@ -39,6 +52,14 @@ export class AdminDataService {
 
   async getDashboardOverview(): Promise<DashboardOverview> {
     return firstValueFrom(this.http.get<DashboardOverview>(`${this.apiUrl}/dashboard/overview`));
+  }
+
+  async getCateringEvents(): Promise<CateringEvent[]> {
+    return firstValueFrom(this.http.get<CateringEvent[]>(`${this.apiUrl}/catering`));
+  }
+
+  async updateCateringStatus(id: string, status: ReservationStatus): Promise<CateringEvent> {
+    return firstValueFrom(this.http.put<CateringEvent>(`${this.apiUrl}/catering/${id}`, { status }));
   }
 
   async updateReservationStatus(id: string, status: ReservationStatus): Promise<AdminReservation> {

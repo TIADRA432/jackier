@@ -48,3 +48,13 @@ test('the dashboard reads its operational metrics from the protected overview en
   assert.match(component, /this\.adminData\.getDashboardOverview\(\)/);
   assert.match(component, /Aucun rapport financier disponible/);
 });
+
+test('the catering screen reads and updates only the protected catering API', async () => {
+  const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+  const component = await source('src', 'app', 'pages', 'admin', 'traiteur', 'traiteur.component.ts');
+
+  assert.match(service, /get<CateringEvent\[\]>\(`\$\{this\.apiUrl\}\/catering`\)/);
+  assert.match(service, /put<CateringEvent>\(`\$\{this\.apiUrl\}\/catering\/\$\{id\}`, \{ status \}\)/);
+  assert.match(component, /this\.adminData\.getCateringEvents\(\)/);
+  assert.match(component, /this\.adminData\.updateCateringStatus/);
+});
