@@ -28,23 +28,26 @@ import { DishCardComponent } from '../../shared/components/dish-card/dish-card.c
           
           <!-- Search Bar -->
           <div class="max-w-2xl mx-auto relative">
+            <label for="menu-search" class="sr-only">Rechercher un plat</label>
             <input 
+              id="menu-search"
               type="text" 
               [ngModel]="searchQuery()"
               (ngModelChange)="searchQuery.set($event)"
               placeholder="Rechercher un plat (ex: Yassa, Thon...)"
               class="w-full pl-14 pr-6 py-4 rounded-2xl border-2 border-transparent focus:ring-0 focus:border-jacquier-gold outline-none shadow-lg bg-white text-jacquier-dark font-light text-lg transition-colors"
             >
-            <svg class="w-6 h-6 text-jacquier-gold absolute left-5 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="w-6 h-6 text-jacquier-gold absolute left-5 top-1/2 transform -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
 
           <!-- Category Filters -->
-          <div class="flex flex-wrap justify-center gap-4">
+          <div class="flex flex-wrap justify-center gap-4" role="group" aria-label="Filtrer par catégorie">
             @for (filter of filters; track filter.id) {
               <button 
                 (click)="activeFilter.set(filter.id)"
+                [attr.aria-pressed]="activeFilter() === filter.id"
                 class="px-6 py-3 rounded-xl text-sm font-bold uppercase tracking-wide transition-all border-2 min-h-[44px]"
                 [class.bg-jacquier-primary]="activeFilter() === filter.id"
                 [class.text-white]="activeFilter() === filter.id"
@@ -64,10 +67,11 @@ import { DishCardComponent } from '../../shared/components/dish-card/dish-card.c
             <div class="flex flex-col md:flex-row items-center gap-12">
               <div class="flex-1 w-full">
                 <div class="flex justify-between mb-4">
-                  <span class="text-xs font-bold uppercase text-gray-500 tracking-wider">Prix Minimum</span>
+                  <label for="min-price" class="text-xs font-bold uppercase text-gray-500 tracking-wider">Prix Minimum</label>
                   <span class="text-base font-serif font-bold text-jacquier-primary">{{ minPrice() | number:'1.0-0' }} FG</span>
                 </div>
                 <input 
+                  id="min-price"
                   type="range" 
                   [min]="0" 
                   [max]="1000000" 
@@ -79,10 +83,11 @@ import { DishCardComponent } from '../../shared/components/dish-card/dish-card.c
               </div>
               <div class="flex-1 w-full">
                 <div class="flex justify-between mb-4">
-                  <span class="text-xs font-bold uppercase text-gray-500 tracking-wider">Prix Maximum</span>
+                  <label for="max-price" class="text-xs font-bold uppercase text-gray-500 tracking-wider">Prix Maximum</label>
                   <span class="text-base font-serif font-bold text-jacquier-primary">{{ maxPrice() | number:'1.0-0' }} FG</span>
                 </div>
                 <input 
+                  id="max-price"
                   type="range" 
                   [min]="0" 
                   [max]="1000000" 
@@ -126,8 +131,32 @@ import { DishCardComponent } from '../../shared/components/dish-card/dish-card.c
           </div>
         </div>
 
+        <!-- Loading skeleton -->
+        @if (isLoading()) {
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8" role="status" aria-live="polite" aria-label="Chargement du menu">
+            @for (i of skeletonPlaceholders; track i) {
+              <div class="bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden animate-pulse">
+                <div class="h-48 bg-gray-200"></div>
+                <div class="p-6 space-y-3">
+                  <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+                  <div class="h-3 bg-gray-200 rounded w-full"></div>
+                  <div class="h-3 bg-gray-200 rounded w-1/2"></div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Error state -->
+        @else if (loadError()) {
+          <div class="text-center py-24 bg-white rounded-3xl shadow-lg border border-red-100">
+            <p class="text-red-600 text-xl mb-6 font-light">{{ loadError() }}</p>
+            <button (click)="retry()" class="px-8 py-3 bg-jacquier-primary text-white rounded-xl font-bold uppercase tracking-wide hover:bg-jacquier-burgundy transition-colors min-h-[44px]">Réessayer</button>
+          </div>
+        }
+
         <!-- Grid -->
-        @if (filteredDishes().length > 0) {
+        @else if (filteredDishes().length > 0) {
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 animate-fade-in-up">
             @for (dish of filteredDishes(); track dish.id) {
               <app-dish-card [dish]="dish" />
@@ -136,7 +165,7 @@ import { DishCardComponent } from '../../shared/components/dish-card/dish-card.c
         } @else {
           <div class="text-center py-24 bg-white rounded-3xl shadow-lg border border-gray-100">
             <div class="w-20 h-20 mx-auto bg-jacquier-cream rounded-full flex items-center justify-center mb-6">
-              <svg class="w-10 h-10 text-jacquier-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <svg class="w-10 h-10 text-jacquier-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             </div>
             <p class="text-jacquier-text text-xl mb-6 font-light">Aucun plat ne correspond à vos critères.</p>
             <button (click)="resetFilters()" class="px-8 py-3 bg-jacquier-primary text-white rounded-xl font-bold uppercase tracking-wide hover:bg-jacquier-burgundy transition-colors min-h-[44px]">Réinitialiser les filtres</button>
@@ -149,6 +178,9 @@ import { DishCardComponent } from '../../shared/components/dish-card/dish-card.c
 export class MenuComponent {
   restaurantService = inject(RestaurantService);
   allDishes = this.restaurantService.getDishes(); // Readonly signal
+  isLoading = this.restaurantService.isLoadingMenu();
+  loadError = this.restaurantService.getMenuError();
+  skeletonPlaceholders = Array.from({ length: 8 }, (_, i) => i);
   
   // State
   activeFilter = signal<string>('all');
@@ -213,5 +245,9 @@ export class MenuComponent {
     this.showLocal.set(false);
     this.minPrice.set(0);
     this.maxPrice.set(1000000);
+  }
+
+  retry() {
+    this.restaurantService.retryLoadDishes();
   }
 }

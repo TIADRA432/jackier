@@ -232,6 +232,7 @@ import { CommonModule } from "@angular/common";
                 <div class="w-12 h-12 rounded-xl bg-gray-800 overflow-hidden">
                   <img
                     [src]="item.image"
+                    [alt]="item.name"
                     class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
                   />
                 </div>

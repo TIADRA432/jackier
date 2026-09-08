@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "module": "ES2022",
+    "moduleResolution": "Bundler",
+    "esModuleInterop": true,
+    "types": ["node", "express", "multer", "cors"]
+  },
+  "files": [
+    "server.ts"
+  ]
+}

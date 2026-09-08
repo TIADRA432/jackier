@@ -23,7 +23,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
         </a>
 
         <!-- Desktop Nav -->
-        <nav class="hidden lg:flex space-x-8 items-center">
+        <nav class="hidden lg:flex space-x-8 items-center" aria-label="Navigation principale">
           @for (link of navLinks; track link.path) {
             <a [routerLink]="link.path" 
                routerLinkActive="text-jacquier-gold after:w-full"
@@ -41,8 +41,9 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
         </nav>
 
         <!-- Mobile Menu Button -->
-        <button class="lg:hidden focus:outline-none p-2 -mr-2" (click)="toggleMobileMenu()" aria-label="Toggle menu">
-          <div class="w-6 h-5 relative flex flex-col justify-between">
+        <button class="lg:hidden focus:outline-none p-2 -mr-2" (click)="toggleMobileMenu()"
+                aria-label="Ouvrir le menu" [attr.aria-expanded]="isMobileMenuOpen()" aria-controls="mobile-nav-panel">
+          <div class="w-6 h-5 relative flex flex-col justify-between" aria-hidden="true">
             <span class="w-full h-[2px] rounded-full transition-all duration-300"
                   [class.bg-white]="!isScrolled() && !isMobileMenuOpen()"
                   [class.bg-jacquier-primary]="isScrolled() || isMobileMenuOpen()"
@@ -71,14 +72,14 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
       </div>
 
       <!-- Mobile Nav Panel -->
-      <nav class="fixed top-0 right-0 h-full w-4/5 max-w-sm bg-white z-50 transform transition-transform duration-500 ease-in-out lg:hidden flex flex-col shadow-2xl"
+      <nav id="mobile-nav-panel" aria-label="Navigation mobile" class="fixed top-0 right-0 h-full w-4/5 max-w-sm bg-white z-50 transform transition-transform duration-500 ease-in-out lg:hidden flex flex-col shadow-2xl"
            [class.translate-x-0]="isMobileMenuOpen()"
            [class.translate-x-full]="!isMobileMenuOpen()">
         
         <div class="p-6 flex justify-between items-center border-b border-gray-100">
           <span class="text-xl font-serif font-bold text-jacquier-primary uppercase tracking-widest">Menu</span>
-          <button class="p-2 -mr-2 text-gray-500 hover:text-jacquier-primary transition-colors" (click)="closeMobileMenu()">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          <button class="p-2 -mr-2 text-gray-500 hover:text-jacquier-primary transition-colors" (click)="closeMobileMenu()" aria-label="Fermer le menu">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
         </div>
 

@@ -40,7 +40,7 @@ import { Reservation } from '../../core/models';
             @if (successMessage()) {
               <div class="h-full flex flex-col items-center justify-center text-center animate-fade-in-up py-12">
                 <div class="w-24 h-24 bg-jacquier-cream rounded-full flex items-center justify-center mb-8 shadow-inner">
-                  <svg class="w-12 h-12 text-jacquier-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                  <svg class="w-12 h-12 text-jacquier-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                 </div>
                 <h3 class="text-3xl font-serif font-bold text-jacquier-primary mb-4">Réservation Confirmée !</h3>
                 <p class="text-jacquier-text font-light text-lg mb-10 leading-relaxed max-w-md">
@@ -57,56 +57,66 @@ import { Reservation } from '../../core/models';
                 <h2 class="text-3xl font-serif font-bold text-jacquier-primary mb-2">Vos Coordonnées</h2>
                 <p class="text-jacquier-text font-light">Veuillez remplir le formulaire ci-dessous.</p>
               </div>
-              
+
+              @if (submitError()) {
+                <div class="mb-8 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm" role="alert">
+                  {{ submitError() }}
+                </div>
+              }
+
               <form [formGroup]="reservationForm" (ngSubmit)="onSubmit()" class="space-y-8">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div class="space-y-2">
-                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Nom Complet</label>
-                    <input type="text" formControlName="name" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold focus:border-transparent outline-none transition-all" placeholder="Votre nom">
+                    <label for="res-name" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Nom Complet</label>
+                    <input id="res-name" type="text" formControlName="name" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold focus:border-transparent outline-none transition-all" placeholder="Votre nom">
                     @if (reservationForm.get('name')?.touched && reservationForm.get('name')?.invalid) {
-                      <p class="text-red-500 text-xs mt-1">Nom requis</p>
+                      <p class="text-red-500 text-xs mt-1" role="alert">Nom requis</p>
                     }
                   </div>
                   
                   <div class="space-y-2">
-                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Email</label>
-                    <input type="email" formControlName="email" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold focus:border-transparent outline-none transition-all" placeholder="votre@email.com">
+                    <label for="res-email" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Email</label>
+                    <input id="res-email" type="email" formControlName="email" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold focus:border-transparent outline-none transition-all" placeholder="votre@email.com">
                     @if (reservationForm.get('email')?.touched && reservationForm.get('email')?.invalid) {
-                      <p class="text-red-500 text-xs mt-1">Email valide requis</p>
+                      <p class="text-red-500 text-xs mt-1" role="alert">Email valide requis</p>
                     }
                   </div>
                 </div>
 
                 <div class="space-y-2">
-                  <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Téléphone</label>
-                  <input type="tel" formControlName="phone" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold focus:border-transparent outline-none transition-all" placeholder="+224 ...">
+                  <label for="res-phone" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Téléphone</label>
+                  <input id="res-phone" type="tel" formControlName="phone" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold focus:border-transparent outline-none transition-all" placeholder="+224 ...">
                   @if (reservationForm.get('phone')?.touched && reservationForm.get('phone')?.invalid) {
-                    <p class="text-red-500 text-xs mt-1">Téléphone requis</p>
+                    <p class="text-red-500 text-xs mt-1" role="alert">Téléphone requis</p>
                   }
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                   <div class="space-y-2">
-                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Date</label>
-                    <input type="date" formControlName="date" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold outline-none transition-all">
+                    <label for="res-date" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Date</label>
+                    <input id="res-date" type="date" formControlName="date" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold outline-none transition-all">
                     @if (reservationForm.get('date')?.touched && reservationForm.get('date')?.invalid) {
-                      <p class="text-red-500 text-xs mt-1">Date requise</p>
+                      <p class="text-red-500 text-xs mt-1" role="alert">Date requise</p>
                     }
                   </div>
                   <div class="space-y-2">
-                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Heure</label>
-                    <input type="time" formControlName="time" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold outline-none transition-all">
+                    <label for="res-time" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Heure</label>
+                    <select id="res-time" formControlName="time" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold outline-none transition-all appearance-none cursor-pointer">
+                      <option value="" disabled selected>Choisir</option>
+                      @for (slot of timeSlots; track slot) {
+                        <option [value]="slot">{{ slot }}</option>
+                      }
+                    </select>
                      @if (reservationForm.get('time')?.touched && reservationForm.get('time')?.invalid) {
-                      <p class="text-red-500 text-xs mt-1">Heure requise</p>
+                      <p class="text-red-500 text-xs mt-1" role="alert">Heure requise</p>
                     }
                   </div>
                   <div class="space-y-2">
-                    <label class="text-xs font-bold text-gray-500 uppercase tracking-wider">Invités</label>
-                    <select formControlName="guests" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold outline-none transition-all appearance-none cursor-pointer">
-                      @for (num of [1,2,3,4,5,6,7,8,9,10]; track num) {
+                    <label for="res-guests" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Invités</label>
+                    <select id="res-guests" formControlName="guests" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold outline-none transition-all appearance-none cursor-pointer">
+                      @for (num of [1,2,3,4,5,6,7,8]; track num) {
                         <option [value]="num">{{ num }} pers.</option>
                       }
-                      <option value="11+">Plus de 10</option>
                     </select>
                   </div>
                 </div>
@@ -116,7 +126,7 @@ import { Reservation } from '../../core/models';
                         class="w-full bg-jacquier-primary text-white font-bold uppercase tracking-wide py-4 rounded-xl hover:bg-jacquier-burgundy transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-8 shadow-lg min-h-[56px]">
                   @if (isSubmitting()) {
                     <span class="flex items-center justify-center">
-                      <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                       </svg>
@@ -137,7 +147,10 @@ import { Reservation } from '../../core/models';
 export class ReservationComponent {
   fb = inject(FormBuilder);
   reservationService = inject(ReservationService);
-  
+
+  // Créneaux alignés avec ceux acceptés par le backend (reservation.controller.ts ALLOWED_TIMES).
+  timeSlots = ['12:00', '12:30', '13:00', '13:30', '14:00', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+
   reservationForm = this.fb.group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
@@ -149,12 +162,14 @@ export class ReservationComponent {
 
   isSubmitting = signal(false);
   successMessage = signal(false);
+  submitError = signal<string | null>(null);
   lastReservationName = signal('');
   lastReservationDate = signal('');
 
   async onSubmit() {
     if (this.reservationForm.valid) {
       this.isSubmitting.set(true);
+      this.submitError.set(null);
       const rawValue = this.reservationForm.getRawValue();
       
       const data: Reservation = {
@@ -167,12 +182,19 @@ export class ReservationComponent {
       };
       
       try {
-        await this.reservationService.makeReservation(data);
-        this.lastReservationName.set(data.name);
-        this.lastReservationDate.set(`${data.date} à ${data.time}`);
-        this.successMessage.set(true);
+        const success = await this.reservationService.makeReservation(data);
+        if (success) {
+          this.lastReservationName.set(data.name);
+          this.lastReservationDate.set(`${data.date} à ${data.time}`);
+          this.successMessage.set(true);
+        } else {
+          // La réservation a été rejetée par le serveur (créneau invalide, validation...) :
+          // on ne doit jamais afficher un faux succès dans ce cas.
+          this.submitError.set('Impossible de confirmer la réservation. Vérifiez vos informations et réessayez, ou contactez-nous directement.');
+        }
       } catch (e) {
         console.error(e);
+        this.submitError.set('Une erreur est survenue. Merci de réessayer dans un instant.');
       } finally {
         this.isSubmitting.set(false);
       }
@@ -183,6 +205,7 @@ export class ReservationComponent {
 
   resetForm() {
     this.successMessage.set(false);
+    this.submitError.set(null);
     this.reservationForm.reset({ guests: '2' });
   }
 }

@@ -58,7 +58,7 @@ import { CommonModule } from "@angular/common";
                   <td class="py-4">
                     <div class="flex items-center gap-3">
                       <div class="w-8 h-8 rounded-full bg-gray-800 overflow-hidden">
-                        <img [src]="student.image" class="w-full h-full object-cover">
+                        <img [src]="student.image" [alt]="'Photo de ' + student.name" class="w-full h-full object-cover">
                       </div>
                       <span class="text-white font-medium">{{ student.name }}</span>
                     </div>
@@ -76,8 +76,8 @@ import { CommonModule } from "@angular/common";
                     </div>
                   </td>
                   <td class="py-4 text-right">
-                    <button class="p-2 text-gray-500 hover:text-jacquier-gold transition-colors">
-                      <i class="material-icons text-lg">visibility</i>
+                    <button class="p-2 text-gray-500 hover:text-jacquier-gold transition-colors" [attr.aria-label]="'Voir le profil de ' + student.name">
+                      <i class="material-icons text-lg" aria-hidden="true">visibility</i>
                     </button>
                   </td>
                 </tr>
