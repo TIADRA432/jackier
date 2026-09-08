@@ -192,7 +192,8 @@ strictement les champs autorisés et les UUID, puis passent par le backend ; auc
 de cet annuaire n’est exposée publiquement. L’écran `/admin/equipe` gère la liste, la
 création, la modification et la suppression confirmée, avec états de chargement et erreurs.
 Le bloc public existant reste indépendant tant qu’un contrat explicite de publication des
-profils n’est pas validé.
+profils n’est pas validé. Les tests exécutables couvrent le contrat minimal, la suppression
+d’une photo, le rejet de champs sensibles et les URL ou identifiants malformés.
 
 ## Plan d'exécution — état d'avancement
 

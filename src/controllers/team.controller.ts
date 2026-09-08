@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { supabase } from '../config/supabase';
 import { CatalogValidationError, catalogError, optionalImageUrl, optionalText, requireKnownFields, requiredText, validateUuid } from './catalog.validation';
 
@@ -17,7 +17,7 @@ const optionalBoolean = (value: unknown): boolean | undefined => {
   return value;
 };
 
-const validateTeamPayload = (body: unknown, partial: boolean): TeamPayload => {
+export const validateTeamPayload = (body: unknown, partial: boolean): TeamPayload => {
   const source = requireKnownFields(body, TEAM_FIELDS);
   const name = partial ? optionalText(source.name, 'name', 160) : requiredText(source.name, 'name', 160);
   const role = partial ? optionalText(source.role, 'role', 120) : requiredText(source.role, 'role', 120);
