@@ -96,9 +96,10 @@ backfill les anciens plats à `true`, puis rend la colonne obligatoire avec déf
 `GET /api/admin/menu` est réservé à `ADMIN` et conserve les plats indisponibles pour
 l’administration. `PUT /api/menu/:id` reste protégé et valide/whitelist les champs avant
 toute écriture. Le tableau Restaurant admin utilise ce contrat pour basculer l’état sans
-mise à jour optimiste. Avant le déploiement, appliquer la migration avec `supabase db push`
-(une seule personne à la fois), puis vérifier que les politiques RLS du projet autorisent
-le rôle de service backend, sans exposer de clé de service dans le front.
+mise à jour optimiste. La migration a été appliquée au projet Supabase actif le 8 septembre
+2026 et l'historique distant confirme sa version `20260908095906`. Vérifier que les
+politiques RLS du projet autorisent le rôle de service backend, sans exposer de clé de
+service dans le front.
 
 ### Contrat Catalogue — catégories et vins (2026-09-08)
 
