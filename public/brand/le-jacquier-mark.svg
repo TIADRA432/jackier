@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="title desc">
+  <title id="title">Monogramme Le Jacquier</title>
+  <desc id="desc">Lettre J dorée dans un cercle.</desc>
+  <circle cx="60" cy="60" r="52" fill="#1a3622" stroke="#d4af37" stroke-width="4"/>
+  <path d="M75 31H48v9h9v31c0 10-5 15-14 15-5 0-10-2-14-5l-5 9c6 5 14 8 23 8 17 0 28-10 28-29V40h9v-9z" fill="#d4af37"/>
+</svg>

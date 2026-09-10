@@ -143,14 +143,16 @@ test('settings writes accept only validated public settings and the admin view p
   assert.match(controller, /requireKnownFields\(body, SETTINGS_FIELDS\)/);
   assert.match(controller, /Invalid email/);
   assert.match(controller, /validateSocialMedia/);
+  assert.match(controller, /validateBrand/);
   assert.match(service, /get<PublicSettings>\(`\$\{this\.apiUrl\}\/settings`\)/);
   assert.match(service, /put\(`\$\{this\.apiUrl\}\/settings`, payload\)/);
   assert.match(component, /this\.adminData\.getSettings\(\)/);
   assert.match(component, /this\.adminData\.updateSettings/);
+  assert.match(component, /Identité visuelle/);
   assert.doesNotMatch(component, /Réinitialiser les données/);
 });
 
-test('gallery writes validate image URLs and the CMS manages persisted media only', async () => {
+test('gallery writes validate image URLs while the CMS uses the authenticated media library', async () => {
   const controller = await source('src', 'controllers', 'gallery.controller.ts');
   const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
   const component = await source('src', 'app', 'pages', 'admin', 'cms', 'cms.component.ts');
@@ -159,10 +161,11 @@ test('gallery writes validate image URLs and the CMS manages persisted media onl
   assert.match(controller, /validateUuid\(req\.params\.id, 'gallery image'\)/);
   assert.match(service, /get<GalleryMedia\[\]>\(`\$\{this\.apiUrl\}\/gallery`\)/);
   assert.match(service, /post<GalleryMedia>\(`\$\{this\.apiUrl\}\/gallery`, payload\)/);
-  assert.match(component, /this\.adminData\.getGalleryMedia\(\)/);
-  assert.match(component, /this\.adminData\.createGalleryMedia/);
-  assert.match(component, /this\.adminData\.deleteGalleryMedia/);
-  assert.doesNotMatch(component, /Lancement de la nouvelle carte d'été/);
+  assert.match(component, /this\.adminData\.getMediaAssets\(\)/);
+  assert.match(component, /this\.adminData\.uploadMediaAsset/);
+  assert.match(component, /this\.adminData\.deleteMediaAsset/);
+  assert.match(component, /type="file"/);
+  assert.match(component, /Texte alternatif/);
 });
 
 test('analytics reuses the protected dashboard overview instead of fabricated forecasts', async () => {

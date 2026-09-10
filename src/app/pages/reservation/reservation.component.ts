@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgOptimizedImage } from '@angular/common';
 import { ReservationService } from '../../core/services/reservation.service';
 import { Reservation } from '../../core/models';
+import { SiteSettingsService } from '../../core/services/site-settings.service';
 
 @Component({
   selector: 'app-reservation',
@@ -14,7 +15,7 @@ import { Reservation } from '../../core/models';
     <div class="min-h-screen bg-jacquier-cream flex flex-col">
       <!-- Hero -->
       <div class="relative h-[40vh] flex items-center justify-center text-center px-4 overflow-hidden bg-jacquier-dark">
-        <img ngSrc="https://picsum.photos/seed/reservation_hero/1920/1080" fill priority class="object-cover opacity-40" alt="Réservation" referrerPolicy="no-referrer">
+        <img [ngSrc]="siteSettings.image('reservationHero', 'https://picsum.photos/seed/reservation_hero/1920/1080').url" fill priority class="object-cover opacity-40" [alt]="siteSettings.image('reservationHero', '').altText || 'Réservation'" referrerPolicy="no-referrer">
         <div class="relative z-10 max-w-4xl mx-auto text-white animate-fade-in-up">
           <span class="block text-jacquier-gold font-bold tracking-[0.2em] mb-4 uppercase text-sm md:text-base">Vivez l'expérience Le Jacquier</span>
           <h1 class="text-5xl md:text-6xl font-serif font-bold mb-6 leading-tight">Réservez votre table</h1>
@@ -147,6 +148,7 @@ import { Reservation } from '../../core/models';
 export class ReservationComponent {
   fb = inject(FormBuilder);
   reservationService = inject(ReservationService);
+  readonly siteSettings = inject(SiteSettingsService);
 
   // Créneaux alignés avec ceux acceptés par le backend (reservation.controller.ts ALLOWED_TIMES).
   timeSlots = ['12:00', '12:30', '13:00', '13:30', '14:00', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];

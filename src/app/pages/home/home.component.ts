@@ -2,6 +2,7 @@
 import { Component, inject, computed, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { RestaurantService } from '../../core/services/restaurant.service';
+import { SiteSettingsService } from '../../core/services/site-settings.service';
 import { DailySpecialComponent } from '../../shared/components/daily-special/daily-special.component';
 import { NgOptimizedImage, DecimalPipe } from '@angular/common';
 
@@ -14,8 +15,8 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
     <!-- Hero Section -->
     <section class="relative h-screen flex items-center justify-center text-center px-4 overflow-hidden">
       <div class="absolute inset-0 z-0">
-        <img ngSrc="https://picsum.photos/seed/jacquier_interior/1920/1080" priority fill 
-             class="object-cover w-full h-full" alt="Intérieur du restaurant Le Jacquier"
+        <img [ngSrc]="siteSettings.image('homeHero', 'https://picsum.photos/seed/jacquier_interior/1920/1080').url" priority fill
+             class="object-cover w-full h-full" [alt]="siteSettings.image('homeHero', '').altText || 'Intérieur du restaurant Le Jacquier'"
              referrerPolicy="no-referrer">
         <div class="absolute inset-0 bg-jacquier-dark/60"></div>
       </div>
@@ -284,6 +285,7 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
 })
 export class HomeComponent {
   restaurantService = inject(RestaurantService);
+  readonly siteSettings = inject(SiteSettingsService);
   isMenuLoading = this.restaurantService.isLoadingMenu();
 
   // computed() (et non signal() figé) : le plat du jour dépend du menu chargé de manière
