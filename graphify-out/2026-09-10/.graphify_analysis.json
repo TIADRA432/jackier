@@ -1,0 +1,701 @@
+{
+  "communities": {
+    "0": [
+      "ref_express",
+      "src_config_supabase",
+      "src_config_supabase_supabase",
+      "src_controllers_auth_controller",
+      "src_controllers_auth_controller_setupadmin",
+      "src_controllers_category_controller",
+      "src_controllers_category_controller_createcategory",
+      "src_controllers_category_controller_deletecategory",
+      "src_controllers_category_controller_getcategories",
+      "src_controllers_category_controller_updatecategory",
+      "src_controllers_dashboard_controller",
+      "src_controllers_dashboard_controller_getdashboardoverview",
+      "src_controllers_finance_controller",
+      "src_controllers_finance_controller_addexpense",
+      "src_controllers_finance_controller_dailyclose",
+      "src_controllers_finance_controller_getexpenses",
+      "src_controllers_finance_controller_getreports",
+      "src_controllers_gallery_controller",
+      "src_controllers_gallery_controller_creategalleryimage",
+      "src_controllers_gallery_controller_deletegalleryimage",
+      "src_controllers_gallery_controller_galleryrow",
+      "src_controllers_gallery_controller_getgalleryimages",
+      "src_controllers_gallery_controller_togalleryitem",
+      "src_controllers_menu_controller",
+      "src_controllers_menu_controller_createmenuitem",
+      "src_controllers_menu_controller_deletemenuitem",
+      "src_controllers_menu_controller_getmenuitems",
+      "src_controllers_menu_controller_updatemenuitem",
+      "src_controllers_school_controller",
+      "src_controllers_school_controller_createschoolprogram",
+      "src_controllers_school_controller_deleteschoolprogram",
+      "src_controllers_school_controller_getschoolprograms",
+      "src_controllers_school_controller_updateschoolprogram",
+      "src_controllers_settings_controller",
+      "src_controllers_settings_controller_getlogs",
+      "src_controllers_settings_controller_getsettings",
+      "src_controllers_settings_controller_public_settings_keys",
+      "src_controllers_settings_controller_topublicsettings",
+      "src_controllers_settings_controller_updatesettings",
+      "src_controllers_upload_controller",
+      "src_controllers_upload_controller_detectimagetype",
+      "src_controllers_upload_controller_extensions",
+      "src_controllers_upload_controller_supportedimage",
+      "src_controllers_upload_controller_uploadmenuimage",
+      "src_controllers_upload_controller_uploadtostorage",
+      "src_controllers_upload_controller_uploadwineimage",
+      "src_controllers_upload_controller_validateuploadedimage",
+      "src_controllers_wine_controller",
+      "src_controllers_wine_controller_createwine",
+      "src_controllers_wine_controller_deletewine",
+      "src_controllers_wine_controller_getwines",
+      "src_controllers_wine_controller_updatewine",
+      "src_middleware_auth_middleware",
+      "src_middleware_auth_middleware_authenticatedrequest",
+      "src_middleware_auth_middleware_requirerole",
+      "src_middleware_auth_middleware_verifytoken",
+      "src_routes_index",
+      "src_routes_index_allowed_image_mime_types",
+      "src_routes_index_storage",
+      "src_routes_index_upload",
+      "src_services_db_service",
+      "src_services_db_service_adddoc",
+      "src_services_db_service_deletedoc",
+      "src_services_db_service_field_map",
+      "src_services_db_service_flattenjsontable",
+      "src_services_db_service_fromdb",
+      "src_services_db_service_getcollection",
+      "src_services_db_service_getprofile",
+      "src_services_db_service_prepareinsert",
+      "src_services_db_service_tablefor",
+      "src_services_db_service_tables",
+      "src_services_db_service_todb",
+      "src_services_db_service_updatedoc"
+    ],
+    "1": [
+      "package",
+      "package_name",
+      "package_private",
+      "package_scripts",
+      "package_scripts_build",
+      "package_scripts_deploy_cloudflare",
+      "package_scripts_dev",
+      "package_scripts_preview",
+      "package_scripts_start",
+      "package_scripts_worker_dev",
+      "package_type",
+      "package_version",
+      "ref_angular_build",
+      "ref_angular_cli",
+      "ref_angular_compiler",
+      "ref_angular_compiler_cli",
+      "ref_concurrently",
+      "ref_multer",
+      "ref_rxjs",
+      "ref_supabase_supabase_js",
+      "ref_tailwindcss",
+      "ref_tsx",
+      "ref_types_cors",
+      "ref_types_express",
+      "ref_types_multer",
+      "ref_types_node",
+      "ref_typescript",
+      "ref_vite",
+      "ref_wrangler",
+      "src_app_core_models_index_reservation",
+      "src_app_core_services_reservation_service",
+      "src_app_core_services_reservation_service_reservationservice",
+      "src_app_core_services_reservation_service_reservationservice_makereservation",
+      "src_app_core_services_reservation_service_ts_injectable",
+      "src_config_supabase_client",
+      "src_config_supabase_client_supabaseclient",
+      "src_environments_environment",
+      "src_environments_environment_environment"
+    ],
+    "2": [
+      "angular",
+      "angular_app_architect",
+      "angular_app_prefix",
+      "angular_app_projecttype",
+      "angular_app_root",
+      "angular_app_sourceroot",
+      "angular_architect_build",
+      "angular_architect_serve",
+      "angular_build_builder",
+      "angular_build_configurations",
+      "angular_build_defaultconfiguration",
+      "angular_build_options",
+      "angular_cli",
+      "angular_cli_analytics",
+      "angular_configurations_development",
+      "angular_configurations_production",
+      "angular_development_buildtarget",
+      "angular_development_extractlicenses",
+      "angular_development_optimization",
+      "angular_development_sourcemap",
+      "angular_newprojectroot",
+      "angular_options_browser",
+      "angular_options_outputpath",
+      "angular_options_port",
+      "angular_options_tsconfig",
+      "angular_outputpath_base",
+      "angular_outputpath_browser",
+      "angular_production_buildtarget",
+      "angular_production_outputhashing",
+      "angular_projects",
+      "angular_projects_app",
+      "angular_schema",
+      "angular_serve_builder",
+      "angular_serve_configurations",
+      "angular_serve_defaultconfiguration",
+      "angular_serve_options",
+      "angular_version"
+    ],
+    "3": [
+      "ref_angular_forms",
+      "ref_angular_platform_browser",
+      "src_app_pages_traiteur_traiteur_component",
+      "src_app_pages_traiteur_traiteur_component_traiteurcomponent",
+      "src_app_pages_traiteur_traiteur_component_traiteurcomponent_constructor",
+      "src_app_pages_traiteur_traiteur_component_traiteurcomponent_ngoninit",
+      "src_app_pages_traiteur_traiteur_component_ts_component",
+      "src_app_shared_components_catering_cta_catering_cta_component",
+      "src_app_shared_components_catering_cta_catering_cta_component_cateringctacomponent",
+      "src_app_shared_components_catering_cta_catering_cta_component_cateringctacomponent_scrolltoform",
+      "src_app_shared_components_catering_cta_catering_cta_component_ts_component",
+      "src_app_shared_components_catering_form_catering_form_component",
+      "src_app_shared_components_catering_form_catering_form_component_cateringformcomponent",
+      "src_app_shared_components_catering_form_catering_form_component_cateringformcomponent_constructor",
+      "src_app_shared_components_catering_form_catering_form_component_cateringformcomponent_onsubmit",
+      "src_app_shared_components_catering_form_catering_form_component_cateringformcomponent_resetform",
+      "src_app_shared_components_catering_form_catering_form_component_ts_component",
+      "src_app_shared_components_catering_gallery_catering_gallery_component_cateringgallerycomponent",
+      "src_app_shared_components_catering_gallery_catering_gallery_component_ts_component",
+      "src_app_shared_components_catering_hero_catering_hero_component_cateringherocomponent",
+      "src_app_shared_components_catering_hero_catering_hero_component_cateringherocomponent_scrolltoform",
+      "src_app_shared_components_catering_hero_catering_hero_component_cateringherocomponent_scrolltoservices",
+      "src_app_shared_components_catering_hero_catering_hero_component_ts_component",
+      "src_app_shared_components_catering_process_catering_process_component",
+      "src_app_shared_components_catering_process_catering_process_component_cateringprocesscomponent",
+      "src_app_shared_components_catering_process_catering_process_component_ts_component",
+      "src_app_shared_components_catering_services_catering_services_component",
+      "src_app_shared_components_catering_services_catering_services_component_cateringservicescomponent",
+      "src_app_shared_components_catering_services_catering_services_component_ts_component",
+      "src_app_shared_components_catering_testimonials_catering_testimonials_component",
+      "src_app_shared_components_catering_testimonials_catering_testimonials_component_cateringtestimonialscomponent",
+      "src_app_shared_components_catering_testimonials_catering_testimonials_component_ts_component"
+    ],
+    "4": [
+      "ref_cloudflare_workers_types",
+      "ref_cors",
+      "ref_express_rate_limit",
+      "ref_helmet",
+      "server",
+      "server_app",
+      "server_dirname",
+      "server_distpath",
+      "server_filename",
+      "server_port",
+      "src_middlewares_error_middleware",
+      "src_middlewares_error_middleware_errorhandler",
+      "src_middlewares_security_middleware",
+      "src_middlewares_security_middleware_allowedorigins",
+      "src_middlewares_security_middleware_configuredorigins",
+      "src_middlewares_security_middleware_configuresecurity",
+      "src_middlewares_security_middleware_contentsecuritypolicy",
+      "src_middlewares_security_middleware_corsoptions",
+      "src_middlewares_security_middleware_createcorserror",
+      "src_middlewares_security_middleware_normalizeorigin",
+      "src_middlewares_security_middleware_publicwriteratelimiter",
+      "src_middlewares_security_middleware_staticassetsecurityheaders",
+      "src_routes_index_router",
+      "worker",
+      "worker_apihandler",
+      "worker_app",
+      "worker_env",
+      "worker_fetch",
+      "worker_withstaticsecurityheaders"
+    ],
+    "5": [
+      "src_app_core_services_restaurant_service_restaurantservice",
+      "src_app_core_services_restaurant_service_restaurantservice_constructor",
+      "src_app_core_services_restaurant_service_restaurantservice_getcateringservices",
+      "src_app_core_services_restaurant_service_restaurantservice_getdailyspecial",
+      "src_app_core_services_restaurant_service_restaurantservice_getdishes",
+      "src_app_core_services_restaurant_service_restaurantservice_getgalleryerror",
+      "src_app_core_services_restaurant_service_restaurantservice_getgalleryimages",
+      "src_app_core_services_restaurant_service_restaurantservice_getmenuerror",
+      "src_app_core_services_restaurant_service_restaurantservice_getreviews",
+      "src_app_core_services_restaurant_service_restaurantservice_getschoolerror",
+      "src_app_core_services_restaurant_service_restaurantservice_getschoolprograms",
+      "src_app_core_services_restaurant_service_restaurantservice_getteam",
+      "src_app_core_services_restaurant_service_restaurantservice_getwines",
+      "src_app_core_services_restaurant_service_restaurantservice_getwineserror",
+      "src_app_core_services_restaurant_service_restaurantservice_isloadinggallery",
+      "src_app_core_services_restaurant_service_restaurantservice_isloadingmenu",
+      "src_app_core_services_restaurant_service_restaurantservice_isloadingschool",
+      "src_app_core_services_restaurant_service_restaurantservice_isloadingwines",
+      "src_app_core_services_restaurant_service_restaurantservice_loaddishes",
+      "src_app_core_services_restaurant_service_restaurantservice_loadgallery",
+      "src_app_core_services_restaurant_service_restaurantservice_loadschoolprograms",
+      "src_app_core_services_restaurant_service_restaurantservice_loadwines",
+      "src_app_core_services_restaurant_service_restaurantservice_retryloaddishes",
+      "src_app_core_services_restaurant_service_restaurantservice_retryloadgallery",
+      "src_app_core_services_restaurant_service_restaurantservice_retryloadschoolprograms",
+      "src_app_core_services_restaurant_service_restaurantservice_submitcateringrequest",
+      "src_app_core_services_restaurant_service_ts_injectable"
+    ],
+    "6": [
+      "package_dependencies",
+      "package_dependencies_angular_build",
+      "package_dependencies_angular_cli",
+      "package_dependencies_angular_common",
+      "package_dependencies_angular_compiler",
+      "package_dependencies_angular_compiler_cli",
+      "package_dependencies_angular_core",
+      "package_dependencies_angular_forms",
+      "package_dependencies_angular_platform_browser",
+      "package_dependencies_angular_router",
+      "package_dependencies_cors",
+      "package_dependencies_express",
+      "package_dependencies_express_rate_limit",
+      "package_dependencies_helmet",
+      "package_dependencies_multer",
+      "package_dependencies_rxjs",
+      "package_dependencies_supabase_supabase_js",
+      "package_dependencies_tailwindcss"
+    ],
+    "7": [
+      "tsconfig",
+      "tsconfig_angularcompileroptions",
+      "tsconfig_angularcompileroptions_disabletypescriptversioncheck",
+      "tsconfig_compileroptions",
+      "tsconfig_compileroptions_allowjs",
+      "tsconfig_compileroptions_experimentaldecorators",
+      "tsconfig_compileroptions_isolatedmodules",
+      "tsconfig_compileroptions_jsx",
+      "tsconfig_compileroptions_lib",
+      "tsconfig_compileroptions_module",
+      "tsconfig_compileroptions_moduledetection",
+      "tsconfig_compileroptions_moduleresolution",
+      "tsconfig_compileroptions_paths",
+      "tsconfig_compileroptions_skiplibcheck",
+      "tsconfig_compileroptions_target",
+      "tsconfig_compileroptions_types",
+      "tsconfig_compileroptions_usedefineforclassfields",
+      "tsconfig_files"
+    ],
+    "8": [
+      "src_app_core_models_index",
+      "src_app_core_models_index_cateringservice",
+      "src_app_core_models_index_dish",
+      "src_app_core_models_index_galleryimage",
+      "src_app_core_models_index_review",
+      "src_app_core_models_index_schoolprogram",
+      "src_app_core_models_index_teammember",
+      "src_app_core_models_index_wine",
+      "src_app_core_services_restaurant_service",
+      "src_app_pages_about_about_component",
+      "src_app_pages_about_about_component_aboutcomponent",
+      "src_app_pages_about_about_component_ts_component",
+      "src_app_shared_components_team_grid_team_grid_component",
+      "src_app_shared_components_team_grid_team_grid_component_teamgridcomponent",
+      "src_app_shared_components_team_grid_team_grid_component_ts_component"
+    ],
+    "9": [
+      "src_controllers_reservation_controller",
+      "src_controllers_reservation_controller_allowed_statuses",
+      "src_controllers_reservation_controller_allowed_times",
+      "src_controllers_reservation_controller_cleanstring",
+      "src_controllers_reservation_controller_createreservation",
+      "src_controllers_reservation_controller_deletereservation",
+      "src_controllers_reservation_controller_format",
+      "src_controllers_reservation_controller_getparam",
+      "src_controllers_reservation_controller_getreservations",
+      "src_controllers_reservation_controller_isrecord",
+      "src_controllers_reservation_controller_updatereservationstatus",
+      "src_controllers_reservation_controller_validatereservation",
+      "src_controllers_reservation_controller_validateuuid"
+    ],
+    "10": [
+      "index",
+      "ref_angular_router",
+      "src_app_app_routes",
+      "src_app_app_routes_routes",
+      "src_app_component_appcomponent",
+      "src_app_component_appcomponent_constructor",
+      "src_app_component_ts_component",
+      "src_app_pages_admin_admin_component",
+      "src_app_pages_not_found_not_found_component",
+      "src_app_pages_not_found_not_found_component_notfoundcomponent",
+      "src_app_pages_not_found_not_found_component_ts_component",
+      "src_app_pages_school_school_component"
+    ],
+    "11": [
+      "ref_angular_common",
+      "src_app_pages_admin_analytics_analytics_component",
+      "src_app_pages_admin_analytics_analytics_component_analyticscomponent",
+      "src_app_pages_admin_analytics_analytics_component_ts_component",
+      "src_app_pages_admin_stock_stock_component",
+      "src_app_pages_admin_stock_stock_component_stockcomponent",
+      "src_app_pages_admin_stock_stock_component_ts_component",
+      "src_app_pages_gallery_gallery_component",
+      "src_app_pages_gallery_gallery_component_layout_pattern",
+      "src_app_pages_reservation_reservation_component",
+      "src_app_shared_components_catering_gallery_catering_gallery_component",
+      "src_app_shared_components_catering_hero_catering_hero_component"
+    ],
+    "12": [
+      "src_controllers_catering_controller",
+      "src_controllers_catering_controller_allowed_statuses",
+      "src_controllers_catering_controller_createcateringevent",
+      "src_controllers_catering_controller_deletecateringevent",
+      "src_controllers_catering_controller_format",
+      "src_controllers_catering_controller_getcateringevents",
+      "src_controllers_catering_controller_getparam",
+      "src_controllers_catering_controller_updatecateringevent",
+      "src_controllers_catering_controller_validatecateringpayload",
+      "src_controllers_catering_controller_validateuuid",
+      "src_controllers_catering_controller_validatevalue",
+      "src_controllers_catering_controller_validationresponse"
+    ],
+    "13": [
+      "package_devdependencies",
+      "package_devdependencies_cloudflare_workers_types",
+      "package_devdependencies_concurrently",
+      "package_devdependencies_tsx",
+      "package_devdependencies_types_cors",
+      "package_devdependencies_types_express",
+      "package_devdependencies_types_multer",
+      "package_devdependencies_types_node",
+      "package_devdependencies_typescript",
+      "package_devdependencies_vite",
+      "package_devdependencies_wrangler"
+    ],
+    "14": [
+      "ref_tsconfig_json",
+      "tsconfig_server",
+      "tsconfig_server_compileroptions",
+      "tsconfig_server_compileroptions_esmoduleinterop",
+      "tsconfig_server_compileroptions_module",
+      "tsconfig_server_compileroptions_moduleresolution",
+      "tsconfig_server_compileroptions_outdir",
+      "tsconfig_server_compileroptions_types",
+      "tsconfig_server_extends",
+      "tsconfig_server_files"
+    ],
+    "15": [
+      "ref_angular_core",
+      "src_app_component",
+      "src_app_pages_admin_restaurant_restaurant_component",
+      "src_app_pages_admin_restaurant_restaurant_component_adminrestaurantcomponent",
+      "src_app_pages_admin_restaurant_restaurant_component_ts_component",
+      "src_app_shared_components_footer_footer_component",
+      "src_app_shared_components_footer_footer_component_footercomponent",
+      "src_app_shared_components_footer_footer_component_ts_component",
+      "src_app_shared_components_header_header_component"
+    ],
+    "16": [
+      "hostlistener",
+      "src_app_shared_components_header_header_component_headercomponent",
+      "src_app_shared_components_header_header_component_headercomponent_closemobilemenu",
+      "src_app_shared_components_header_header_component_headercomponent_onwindowscroll",
+      "src_app_shared_components_header_header_component_headercomponent_togglemobilemenu",
+      "src_app_shared_components_header_header_component_ts_component"
+    ],
+    "17": [
+      "src_app_pages_home_home_component",
+      "src_app_pages_home_home_component_homecomponent",
+      "src_app_pages_home_home_component_ts_component",
+      "src_app_shared_components_daily_special_daily_special_component",
+      "src_app_shared_components_daily_special_daily_special_component_dailyspecialcomponent",
+      "src_app_shared_components_daily_special_daily_special_component_ts_component"
+    ],
+    "18": [
+      "app_component",
+      "app_component_appcomponent",
+      "app_component_appcomponent_constructor",
+      "app_component_ts_component"
+    ],
+    "19": [
+      "src_app_pages_gallery_gallery_component_gallerycomponent",
+      "src_app_pages_gallery_gallery_component_gallerycomponent_layoutfor",
+      "src_app_pages_gallery_gallery_component_gallerycomponent_retry",
+      "src_app_pages_gallery_gallery_component_ts_component"
+    ],
+    "20": [
+      "src_app_pages_menu_menu_component",
+      "src_app_shared_components_dish_card_dish_card_component",
+      "src_app_shared_components_dish_card_dish_card_component_dishcardcomponent",
+      "src_app_shared_components_dish_card_dish_card_component_ts_component"
+    ],
+    "21": [
+      "src_app_pages_menu_menu_component_menucomponent",
+      "src_app_pages_menu_menu_component_menucomponent_resetfilters",
+      "src_app_pages_menu_menu_component_menucomponent_retry",
+      "src_app_pages_menu_menu_component_ts_component"
+    ],
+    "22": [
+      "src_app_pages_reservation_reservation_component_reservationcomponent",
+      "src_app_pages_reservation_reservation_component_reservationcomponent_onsubmit",
+      "src_app_pages_reservation_reservation_component_reservationcomponent_resetform",
+      "src_app_pages_reservation_reservation_component_ts_component"
+    ],
+    "23": [
+      "src_app_pages_admin_admin_component_admincomponent",
+      "src_app_pages_admin_admin_component_admincomponent_togglesidebar",
+      "src_app_pages_admin_admin_component_ts_component"
+    ],
+    "24": [
+      "src_app_pages_admin_cms_cms_component",
+      "src_app_pages_admin_cms_cms_component_cmscomponent",
+      "src_app_pages_admin_cms_cms_component_ts_component"
+    ],
+    "25": [
+      "src_app_pages_admin_dashboard_dashboard_component",
+      "src_app_pages_admin_dashboard_dashboard_component_dashboardcomponent",
+      "src_app_pages_admin_dashboard_dashboard_component_ts_component"
+    ],
+    "26": [
+      "src_app_pages_admin_equipe_equipe_component",
+      "src_app_pages_admin_equipe_equipe_component_adminequipecomponent",
+      "src_app_pages_admin_equipe_equipe_component_ts_component"
+    ],
+    "27": [
+      "src_app_pages_admin_finance_finance_component",
+      "src_app_pages_admin_finance_finance_component_adminfinancecomponent",
+      "src_app_pages_admin_finance_finance_component_ts_component"
+    ],
+    "28": [
+      "src_app_pages_admin_reservations_reservations_component",
+      "src_app_pages_admin_reservations_reservations_component_reservationscomponent",
+      "src_app_pages_admin_reservations_reservations_component_ts_component"
+    ],
+    "29": [
+      "src_app_pages_admin_school_school_component",
+      "src_app_pages_admin_school_school_component_adminschoolcomponent",
+      "src_app_pages_admin_school_school_component_ts_component"
+    ],
+    "30": [
+      "src_app_pages_admin_settings_settings_component",
+      "src_app_pages_admin_settings_settings_component_adminsettingscomponent",
+      "src_app_pages_admin_settings_settings_component_ts_component"
+    ],
+    "31": [
+      "src_app_pages_admin_traiteur_traiteur_component",
+      "src_app_pages_admin_traiteur_traiteur_component_admintraiteurcomponent",
+      "src_app_pages_admin_traiteur_traiteur_component_ts_component"
+    ],
+    "32": [
+      "src_app_pages_catering_catering_component",
+      "src_app_pages_catering_catering_component_cateringcomponent",
+      "src_app_pages_catering_catering_component_ts_component"
+    ],
+    "33": [
+      "src_app_pages_contact_contact_component",
+      "src_app_pages_contact_contact_component_contactcomponent",
+      "src_app_pages_contact_contact_component_ts_component"
+    ],
+    "34": [
+      "src_app_pages_school_school_component_schoolcomponent",
+      "src_app_pages_school_school_component_schoolcomponent_retry",
+      "src_app_pages_school_school_component_ts_component"
+    ],
+    "35": [
+      "src_environments_environment_development",
+      "src_environments_environment_development_environment"
+    ],
+    "36": [
+      "src_environments_environment_prod",
+      "src_environments_environment_prod_environment"
+    ]
+  },
+  "cohesion": {
+    "0": 0.07191780821917808,
+    "1": 0.05832147937411095,
+    "2": 0.057057057057057055,
+    "3": 0.07258064516129033,
+    "4": 0.09113300492610837,
+    "5": 0.09401709401709402,
+    "6": 0.1111111111111111,
+    "7": 0.1111111111111111,
+    "8": 0.22857142857142856,
+    "9": 0.28205128205128205,
+    "10": 0.24242424242424243,
+    "11": 0.16666666666666666,
+    "12": 0.3484848484848485,
+    "13": 0.18181818181818182,
+    "14": 0.2,
+    "15": 0.3055555555555556,
+    "16": 0.3333333333333333,
+    "17": 0.4,
+    "18": 0.5,
+    "19": 0.5,
+    "20": 0.6666666666666666,
+    "21": 0.5,
+    "22": 0.5,
+    "23": 0.6666666666666666,
+    "24": 0.6666666666666666,
+    "25": 0.6666666666666666,
+    "26": 0.6666666666666666,
+    "27": 0.6666666666666666,
+    "28": 0.6666666666666666,
+    "29": 0.6666666666666666,
+    "30": 0.6666666666666666,
+    "31": 0.6666666666666666,
+    "32": 0.6666666666666666,
+    "33": 0.6666666666666666,
+    "34": 0.6666666666666666,
+    "35": 1.0,
+    "36": 1.0
+  },
+  "gods": [
+    {
+      "id": "ref_angular_core",
+      "label": "@angular/core",
+      "degree": 39
+    },
+    {
+      "id": "src_app_core_services_restaurant_service_restaurantservice",
+      "label": "RestaurantService",
+      "degree": 36
+    },
+    {
+      "id": "ref_angular_common",
+      "label": "@angular/common",
+      "degree": 25
+    },
+    {
+      "id": "ref_express",
+      "label": "express",
+      "degree": 19
+    },
+    {
+      "id": "tsconfig_compileroptions",
+      "label": "compilerOptions",
+      "degree": 14
+    },
+    {
+      "id": "src_services_db_service_adddoc",
+      "label": "addDoc()",
+      "degree": 12
+    },
+    {
+      "id": "src_services_db_service_updatedoc",
+      "label": "updateDoc()",
+      "degree": 12
+    },
+    {
+      "id": "ref_angular_router",
+      "label": "@angular/router",
+      "degree": 12
+    },
+    {
+      "id": "src_services_db_service_getcollection",
+      "label": "getCollection()",
+      "degree": 11
+    },
+    {
+      "id": "src_config_supabase_supabase",
+      "label": "supabase",
+      "degree": 11
+    }
+  ],
+  "surprises": [
+    {
+      "source": "createCategory()",
+      "target": "addDoc()",
+      "source_files": [
+        "src/controllers/category.controller.ts",
+        "src/services/db.service.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
+    },
+    {
+      "source": "deleteCategory()",
+      "target": "deleteDoc()",
+      "source_files": [
+        "src/controllers/category.controller.ts",
+        "src/services/db.service.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
+    },
+    {
+      "source": "getCategories()",
+      "target": "getCollection()",
+      "source_files": [
+        "src/controllers/category.controller.ts",
+        "src/services/db.service.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
+    },
+    {
+      "source": "updateCategory()",
+      "target": "updateDoc()",
+      "source_files": [
+        "src/controllers/category.controller.ts",
+        "src/services/db.service.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
+    },
+    {
+      "source": "createGalleryImage()",
+      "target": "validateUploadedImage()",
+      "source_files": [
+        "src/controllers/gallery.controller.ts",
+        "src/controllers/upload.controller.ts"
+      ],
+      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "why": "cross-file semantic connection"
+    }
+  ],
+  "questions": [
+    {
+      "type": "bridge_node",
+      "question": "Why does `express` connect `Community 0` to `Community 1`, `Community 4`, `Community 12`, `Community 9`?",
+      "why": "High betweenness centrality (0.238) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `@angular/core` connect `Community 15` to `Community 32`, `Community 1`, `Community 33`, `Community 3`, `Community 8`, `Community 10`, `Community 11`, `Community 17`, `Community 20`, `Community 24`, `Community 25`, `Community 26`, `Community 27`, `Community 28`, `Community 29`, `Community 30`, `Community 31`?",
+      "why": "High betweenness centrality (0.222) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `@angular/common` connect `Community 11` to `Community 32`, `Community 1`, `Community 33`, `Community 8`, `Community 10`, `Community 15`, `Community 17`, `Community 20`, `Community 24`, `Community 25`, `Community 26`, `Community 27`, `Community 28`, `Community 29`, `Community 30`, `Community 31`?",
+      "why": "High betweenness centrality (0.107) - this node is a cross-community bridge."
+    },
+    {
+      "type": "isolated_nodes",
+      "question": "What connects `GalleryRow`, `SupportedImage`, `Env` to the rest of the system?",
+      "why": "124 weakly-connected nodes found - possible documentation gaps or missing edges."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 0` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.07191780821917808 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 1` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.05832147937411095 - nodes in this community are weakly interconnected."
+    },
+    {
+      "type": "low_cohesion",
+      "question": "Should `Community 2` be split into smaller, more focused modules?",
+      "why": "Cohesion score 0.057057057057057055 - nodes in this community are weakly interconnected."
+    }
+  ]
+}
