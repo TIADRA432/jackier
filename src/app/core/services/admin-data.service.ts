@@ -104,6 +104,38 @@ export interface PublicSettings {
   openingHours?: string;
   currency?: string;
   socialMedia?: Record<string, string>;
+  brand?: BrandSettings;
+}
+
+export type SiteMediaSlot =
+  | 'homeHero' | 'menuHero' | 'reservationHero' | 'aboutHero'
+  | 'contactHero' | 'schoolHero' | 'galleryHero' | 'cateringHero';
+
+export interface MediaReference {
+  id?: string;
+  url: string;
+  altText: string;
+}
+
+export interface BrandSettings {
+  logo?: MediaReference;
+  siteMedia?: Partial<Record<SiteMediaSlot, MediaReference>>;
+}
+
+export type MediaCategory = 'branding' | 'hero' | 'menu' | 'wines' | 'gallery' | 'team';
+
+export interface MediaAsset {
+  id: string;
+  bucketId: string;
+  path: string;
+  publicUrl: string;
+  originalName: string;
+  title: string;
+  altText: string;
+  category: MediaCategory;
+  mimeType: 'image/jpeg' | 'image/png' | 'image/webp';
+  sizeBytes: number;
+  createdAt: string;
 }
 
 export interface GalleryMedia {
@@ -224,6 +256,27 @@ export class AdminDataService {
 
   async updateSettings(payload: PublicSettings): Promise<void> {
     await firstValueFrom(this.http.put(`${this.apiUrl}/settings`, payload));
+  }
+
+  async getMediaAssets(): Promise<MediaAsset[]> {
+    return firstValueFrom(this.http.get<MediaAsset[]>(`${this.apiUrl}/media`));
+  }
+
+  async uploadMediaAsset(file: File, payload: Pick<MediaAsset, 'title' | 'altText' | 'category'>): Promise<MediaAsset> {
+    const formData = new FormData();
+    formData.set('image', file);
+    formData.set('title', payload.title);
+    formData.set('altText', payload.altText);
+    formData.set('category', payload.category);
+    return firstValueFrom(this.http.post<MediaAsset>(`${this.apiUrl}/media`, formData));
+  }
+
+  async updateMediaAsset(id: string, payload: Partial<Pick<MediaAsset, 'title' | 'altText' | 'category'>>): Promise<MediaAsset> {
+    return firstValueFrom(this.http.put<MediaAsset>(`${this.apiUrl}/media/${id}`, payload));
+  }
+
+  async deleteMediaAsset(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`${this.apiUrl}/media/${id}`));
   }
 
   async getGalleryMedia(): Promise<GalleryMedia[]> {
