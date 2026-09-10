@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AdminDataService, AdminTeamMember } from '../../../core/services/admin-data.service';
+import { AdminDataService, AdminTeamMember, MediaAsset } from '../../../core/services/admin-data.service';
 
 type TeamDraft = { name: string; role: string; photoUrl: string; active: boolean };
 const emptyDraft = (): TeamDraft => ({ name: '', role: '', photoUrl: '', active: true });
@@ -25,7 +25,7 @@ const emptyDraft = (): TeamDraft => ({ name: '', role: '', photoUrl: '', active:
           <h2 class="text-lg font-serif font-bold text-white md:col-span-2">{{ editingId() ? 'Modifier le membre' : 'Nouveau membre' }}</h2>
           <label class="text-sm text-gray-300">Nom<input [(ngModel)]="draft.name" name="name" maxlength="160" required class="mt-2 w-full rounded-xl bg-gray-900 px-3 py-2 text-white outline-none ring-jacquier-gold focus:ring-1" /></label>
           <label class="text-sm text-gray-300">Fonction<input [(ngModel)]="draft.role" name="role" maxlength="120" required class="mt-2 w-full rounded-xl bg-gray-900 px-3 py-2 text-white outline-none ring-jacquier-gold focus:ring-1" /></label>
-          <label class="text-sm text-gray-300 md:col-span-2">URL de photo <span class="text-gray-500">(facultatif, HTTP(S))</span><input [(ngModel)]="draft.photoUrl" name="photoUrl" type="url" maxlength="2000" class="mt-2 w-full rounded-xl bg-gray-900 px-3 py-2 text-white outline-none ring-jacquier-gold focus:ring-1" /></label>
+          <label class="text-sm text-gray-300 md:col-span-2">Photo depuis la médiathèque<select [ngModel]="draft.photoUrl" (ngModelChange)="draft.photoUrl = $event" name="photoUrl" class="mt-2 w-full rounded-xl bg-gray-900 px-3 py-2 text-white outline-none ring-jacquier-gold focus:ring-1"><option value="">Aucune photo</option>@for (asset of teamImages(); track asset.id) { <option [value]="asset.publicUrl">{{ asset.title || asset.originalName }}</option> }</select><span class="mt-2 block text-xs text-gray-500">Importez d’abord l’image dans Médiathèque → Équipe. Les anciennes URLs restent affichées tant qu’elles ne sont pas remplacées.</span></label>
           <label class="flex items-center gap-3 text-sm text-gray-300"><input type="checkbox" [(ngModel)]="draft.active" name="active" class="h-4 w-4 accent-yellow-500" /> Membre actif</label>
           <div class="flex justify-end gap-3 md:col-span-2"><button type="button" (click)="cancelEdit()" class="rounded-xl border border-gray-700 px-4 py-2 text-sm text-gray-300">Annuler</button><button type="submit" [disabled]="saving()" class="rounded-xl bg-jacquier-gold px-4 py-2 text-sm font-bold text-jacquier-dark disabled:opacity-60">{{ saving() ? 'Enregistrement…' : 'Enregistrer' }}</button></div>
         </form>
@@ -46,14 +46,16 @@ export class AdminEquipeComponent {
   readonly members = signal<AdminTeamMember[]>([]);
   readonly loading = signal(true); readonly saving = signal(false); readonly showForm = signal(false);
   readonly editingId = signal<string | null>(null); readonly pendingDeleteId = signal<string | null>(null); readonly errorMessage = signal('');
+  readonly mediaAssets = signal<MediaAsset[]>([]);
   readonly activeCount = computed(() => this.members().filter(member => member.active).length);
   draft = emptyDraft();
   constructor() { void this.load(); }
-  async load(): Promise<void> { this.loading.set(true); this.errorMessage.set(''); try { this.members.set(await this.adminData.getTeamMembers()); } catch { this.errorMessage.set('Impossible de charger l’annuaire. Réessayez dans un instant.'); } finally { this.loading.set(false); } }
+  async load(): Promise<void> { this.loading.set(true); this.errorMessage.set(''); try { const [members, assets] = await Promise.all([this.adminData.getTeamMembers(), this.adminData.getMediaAssets()]); this.members.set(members); this.mediaAssets.set(assets); } catch { this.errorMessage.set('Impossible de charger l’annuaire ou la médiathèque. Réessayez dans un instant.'); } finally { this.loading.set(false); } }
   startCreate(): void { this.draft = emptyDraft(); this.editingId.set(null); this.showForm.set(true); }
   edit(member: AdminTeamMember): void { this.draft = { name: member.name, role: member.role, photoUrl: member.photoUrl ?? '', active: member.active }; this.editingId.set(member.id); this.showForm.set(true); this.pendingDeleteId.set(null); }
   cancelEdit(): void { this.showForm.set(false); this.editingId.set(null); this.draft = emptyDraft(); }
   async save(): Promise<void> { if (!this.draft.name.trim() || !this.draft.role.trim()) return; this.saving.set(true); this.errorMessage.set(''); const payload = { ...this.draft, name: this.draft.name.trim(), role: this.draft.role.trim(), photoUrl: this.draft.photoUrl.trim() || null }; try { const id = this.editingId(); if (id) { const updated = await this.adminData.updateTeamMember(id, payload); this.members.update(members => members.map(member => member.id === id ? updated : member)); } else { const created = await this.adminData.createTeamMember(payload); this.members.update(members => [...members, created].sort((a, b) => a.name.localeCompare(b.name))); } this.cancelEdit(); } catch { this.errorMessage.set('Impossible d’enregistrer ce membre. Vérifiez les valeurs saisies.'); } finally { this.saving.set(false); } }
   async delete(member: AdminTeamMember): Promise<void> { this.saving.set(true); this.errorMessage.set(''); try { await this.adminData.deleteTeamMember(member.id); this.members.update(members => members.filter(candidate => candidate.id !== member.id)); this.pendingDeleteId.set(null); } catch { this.errorMessage.set('Impossible de supprimer ce membre. Réessayez dans un instant.'); } finally { this.saving.set(false); } }
+  teamImages(): MediaAsset[] { return this.mediaAssets().filter(asset => asset.category === 'team'); }
   initials(name: string): string { return name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join('').toUpperCase(); }
 }
