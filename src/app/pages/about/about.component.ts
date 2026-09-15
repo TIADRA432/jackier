@@ -3,6 +3,7 @@ import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { TeamGridComponent } from '../../shared/components/team-grid/team-grid.component';
 import { RestaurantService } from '../../core/services/restaurant.service';
+import { SiteSettingsService } from '../../core/services/site-settings.service';
 
 @Component({
   selector: 'app-about',
@@ -12,7 +13,7 @@ import { RestaurantService } from '../../core/services/restaurant.service';
   template: `
     <!-- Hero -->
     <div class="relative h-[50vh] flex items-center justify-center text-center px-4 overflow-hidden bg-jacquier-dark">
-      <img ngSrc="https://picsum.photos/seed/about_hero/1920/1080" fill priority class="object-cover opacity-40" alt="Notre Histoire" referrerPolicy="no-referrer">
+      <img [ngSrc]="siteSettings.image('aboutHero', 'https://picsum.photos/seed/about_hero/1920/1080').url" fill priority class="object-cover opacity-40" [alt]="siteSettings.image('aboutHero', '').altText || 'Notre Histoire'" referrerPolicy="no-referrer">
       <div class="relative z-10 max-w-4xl mx-auto text-white animate-fade-in-up">
         <span class="block text-jacquier-gold font-bold tracking-[0.2em] mb-4 uppercase text-sm md:text-base">Notre histoire & nos valeurs</span>
         <h1 class="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight">À Propos</h1>
@@ -126,5 +127,6 @@ import { RestaurantService } from '../../core/services/restaurant.service';
 })
 export class AboutComponent {
   restaurantService = inject(RestaurantService);
+  readonly siteSettings = inject(SiteSettingsService);
   team = this.restaurantService.getTeam();
 }

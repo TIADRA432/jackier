@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, signal } from "@angular/core";
-import { RouterOutlet, RouterLink, RouterLinkActive } from "@angular/router";
+import { Router, RouterOutlet, RouterLink, RouterLinkActive } from "@angular/router";
+import { AdminAuthService } from '../../core/services/admin-auth.service';
 
 @Component({
   selector: "app-admin-layout",
@@ -33,6 +34,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from "@angular/router";
           <button
             (click)="toggleSidebar()"
             class="md:hidden text-gray-400 hover:text-white"
+            aria-label="Fermer le menu de navigation"
           >
             <svg
               class="w-6 h-6"
@@ -108,6 +110,20 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from "@angular/router";
                   ></path>
                 </svg>
                 Restaurant & Menu
+              </a>
+              <a
+                routerLink="/admin/categories"
+                routerLinkActive="text-jacquier-gold"
+                class="ml-8 mt-1 block rounded-lg px-4 py-2 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+              >
+                Catégories du menu
+              </a>
+              <a
+                routerLink="/admin/vins"
+                routerLinkActive="text-jacquier-gold"
+                class="ml-8 mt-1 block rounded-lg px-4 py-2 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+              >
+                Carte des vins
               </a>
               <a
                 routerLink="/admin/reservations"
@@ -328,10 +344,13 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from "@angular/router";
               AD
             </div>
             <div class="flex-1 min-w-0">
-              <p class="text-sm font-bold text-white truncate">Amadou Diallo</p>
-              <p class="text-xs text-jacquier-gold truncate">Admin System</p>
+              <p class="text-sm font-bold text-white truncate">Administrateur</p>
+              <p class="text-xs text-jacquier-gold truncate">Accès sécurisé</p>
             </div>
           </div>
+          <button (click)="signOut()" class="mt-3 w-full rounded-lg border border-gray-700 px-3 py-2 text-sm text-gray-300 transition hover:border-jacquier-gold hover:text-jacquier-gold">
+            Se déconnecter
+          </button>
         </div>
       </aside>
 
@@ -355,6 +374,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from "@angular/router";
             <button
               (click)="toggleSidebar()"
               class="md:hidden text-gray-400 hover:text-white p-2 -ml-2 rounded-lg hover:bg-gray-800 transition-colors"
+              aria-label="Ouvrir le menu de navigation"
             >
               <svg
                 class="w-6 h-6"
@@ -463,9 +483,16 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from "@angular/router";
   ],
 })
 export class AdminComponent {
+  constructor(private readonly auth: AdminAuthService, private readonly router: Router) {}
+
   isSidebarOpen = signal(false);
 
   toggleSidebar() {
     this.isSidebarOpen.update((v) => !v);
+  }
+
+  async signOut(): Promise<void> {
+    await this.auth.signOut();
+    await this.router.navigateByUrl('/admin/login');
   }
 }

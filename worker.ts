@@ -41,6 +41,9 @@ export default {
       const assetResponse = await env.ASSETS.fetch(request as any);
       if (assetResponse.status !== 404) return withStaticSecurityHeaders(assetResponse);
     }
-    return apiHandler(request, env, ctx);
+    // `httpServerHandler` returns a Worker handler object. Calling the object
+    // directly causes every API request to fail at runtime; delegate to its
+    // fetch method so Express receives the request.
+    return apiHandler.fetch(request, env, ctx);
   },
 };

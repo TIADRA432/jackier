@@ -3,6 +3,7 @@ import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
 import { RestaurantService } from '../../core/services/restaurant.service';
+import { SiteSettingsService } from '../../core/services/site-settings.service';
 
 @Component({
   selector: 'app-catering',
@@ -12,7 +13,7 @@ import { RestaurantService } from '../../core/services/restaurant.service';
   template: `
     <!-- Hero -->
     <div class="relative h-[70vh] flex items-center justify-center text-center px-4 overflow-hidden bg-jacquier-dark">
-      <img ngSrc="https://picsum.photos/seed/catering_event/1920/1080" fill priority class="object-cover opacity-40" alt="Service Traiteur" referrerPolicy="no-referrer">
+      <img [ngSrc]="siteSettings.image('cateringHero', 'https://picsum.photos/seed/catering_event/1920/1080').url" fill priority class="object-cover opacity-40" [alt]="siteSettings.image('cateringHero', '').altText || 'Service Traiteur'" referrerPolicy="no-referrer">
       <div class="relative z-10 max-w-5xl mx-auto text-white animate-fade-in-up">
         <span class="block text-jacquier-gold font-bold tracking-[0.2em] mb-4 uppercase text-sm md:text-base">Le Jacquier Événements</span>
         <h1 class="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight">L'Art de Recevoir</h1>
@@ -152,5 +153,6 @@ import { RestaurantService } from '../../core/services/restaurant.service';
 })
 export class CateringComponent {
   restaurantService = inject(RestaurantService);
+  readonly siteSettings = inject(SiteSettingsService);
   services = this.restaurantService.getCateringServices();
 }

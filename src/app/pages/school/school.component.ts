@@ -3,6 +3,7 @@ import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
 import { RestaurantService } from '../../core/services/restaurant.service';
+import { SiteSettingsService } from '../../core/services/site-settings.service';
 
 @Component({
   selector: 'app-school',
@@ -12,7 +13,7 @@ import { RestaurantService } from '../../core/services/restaurant.service';
   template: `
     <!-- Hero -->
     <div class="relative h-[60vh] flex items-center justify-center text-center px-4 overflow-hidden bg-jacquier-dark">
-      <img ngSrc="https://picsum.photos/seed/cooking_class_hero/1920/1080" fill priority class="object-cover opacity-40" alt="École de Gastronomie" referrerPolicy="no-referrer">
+      <img [ngSrc]="siteSettings.image('schoolHero', 'https://picsum.photos/seed/cooking_class_hero/1920/1080').url" fill priority class="object-cover opacity-40" [alt]="siteSettings.image('schoolHero', '').altText || 'École de Gastronomie'" referrerPolicy="no-referrer">
       <div class="relative z-10 max-w-4xl mx-auto text-white animate-fade-in-up">
         <span class="block text-jacquier-gold font-bold tracking-[0.2em] mb-4 uppercase text-sm md:text-base">Transmission & Excellence</span>
         <h1 class="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight">École Guinéenne de Gastronomie</h1>
@@ -147,6 +148,7 @@ import { RestaurantService } from '../../core/services/restaurant.service';
 })
 export class SchoolComponent {
   restaurantService = inject(RestaurantService);
+  readonly siteSettings = inject(SiteSettingsService);
   programs = this.restaurantService.getSchoolPrograms();
   isLoading = this.restaurantService.isLoadingSchool();
   loadError = this.restaurantService.getSchoolError();

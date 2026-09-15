@@ -2,6 +2,7 @@
 import { Component, ChangeDetectionStrategy, inject, computed } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 import { RestaurantService } from '../../core/services/restaurant.service';
+import { SiteSettingsService } from '../../core/services/site-settings.service';
 
 // Motif de mise en page "masonry" répété tous les 6 éléments, pour garder un rendu
 // visuel riche quel que soit le nombre réel de photos renvoyées par l'API.
@@ -22,7 +23,7 @@ const LAYOUT_PATTERN = [
   template: `
     <!-- Hero -->
     <div class="relative h-[50vh] flex items-center justify-center text-center px-4 overflow-hidden bg-jacquier-dark">
-      <img ngSrc="https://picsum.photos/seed/gallery_hero/1920/1080" fill priority class="object-cover opacity-40" alt="Galerie" referrerPolicy="no-referrer">
+      <img [ngSrc]="siteSettings.image('galleryHero', 'https://picsum.photos/seed/gallery_hero/1920/1080').url" fill priority class="object-cover opacity-40" [alt]="siteSettings.image('galleryHero', '').altText || 'Galerie'" referrerPolicy="no-referrer">
       <div class="relative z-10 max-w-4xl mx-auto text-white animate-fade-in-up">
         <span class="block text-jacquier-gold font-bold tracking-[0.2em] mb-4 uppercase text-sm md:text-base">Immersion visuelle</span>
         <h1 class="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight">Galerie</h1>
@@ -82,6 +83,7 @@ const LAYOUT_PATTERN = [
 })
 export class GalleryComponent {
   private restaurantService = inject(RestaurantService);
+  readonly siteSettings = inject(SiteSettingsService);
   images = this.restaurantService.getGalleryImages();
   isLoading = this.restaurantService.isLoadingGallery();
   loadError = this.restaurantService.getGalleryError();

@@ -1,5 +1,6 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
+import { SiteSettingsService } from '../../../core/services/site-settings.service';
 
 @Component({
   selector: 'app-catering-hero',
@@ -9,7 +10,7 @@ import { NgOptimizedImage } from '@angular/common';
   template: `
     <section class="relative h-screen flex items-center justify-center text-center px-4 overflow-hidden bg-jacquier-dark">
       <div class="absolute inset-0 z-0">
-        <img ngSrc="https://picsum.photos/seed/catering_hero/1920/1080" priority fill class="object-cover opacity-50" alt="Service Traiteur & Événementiel" referrerPolicy="no-referrer">
+        <img [ngSrc]="siteSettings.image('cateringHero', 'https://picsum.photos/seed/catering_hero/1920/1080').url" priority fill class="object-cover opacity-50" [alt]="siteSettings.image('cateringHero', '').altText || 'Service Traiteur & Événementiel'" referrerPolicy="no-referrer">
         <div class="absolute inset-0 bg-gradient-to-b from-jacquier-dark/80 via-jacquier-dark/50 to-jacquier-dark/90"></div>
       </div>
       
@@ -34,6 +35,7 @@ import { NgOptimizedImage } from '@angular/common';
   `
 })
 export class CateringHeroComponent {
+  readonly siteSettings = inject(SiteSettingsService);
   scrollToForm() {
     document.getElementById('devis-form')?.scrollIntoView({ behavior: 'smooth' });
   }

@@ -1,5 +1,39 @@
 import { Request, Response } from 'express';
 import { supabase } from '../config/supabase';
+import {
+  CatalogValidationError,
+  catalogError,
+  optionalPrice,
+  optionalText,
+  requireKnownFields,
+  requiredText
+} from './catalog.validation';
+
+const EXPENSE_FIELDS = new Set(['label', 'category', 'amount']);
+const DAILY_CLOSE_FIELDS = new Set(['manualRevenue']);
+
+const validateExpensePayload = (body: unknown) => {
+  const source = requireKnownFields(body, EXPENSE_FIELDS);
+  const amount = optionalPrice(source.amount, 'amount');
+  if (amount === undefined || amount <= 0) {
+    throw new CatalogValidationError('amount must be greater than zero');
+  }
+
+  return {
+    label: requiredText(source.label, 'label', 160),
+    category: optionalText(source.category, 'category', 80),
+    amount
+  };
+};
+
+const validateDailyClosePayload = (body: unknown): number => {
+  const source = requireKnownFields(body, DAILY_CLOSE_FIELDS);
+  const manualRevenue = optionalPrice(source.manualRevenue, 'manualRevenue');
+  if (manualRevenue === undefined) {
+    throw new CatalogValidationError('manualRevenue is required');
+  }
+  return manualRevenue;
+};
 
 export const getExpenses = async (req: Request, res: Response) => {
   try {
@@ -32,23 +66,24 @@ export const getReports = async (req: Request, res: Response) => {
 
 export const addExpense = async (req: Request, res: Response) => {
   try {
+    const expense = validateExpensePayload(req.body);
     const now = new Date().toISOString();
-    const payload = { ...req.body, date: now, createdAt: now };
+    const payload = { ...expense, date: now, createdAt: now };
     const { data, error } = await supabase.from('expenses').insert({
-      amount: Number(req.body.amount || 0),
+      amount: expense.amount,
       date: now,
       data: payload
     }).select('*').single();
     if (error) throw error;
     res.status(201).json({ id: data.id, ...payload });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to add expense' });
+    return catalogError(error, res, 'Failed to add expense');
   }
 };
 
 export const dailyClose = async (req: Request, res: Response) => {
   try {
-    const manualRevenue = Number(req.body.manualRevenue || 0);
+    const manualRevenue = validateDailyClosePayload(req.body);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today.getTime() + 86400000);
@@ -78,6 +113,6 @@ export const dailyClose = async (req: Request, res: Response) => {
     if (error) throw error;
     res.status(201).json({ id: data.id, ...report, revenue: manualRevenue });
   } catch (error) {
-    res.status(500).json({ error: 'Failed to perform daily close' });
+    return catalogError(error, res, 'Failed to perform daily close');
   }
 };

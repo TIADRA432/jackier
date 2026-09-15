@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { supabase } from '../config/supabase';
 import { validateUploadedImage } from './upload.controller';
+import { CatalogValidationError, catalogError, isRecord, optionalImageUrl, optionalText, validateUuid } from './catalog.validation';
 
 const BUCKET = 'restaurant-media';
 
@@ -22,6 +23,19 @@ function toGalleryItem(row: GalleryRow) {
   };
 }
 
+const GALLERY_FIELDS = new Set(['imageUrl', 'title', 'category']);
+
+const validateGalleryPayload = (body: unknown) => {
+  if (!isRecord(body) || Object.keys(body).some(key => !GALLERY_FIELDS.has(key))) {
+    throw new CatalogValidationError('Invalid gallery payload');
+  }
+  return {
+    imageUrl: optionalImageUrl(body.imageUrl),
+    title: optionalText(body.title, 'title', 200) ?? '',
+    category: optionalText(body.category, 'category', 100) ?? 'gallery',
+  };
+};
+
 export async function getGalleryImages(_req: Request, res: Response) {
   const { data, error } = await supabase
     .from('gallery_images')
@@ -34,10 +48,17 @@ export async function getGalleryImages(_req: Request, res: Response) {
 
 export async function createGalleryImage(req: Request, res: Response) {
   try {
-    let imageUrl = typeof req.body?.imageUrl === 'string' ? req.body.imageUrl.trim() : '';
+    const payload = validateGalleryPayload(req.body);
+    let imageUrl = payload.imageUrl || '';
 
     if (req.file) {
-      const { expectedMime, detectedType } = validateUploadedImage(req);
+      let expectedMime: string;
+      let detectedType: 'jpeg' | 'png' | 'webp';
+      try {
+        ({ expectedMime, detectedType } = validateUploadedImage(req));
+      } catch (error) {
+        throw new CatalogValidationError(error instanceof Error ? error.message : 'Invalid image upload');
+      }
       const path = `gallery/${Date.now()}-${crypto.randomUUID()}.${detectedType === 'jpeg' ? 'jpg' : detectedType}`;
 
       const { error: uploadError } = await supabase.storage.from(BUCKET).upload(path, req.file.buffer, {
@@ -49,14 +70,14 @@ export async function createGalleryImage(req: Request, res: Response) {
       imageUrl = supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
     }
 
-    if (!imageUrl) return res.status(400).json({ message: 'An image file or imageUrl is required' });
+    if (!imageUrl) throw new CatalogValidationError('An image file or imageUrl is required');
 
     const { data, error } = await supabase
       .from('gallery_images')
       .insert({
         image_url: imageUrl,
-        title: typeof req.body?.title === 'string' ? req.body.title.slice(0, 200) : '',
-        category: typeof req.body?.category === 'string' ? req.body.category.slice(0, 100) : 'gallery',
+        title: payload.title,
+        category: payload.category,
       })
       .select('id,image_url,title,category,uploaded_at')
       .single();
@@ -64,13 +85,17 @@ export async function createGalleryImage(req: Request, res: Response) {
     if (error) return res.status(500).json({ message: error.message });
     return res.status(201).json(toGalleryItem(data as GalleryRow));
   } catch (error) {
-    return res.status(400).json({ message: error instanceof Error ? error.message : 'Invalid image upload' });
+    return catalogError(error, res, 'Failed to create gallery image');
   }
 }
 
 export async function deleteGalleryImage(req: Request, res: Response) {
-  const { id } = req.params;
-  const { error } = await supabase.from('gallery_images').delete().eq('id', id);
-  if (error) return res.status(500).json({ message: error.message });
-  return res.status(204).send();
+  try {
+    const id = validateUuid(req.params.id, 'gallery image');
+    const { error } = await supabase.from('gallery_images').delete().eq('id', id);
+    if (error) throw error;
+    return res.status(204).send();
+  } catch (error) {
+    return catalogError(error, res, 'Failed to delete gallery image');
+  }
 }

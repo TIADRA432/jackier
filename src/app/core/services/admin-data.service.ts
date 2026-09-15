@@ -1,0 +1,329 @@
+import { Injectable, inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
+import { environment } from '../../../environments/environment';
+
+export type ReservationStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed' | 'approved' | 'rejected';
+
+export interface AdminReservation {
+  id: string;
+  name: string;
+  date: string;
+  time: string;
+  guests: number;
+  notes?: string;
+  status: ReservationStatus;
+}
+
+export interface DashboardOverview {
+  stats: {
+    todayReservations: number;
+    pendingReservations: number;
+    todayRevenue: number;
+    monthlyRevenue: number;
+    activeMenuItems: number;
+    activeCatering: number;
+  };
+  revenueChart: Array<{ month: string; total: number }>;
+  recentActivities: Array<{ id: string; type: string; message: string; date: string }>;
+}
+
+export interface CateringEvent {
+  id: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  eventType?: string;
+  date?: string;
+  guests?: number | string;
+  budget?: string | number;
+  message?: string;
+  status: ReservationStatus;
+}
+
+export interface SchoolProgram {
+  id: string;
+  title?: string;
+  description?: string;
+  duration?: string;
+  level?: string;
+}
+
+export interface MenuItem {
+  id: string;
+  name?: string;
+  category?: string;
+  price?: number | string;
+  imageUrl?: string;
+  image?: string;
+  description?: string;
+  active?: boolean;
+  displayOrder?: number;
+}
+
+export interface MenuCategory {
+  id: string;
+  name: string;
+  order?: number;
+}
+
+export interface WineItem {
+  id: string;
+  name: string;
+  description?: string;
+  priceBottle: number;
+  priceGlass?: number;
+  imageUrl?: string;
+  displayOrder?: number;
+}
+
+export interface FinanceExpense {
+  id: string;
+  label: string;
+  category?: string;
+  amount: number;
+  date: string;
+  createdAt?: string;
+}
+
+export interface FinanceReport {
+  id: string;
+  date: string;
+  createdAt: string;
+  totalRevenue: number;
+  totalExpenses: number;
+  netIncome: number;
+  manualRevenue: number;
+}
+
+export interface PublicSettings {
+  restaurantName?: string;
+  address?: string;
+  phone?: string;
+  email?: string;
+  openingHours?: string;
+  currency?: string;
+  socialMedia?: Record<string, string>;
+  brand?: BrandSettings;
+}
+
+export type SiteMediaSlot =
+  | 'homeHero' | 'menuHero' | 'reservationHero' | 'aboutHero'
+  | 'contactHero' | 'schoolHero' | 'galleryHero' | 'cateringHero';
+
+export interface MediaReference {
+  id?: string;
+  url: string;
+  altText: string;
+}
+
+export interface BrandSettings {
+  logo?: MediaReference;
+  siteMedia?: Partial<Record<SiteMediaSlot, MediaReference>>;
+}
+
+export type MediaCategory = 'branding' | 'hero' | 'menu' | 'wines' | 'gallery' | 'team';
+
+export interface MediaAsset {
+  id: string;
+  bucketId: string;
+  path: string;
+  publicUrl: string;
+  originalName: string;
+  title: string;
+  altText: string;
+  category: MediaCategory;
+  mimeType: 'image/jpeg' | 'image/png' | 'image/webp';
+  sizeBytes: number;
+  createdAt: string;
+}
+
+export interface GalleryMedia {
+  id: string;
+  imageUrl: string;
+  title: string;
+  category: string;
+  uploadedAt: string;
+}
+
+export interface InventoryItem {
+  id: string;
+  name: string;
+  category: string;
+  unit: string;
+  quantity: number;
+  reorderLevel: number;
+  unitCost?: number;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AdminTeamMember {
+  id: string;
+  name: string;
+  role: string;
+  photoUrl?: string | null;
+  active: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+@Injectable({ providedIn: 'root' })
+export class AdminDataService {
+  private readonly http = inject(HttpClient);
+  private readonly apiUrl = environment.apiUrl;
+
+  async getReservations(): Promise<AdminReservation[]> {
+    return firstValueFrom(this.http.get<AdminReservation[]>(`${this.apiUrl}/reservations`));
+  }
+
+  async getDashboardOverview(): Promise<DashboardOverview> {
+    return firstValueFrom(this.http.get<DashboardOverview>(`${this.apiUrl}/dashboard/overview`));
+  }
+
+  async getCateringEvents(): Promise<CateringEvent[]> {
+    return firstValueFrom(this.http.get<CateringEvent[]>(`${this.apiUrl}/catering`));
+  }
+
+  async updateCateringStatus(id: string, status: ReservationStatus): Promise<CateringEvent> {
+    return firstValueFrom(this.http.put<CateringEvent>(`${this.apiUrl}/catering/${id}`, { status }));
+  }
+
+  async getSchoolPrograms(): Promise<SchoolProgram[]> {
+    return firstValueFrom(this.http.get<SchoolProgram[]>(`${this.apiUrl}/school`));
+  }
+
+  async getMenuItems(): Promise<MenuItem[]> {
+    return firstValueFrom(this.http.get<MenuItem[]>(`${this.apiUrl}/admin/menu`));
+  }
+
+  async updateMenuItem(id: string, payload: { active: boolean }): Promise<MenuItem> {
+    return firstValueFrom(this.http.put<MenuItem>(`${this.apiUrl}/menu/${id}`, payload));
+  }
+
+  async getCategories(): Promise<MenuCategory[]> {
+    return firstValueFrom(this.http.get<MenuCategory[]>(`${this.apiUrl}/categories`));
+  }
+
+  async createCategory(payload: Omit<MenuCategory, 'id'>): Promise<MenuCategory> {
+    return firstValueFrom(this.http.post<MenuCategory>(`${this.apiUrl}/categories`, payload));
+  }
+
+  async updateCategory(id: string, payload: Omit<MenuCategory, 'id'>): Promise<MenuCategory> {
+    return firstValueFrom(this.http.put<MenuCategory>(`${this.apiUrl}/categories/${id}`, payload));
+  }
+
+  async deleteCategory(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`${this.apiUrl}/categories/${id}`));
+  }
+
+  async getWines(): Promise<WineItem[]> {
+    return firstValueFrom(this.http.get<WineItem[]>(`${this.apiUrl}/wines`));
+  }
+
+  async createWine(payload: Omit<WineItem, 'id'>): Promise<WineItem> {
+    return firstValueFrom(this.http.post<WineItem>(`${this.apiUrl}/wines`, payload));
+  }
+
+  async updateWine(id: string, payload: Omit<WineItem, 'id'>): Promise<WineItem> {
+    return firstValueFrom(this.http.put<WineItem>(`${this.apiUrl}/wines/${id}`, payload));
+  }
+
+  async deleteWine(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`${this.apiUrl}/wines/${id}`));
+  }
+
+  async getExpenses(): Promise<FinanceExpense[]> {
+    return firstValueFrom(this.http.get<FinanceExpense[]>(`${this.apiUrl}/finance/expenses`));
+  }
+
+  async getFinanceReports(): Promise<FinanceReport[]> {
+    return firstValueFrom(this.http.get<FinanceReport[]>(`${this.apiUrl}/finance/reports`));
+  }
+
+  async addExpense(payload: Pick<FinanceExpense, 'label' | 'category' | 'amount'>): Promise<FinanceExpense> {
+    return firstValueFrom(this.http.post<FinanceExpense>(`${this.apiUrl}/finance/expenses`, payload));
+  }
+
+  async closeDay(manualRevenue: number): Promise<FinanceReport> {
+    return firstValueFrom(this.http.post<FinanceReport>(`${this.apiUrl}/finance/close`, { manualRevenue }));
+  }
+
+  async getSettings(): Promise<PublicSettings> {
+    return firstValueFrom(this.http.get<PublicSettings>(`${this.apiUrl}/settings`));
+  }
+
+  async updateSettings(payload: PublicSettings): Promise<void> {
+    await firstValueFrom(this.http.put(`${this.apiUrl}/settings`, payload));
+  }
+
+  async getMediaAssets(): Promise<MediaAsset[]> {
+    return firstValueFrom(this.http.get<MediaAsset[]>(`${this.apiUrl}/media`));
+  }
+
+  async uploadMediaAsset(file: File, payload: Pick<MediaAsset, 'title' | 'altText' | 'category'>): Promise<MediaAsset> {
+    const formData = new FormData();
+    formData.set('image', file);
+    formData.set('title', payload.title);
+    formData.set('altText', payload.altText);
+    formData.set('category', payload.category);
+    return firstValueFrom(this.http.post<MediaAsset>(`${this.apiUrl}/media`, formData));
+  }
+
+  async updateMediaAsset(id: string, payload: Partial<Pick<MediaAsset, 'title' | 'altText' | 'category'>>): Promise<MediaAsset> {
+    return firstValueFrom(this.http.put<MediaAsset>(`${this.apiUrl}/media/${id}`, payload));
+  }
+
+  async deleteMediaAsset(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`${this.apiUrl}/media/${id}`));
+  }
+
+  async getGalleryMedia(): Promise<GalleryMedia[]> {
+    return firstValueFrom(this.http.get<GalleryMedia[]>(`${this.apiUrl}/gallery`));
+  }
+
+  async createGalleryMedia(payload: Omit<GalleryMedia, 'id' | 'uploadedAt'>): Promise<GalleryMedia> {
+    return firstValueFrom(this.http.post<GalleryMedia>(`${this.apiUrl}/gallery`, payload));
+  }
+
+  async deleteGalleryMedia(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`${this.apiUrl}/gallery/${id}`));
+  }
+
+  async getInventoryItems(): Promise<InventoryItem[]> {
+    return firstValueFrom(this.http.get<InventoryItem[]>(`${this.apiUrl}/inventory`));
+  }
+
+  async createInventoryItem(payload: Omit<InventoryItem, 'id' | 'createdAt' | 'updatedAt'>): Promise<InventoryItem> {
+    return firstValueFrom(this.http.post<InventoryItem>(`${this.apiUrl}/inventory`, payload));
+  }
+
+  async updateInventoryItem(id: string, payload: Partial<Omit<InventoryItem, 'id' | 'createdAt' | 'updatedAt'>>): Promise<InventoryItem> {
+    return firstValueFrom(this.http.put<InventoryItem>(`${this.apiUrl}/inventory/${id}`, payload));
+  }
+
+  async deleteInventoryItem(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`${this.apiUrl}/inventory/${id}`));
+  }
+
+  async getTeamMembers(): Promise<AdminTeamMember[]> {
+    return firstValueFrom(this.http.get<AdminTeamMember[]>(`${this.apiUrl}/team`));
+  }
+
+  async createTeamMember(payload: Omit<AdminTeamMember, 'id' | 'createdAt' | 'updatedAt'>): Promise<AdminTeamMember> {
+    return firstValueFrom(this.http.post<AdminTeamMember>(`${this.apiUrl}/team`, payload));
+  }
+
+  async updateTeamMember(id: string, payload: Partial<Omit<AdminTeamMember, 'id' | 'createdAt' | 'updatedAt'>>): Promise<AdminTeamMember> {
+    return firstValueFrom(this.http.put<AdminTeamMember>(`${this.apiUrl}/team/${id}`, payload));
+  }
+
+  async deleteTeamMember(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`${this.apiUrl}/team/${id}`));
+  }
+
+  async updateReservationStatus(id: string, status: ReservationStatus): Promise<AdminReservation> {
+    return firstValueFrom(this.http.put<AdminReservation>(`${this.apiUrl}/reservations/${id}/status`, { status }));
+  }
+}

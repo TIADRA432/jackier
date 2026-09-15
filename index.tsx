@@ -3,9 +3,10 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
-import { provideHttpClient, withFetch } from '@angular/common/http';
+import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { AppComponent } from './src/app.component';
 import { routes } from './src/app/app.routes';
+import { authInterceptor } from './src/app/core/interceptors/auth.interceptor';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -15,7 +16,7 @@ bootstrapApplication(AppComponent, {
     // pour toute route inconnue (assets.not_found_handling), donc le rafraîchissement
     // de page sur une route profonde continue de fonctionner.
     provideRouter(routes, withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' })),
-    provideHttpClient(withFetch())
+    provideHttpClient(withFetch(), withInterceptors([authInterceptor]))
   ]
 }).catch(err => console.error(err));
 

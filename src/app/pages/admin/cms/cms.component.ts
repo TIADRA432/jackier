@@ -1,124 +1,70 @@
-import { Component, ChangeDetectionStrategy, signal } from "@angular/core";
-import { CommonModule } from "@angular/common";
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { AdminDataService, MediaAsset, MediaCategory } from '../../../core/services/admin-data.service';
+
+const CATEGORIES: Array<{ value: MediaCategory; label: string }> = [
+  { value: 'branding', label: 'Identité visuelle' }, { value: 'hero', label: 'Images permanentes' },
+  { value: 'menu', label: 'Plats' }, { value: 'wines', label: 'Vins' },
+  { value: 'gallery', label: 'Galerie publique' }, { value: 'team', label: 'Équipe' },
+];
 
 @Component({
-  selector: "app-admin-cms",
-  standalone: true,
-  imports: [CommonModule],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-admin-cms', standalone: true, imports: [CommonModule, FormsModule], changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="space-y-6 animate-fade-in">
-      <div class="flex justify-between items-center">
-        <div>
-          <h1 class="text-2xl font-serif font-bold text-white">CMS & Contenu</h1>
-          <p class="text-gray-400 text-sm mt-1">Gérez le site web et la communication</p>
-        </div>
-        <button class="px-4 py-2 bg-jacquier-gold text-jacquier-dark rounded-xl text-sm font-bold hover:bg-white transition-colors shadow-lg shadow-jacquier-gold/20">
-          Nouvel Article
-        </button>
+      <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+        <div><h1 class="text-2xl font-serif font-bold text-white">Médiathèque</h1><p class="mt-1 text-sm text-gray-400">Importez, décrivez et réutilisez les images du site.</p></div>
+        <button type="button" (click)="showForm.set(!showForm())" class="rounded-xl bg-jacquier-gold px-4 py-2 text-sm font-bold text-jacquier-dark transition-colors hover:bg-white">{{ showForm() ? 'Fermer' : 'Importer une image' }}</button>
       </div>
+      <p class="rounded-xl border border-gray-800 bg-[#1a1a1a] px-4 py-3 text-sm text-gray-400">Formats autorisés : JPEG, PNG et WebP, 5 Mo maximum. Le texte alternatif est obligatoire pour rendre les images accessibles. Les fichiers restent dans Supabase Storage ; cette page gère leur fiche d’utilisation.</p>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-2 space-y-6">
-          <div class="bg-[#1a1a1a] rounded-2xl border border-gray-800 overflow-hidden">
-            <div class="p-6 border-b border-gray-800 flex justify-between items-center">
-              <h3 class="text-lg font-serif font-bold text-white">Articles & Actualités</h3>
-              <div class="flex gap-2">
-                <button class="px-3 py-1 bg-gray-800 rounded-lg text-xs font-bold text-white">Tous</button>
-                <button class="px-3 py-1 text-xs font-bold text-gray-500 hover:text-white">Publiés</button>
-                <button class="px-3 py-1 text-xs font-bold text-gray-500 hover:text-white">Brouillons</button>
-              </div>
-            </div>
-            
-            <div class="p-6 space-y-4">
-              @for (post of posts(); track post.id) {
-                <div class="flex gap-4 p-4 rounded-xl hover:bg-gray-800/50 transition-colors group">
-                  <div class="w-24 h-24 rounded-lg bg-gray-800 overflow-hidden shrink-0">
-                    <img [src]="post.image" [alt]="post.title" class="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity">
-                  </div>
-                  <div class="flex-1 min-w-0">
-                    <div class="flex justify-between items-start">
-                      <h4 class="text-white font-bold text-sm group-hover:text-jacquier-gold transition-colors truncate">{{ post.title }}</h4>
-                      <span [class]="'px-2 py-0.5 rounded text-[10px] font-bold uppercase ' + (post.status === 'Publié' ? 'bg-green-500/10 text-green-500' : 'bg-gray-500/10 text-gray-500')">
-                        {{ post.status }}
-                      </span>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-1 line-clamp-2">{{ post.excerpt }}</p>
-                    <div class="flex items-center gap-4 mt-3">
-                      <span class="text-[10px] text-gray-600 uppercase font-bold">{{ post.date }}</span>
-                      <span class="text-[10px] text-gray-600 uppercase font-bold flex items-center gap-1">
-                        <i class="material-icons text-[12px]" aria-hidden="true">visibility</i> {{ post.views }} vues
-                      </span>
-                    </div>
-                  </div>
-                  <div class="flex flex-col gap-2">
-                    <button class="p-2 text-gray-500 hover:text-jacquier-gold transition-colors" [attr.aria-label]="'Modifier ' + post.title"><i class="material-icons text-lg" aria-hidden="true">edit</i></button>
-                    <button class="p-2 text-gray-500 hover:text-red-500 transition-colors" [attr.aria-label]="'Supprimer ' + post.title"><i class="material-icons text-lg" aria-hidden="true">delete</i></button>
-                  </div>
-                </div>
-              }
-            </div>
-          </div>
-        </div>
+      @if (errorMessage()) { <p class="rounded-xl border border-red-500/40 bg-red-500/10 px-4 py-3 text-sm text-red-200" role="alert">{{ errorMessage() }}</p> }
+      @if (successMessage()) { <p class="rounded-xl border border-green-500/40 bg-green-500/10 px-4 py-3 text-sm text-green-200" role="status">{{ successMessage() }}</p> }
 
-        <div class="space-y-6">
-          <div class="bg-[#1a1a1a] p-6 rounded-2xl border border-gray-800">
-            <h3 class="text-lg font-serif font-bold text-white mb-4">Promotions Actives</h3>
-            <div class="space-y-4">
-              @for (promo of promos(); track promo.id) {
-                <div class="p-4 bg-jacquier-gold/5 border border-jacquier-gold/20 rounded-xl relative overflow-hidden">
-                  <div class="absolute -right-4 -top-4 w-12 h-12 bg-jacquier-gold/10 rounded-full"></div>
-                  <p class="text-xs font-bold text-jacquier-gold uppercase tracking-widest mb-1">{{ promo.code }}</p>
-                  <p class="text-sm font-bold text-white">{{ promo.title }}</p>
-                  <p class="text-xs text-gray-500 mt-1">Expire le: {{ promo.expiry }}</p>
-                </div>
-              }
-            </div>
-            <button class="w-full mt-4 py-2 text-xs font-bold text-jacquier-gold border border-jacquier-gold/20 rounded-lg hover:bg-jacquier-gold/5 transition-colors uppercase tracking-widest">
-              Nouvelle Promo
-            </button>
-          </div>
+      @if (showForm()) {
+        <form (ngSubmit)="upload()" class="grid gap-4 rounded-2xl border border-jacquier-gold/30 bg-[#1a1a1a] p-6 md:grid-cols-2">
+          <h2 class="text-lg font-serif font-bold text-white md:col-span-2">Nouvelle image</h2>
+          <label class="text-sm text-gray-300 md:col-span-2">Fichier image<input type="file" accept="image/jpeg,image/png,image/webp" required (change)="selectFile($event)" class="mt-2 block w-full rounded-xl border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-300 file:mr-4 file:rounded-lg file:border-0 file:bg-jacquier-gold file:px-3 file:py-2 file:text-sm file:font-bold file:text-jacquier-dark" />@if (selectedFileName()) { <span class="mt-2 block text-xs text-gray-500">{{ selectedFileName() }}</span> }</label>
+          <label class="text-sm text-gray-300">Titre interne<input [(ngModel)]="title" name="title" maxlength="200" placeholder="Ex. Logo principal" class="mt-2 w-full rounded-xl bg-gray-900 px-3 py-2 text-white outline-none ring-jacquier-gold focus:ring-1" /></label>
+          <label class="text-sm text-gray-300">Zone d’utilisation<select [(ngModel)]="category" name="category" class="mt-2 w-full rounded-xl bg-gray-900 px-3 py-2 text-white outline-none ring-jacquier-gold focus:ring-1">@for (item of categories; track item.value) { <option [value]="item.value">{{ item.label }}</option> }</select></label>
+          <label class="text-sm text-gray-300 md:col-span-2">Texte alternatif <span class="text-red-300">*</span><input [(ngModel)]="altText" name="altText" maxlength="200" required placeholder="Décrivez l’image pour les lecteurs d’écran" class="mt-2 w-full rounded-xl bg-gray-900 px-3 py-2 text-white outline-none ring-jacquier-gold focus:ring-1" /></label>
+          <div class="flex justify-end md:col-span-2"><button type="submit" [disabled]="saving() || !selectedFile() || !altText.trim()" class="rounded-xl border border-jacquier-gold/50 px-4 py-2 text-sm font-bold text-jacquier-gold hover:bg-jacquier-gold/10 disabled:opacity-60">{{ saving() ? 'Import…' : 'Importer dans la médiathèque' }}</button></div>
+        </form>
+      }
 
-          <div class="bg-[#1a1a1a] p-6 rounded-2xl border border-gray-800">
-            <h3 class="text-lg font-serif font-bold text-white mb-4">SEO & Réseaux</h3>
-            <div class="space-y-4">
-              <div class="flex items-center justify-between">
-                <span class="text-xs text-gray-400">Score SEO Global</span>
-                <span class="text-sm font-bold text-green-500">85/100</span>
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="text-xs text-gray-400">Posts Instagram (Semaine)</span>
-                <span class="text-sm font-bold text-white">4</span>
-              </div>
-              <div class="flex items-center justify-between">
-                <span class="text-xs text-gray-400">Avis Google non répondus</span>
-                <span class="text-sm font-bold text-red-500">2</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      @if (loading()) { <p class="rounded-2xl border border-gray-800 bg-[#1a1a1a] p-10 text-center text-sm text-gray-400" role="status">Chargement de la médiathèque…</p> } @else if (!media().length) { <p class="rounded-2xl border border-gray-800 bg-[#1a1a1a] p-10 text-center text-sm text-gray-400">Aucune image n’est encore enregistrée.</p> } @else {
+        <section class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">@for (item of media(); track item.id) {
+          <article class="overflow-hidden rounded-2xl border border-gray-800 bg-[#1a1a1a]"><img [src]="item.publicUrl" [alt]="item.altText" class="h-48 w-full object-cover" /><div class="space-y-2 p-4"><p class="truncate text-sm font-bold text-white">{{ item.title || item.originalName }}</p><p class="text-xs text-gray-500">{{ categoryLabel(item.category) }} · {{ formatDate(item.createdAt) }}</p><p class="line-clamp-2 text-xs text-gray-400">{{ item.altText }}</p>@if (pendingDeleteId() === item.id) { <div class="flex gap-2 pt-2"><button type="button" (click)="delete(item)" [disabled]="saving()" class="rounded-lg bg-red-900 px-3 py-2 text-xs font-bold text-white disabled:opacity-60">Confirmer</button><button type="button" (click)="pendingDeleteId.set(null)" class="rounded-lg border border-gray-700 px-3 py-2 text-xs text-gray-300">Annuler</button></div> } @else { <button type="button" (click)="pendingDeleteId.set(item.id)" [attr.aria-label]="'Supprimer ' + (item.title || item.originalName)" class="pt-2 text-xs font-bold text-red-300 hover:text-red-200">Supprimer</button> }</div></article>
+        }</section>
+      }
     </div>
   `,
-  styles: [`
-    .animate-fade-in {
-      animation: fadeIn 0.6s ease-out forwards;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  `]
+  styles: [`.animate-fade-in { animation: fadeIn 0.6s ease-out forwards; } @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }`]
 })
 export class CMSComponent {
-  posts = signal([
-    { id: 1, title: 'Lancement de la nouvelle carte d\'été', excerpt: 'Découvrez nos nouvelles créations inspirées des saveurs tropicales et des produits locaux de saison...', status: 'Publié', date: '12 Juin 2024', views: 1240, image: 'https://picsum.photos/seed/post1/200/200' },
-    { id: 2, title: 'Atelier Gastronomique: Maîtriser le Yassa', excerpt: 'Rejoignez notre Chef pour une matinée immersive dédiée à l\'art du Yassa traditionnel revisité...', status: 'Publié', date: '08 Juin 2024', views: 850, image: 'https://picsum.photos/seed/post2/200/200' },
-    { id: 3, title: 'Le Jacquier s\'agrandit: Nouvelle terrasse', excerpt: 'Nous sommes ravis de vous annoncer l\'ouverture de notre nouvel espace extérieur avec vue sur...', status: 'Brouillon', date: '05 Juin 2024', views: 0, image: 'https://picsum.photos/seed/post3/200/200' },
-  ]);
+  private readonly adminData = inject(AdminDataService);
+  readonly media = signal<MediaAsset[]>([]); readonly loading = signal(true); readonly saving = signal(false);
+  readonly showForm = signal(false); readonly pendingDeleteId = signal<string | null>(null); readonly errorMessage = signal(''); readonly successMessage = signal('');
+  readonly selectedFile = signal<File | null>(null); readonly selectedFileName = signal(''); readonly categories = CATEGORIES;
+  title = ''; altText = ''; category: MediaCategory = 'gallery';
 
-  promos = signal([
-    { id: 1, code: 'SUMMER24', title: '-15% sur les cocktails', expiry: '31 Août 2024' },
-    { id: 2, code: 'ECOLEPRO', title: 'Frais d\'inscription offerts', expiry: '15 Sept 2024' },
-  ]);
+  constructor() { void this.load(); }
+  async load(): Promise<void> { this.loading.set(true); this.errorMessage.set(''); try { this.media.set(await this.adminData.getMediaAssets()); } catch { this.errorMessage.set('Impossible de charger la médiathèque. Réessayez dans un instant.'); } finally { this.loading.set(false); } }
+  selectFile(event: Event): void { const file = (event.target as HTMLInputElement).files?.[0] ?? null; this.selectedFile.set(file); this.selectedFileName.set(file ? `${file.name} · ${Math.ceil(file.size / 1024)} Ko` : ''); }
+  async upload(): Promise<void> {
+    const file = this.selectedFile(); if (!file || !this.altText.trim()) return;
+    this.saving.set(true); this.errorMessage.set(''); this.successMessage.set('');
+    try {
+      const asset = await this.adminData.uploadMediaAsset(file, { title: this.title.trim(), altText: this.altText.trim(), category: this.category });
+      this.media.update(items => [asset, ...items]);
+      if (asset.category === 'gallery') await this.adminData.createGalleryMedia({ imageUrl: asset.publicUrl, title: asset.title, category: 'gallery' });
+      this.title = ''; this.altText = ''; this.category = 'gallery'; this.selectedFile.set(null); this.selectedFileName.set(''); this.showForm.set(false);
+      this.successMessage.set(asset.category === 'gallery' ? 'Image importée et publiée dans la galerie.' : 'Image importée dans la médiathèque.');
+    } catch { this.errorMessage.set('Import impossible. Vérifiez le format, la taille et le texte alternatif.'); }
+    finally { this.saving.set(false); }
+  }
+  async delete(item: MediaAsset): Promise<void> { this.saving.set(true); this.errorMessage.set(''); try { await this.adminData.deleteMediaAsset(item.id); this.media.update(items => items.filter(candidate => candidate.id !== item.id)); this.pendingDeleteId.set(null); } catch { this.errorMessage.set('Suppression impossible : cette image est peut-être utilisée par le site.'); } finally { this.saving.set(false); } }
+  categoryLabel(category: MediaCategory): string { return CATEGORIES.find(item => item.value === category)?.label ?? category; }
+  formatDate(value: string): string { return new Intl.DateTimeFormat('fr-FR', { dateStyle: 'medium' }).format(new Date(value)); }
 }

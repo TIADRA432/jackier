@@ -1,5 +1,6 @@
 
 import { Routes } from '@angular/router';
+import { adminAuthGuard } from './core/guards/admin-auth.guard';
 
 export const routes: Routes = [
   {
@@ -43,8 +44,15 @@ export const routes: Routes = [
     title: 'Le Jacquier - Contact'
   },
   {
+    path: 'admin/login',
+    loadComponent: () => import('./pages/admin/login/admin-login.component').then(m => m.AdminLoginComponent),
+    title: 'Le Jacquier - Connexion administration'
+  },
+  {
     path: 'admin',
     loadComponent: () => import('./pages/admin/admin.component').then(m => m.AdminComponent),
+    canActivate: [adminAuthGuard],
+    canActivateChild: [adminAuthGuard],
     children: [
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', loadComponent: () => import('./pages/admin/dashboard/dashboard.component').then(m => m.DashboardComponent), title: 'Admin - Dashboard' },
@@ -57,7 +65,9 @@ export const routes: Routes = [
       { path: 'finance', loadComponent: () => import('./pages/admin/finance/finance.component').then(m => m.AdminFinanceComponent), title: 'Admin - Finance' },
       { path: 'equipe', loadComponent: () => import('./pages/admin/equipe/equipe.component').then(m => m.AdminEquipeComponent), title: 'Admin - Équipe' },
       { path: 'settings', loadComponent: () => import('./pages/admin/settings/settings.component').then(m => m.AdminSettingsComponent), title: 'Admin - Paramètres' },
-      { path: 'restaurant', loadComponent: () => import('./pages/admin/restaurant/restaurant.component').then(m => m.AdminRestaurantComponent), title: 'Admin - Restaurant' }
+      { path: 'restaurant', loadComponent: () => import('./pages/admin/restaurant/restaurant.component').then(m => m.AdminRestaurantComponent), title: 'Admin - Restaurant' },
+      { path: 'categories', loadComponent: () => import('./pages/admin/categories/categories.component').then(m => m.AdminCategoriesComponent), title: 'Admin - Catégories du menu' },
+      { path: 'vins', loadComponent: () => import('./pages/admin/wines/wines.component').then(m => m.AdminWinesComponent), title: 'Admin - Carte des vins' }
     ]
   },
   {

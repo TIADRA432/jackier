@@ -1,6 +1,7 @@
 
-import { Component, signal, ChangeDetectionStrategy, HostListener } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy, HostListener, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { SiteSettingsService } from '../../../core/services/site-settings.service';
 
 @Component({
   selector: 'app-header',
@@ -16,10 +17,10 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
             [class.bg-transparent]="!isScrolled() && !isMobileMenuOpen()">
       <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
         <!-- Logo -->
-        <a routerLink="/" class="text-2xl md:text-3xl font-serif font-bold tracking-widest uppercase transition-colors duration-300" 
+        <a routerLink="/" class="inline-flex h-11 items-center transition-colors duration-300"
            [class.text-jacquier-gold]="!isScrolled() && !isMobileMenuOpen()"
            [class.text-jacquier-primary]="isScrolled() || isMobileMenuOpen()">
-           Le Jacquier
+           <img [src]="siteSettings.logo().url" [alt]="siteSettings.logo().altText" class="h-10 w-auto max-w-[220px] object-contain object-left" />
         </a>
 
         <!-- Desktop Nav -->
@@ -107,6 +108,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   `
 })
 export class HeaderComponent {
+  readonly siteSettings = inject(SiteSettingsService);
   isScrolled = signal(false);
   isMobileMenuOpen = signal(false);
 

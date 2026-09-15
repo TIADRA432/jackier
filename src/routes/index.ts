@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import multer from 'multer';
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../controllers/category.controller';
-import { getMenuItems, createMenuItem, updateMenuItem, deleteMenuItem } from '../controllers/menu.controller';
+import { getMenuItems, getPublicMenuItems, createMenuItem, updateMenuItem, deleteMenuItem } from '../controllers/menu.controller';
 import { getWines, createWine, updateWine, deleteWine } from '../controllers/wine.controller';
 import { uploadMenuImage, uploadWineImage } from '../controllers/upload.controller';
+import { createMediaAsset, deleteMediaAsset, getMediaAssets, updateMediaAsset } from '../controllers/media.controller';
 import { getGalleryImages, createGalleryImage, deleteGalleryImage } from '../controllers/gallery.controller';
 import { getDashboardOverview } from '../controllers/dashboard.controller';
 import { getReservations, createReservation, updateReservationStatus, deleteReservation } from '../controllers/reservation.controller';
@@ -11,6 +12,8 @@ import { getCateringEvents, createCateringEvent, updateCateringEvent, deleteCate
 import { getSchoolPrograms, createSchoolProgram, updateSchoolProgram, deleteSchoolProgram } from '../controllers/school.controller';
 import { getExpenses, getReports, addExpense, dailyClose } from '../controllers/finance.controller';
 import { getSettings, updateSettings, getLogs } from '../controllers/settings.controller';
+import { createInventoryItem, deleteInventoryItem, getInventoryItems, updateInventoryItem } from '../controllers/inventory.controller';
+import { createTeamMember, deleteTeamMember, getTeamMembers, updateTeamMember } from '../controllers/team.controller';
 import { verifyToken, requireRole } from '../middleware/auth.middleware';
 import { publicWriteRateLimiter } from '../middlewares/security.middleware';
 
@@ -58,6 +61,18 @@ router.get('/finance/reports', verifyToken, requireRole(['ADMIN']), getReports);
 router.post('/finance/expenses', verifyToken, requireRole(['ADMIN']), addExpense);
 router.post('/finance/close', verifyToken, requireRole(['ADMIN']), dailyClose);
 
+// Inventory
+router.get('/inventory', verifyToken, requireRole(['ADMIN']), getInventoryItems);
+router.post('/inventory', verifyToken, requireRole(['ADMIN']), createInventoryItem);
+router.put('/inventory/:id', verifyToken, requireRole(['ADMIN']), updateInventoryItem);
+router.delete('/inventory/:id', verifyToken, requireRole(['ADMIN']), deleteInventoryItem);
+
+// Internal team directory
+router.get('/team', verifyToken, requireRole(['ADMIN']), getTeamMembers);
+router.post('/team', verifyToken, requireRole(['ADMIN']), createTeamMember);
+router.put('/team/:id', verifyToken, requireRole(['ADMIN']), updateTeamMember);
+router.delete('/team/:id', verifyToken, requireRole(['ADMIN']), deleteTeamMember);
+
 // Settings & Logs
 router.get('/settings', getSettings); // Public for some parts, maybe protect later
 router.put('/settings', verifyToken, requireRole(['ADMIN']), updateSettings);
@@ -68,14 +83,22 @@ router.get('/gallery', getGalleryImages); // Public
 router.post('/gallery', verifyToken, requireRole(['ADMIN']), upload.single('image'), createGalleryImage);
 router.delete('/gallery/:id', verifyToken, requireRole(['ADMIN']), deleteGalleryImage);
 
+// Central media library. The browser uploads only through these administrator-only
+// endpoints; the Worker keeps the Storage service key outside the client.
+router.get('/media', verifyToken, requireRole(['ADMIN']), getMediaAssets);
+router.post('/media', verifyToken, requireRole(['ADMIN']), upload.single('image'), createMediaAsset);
+router.put('/media/:id', verifyToken, requireRole(['ADMIN']), updateMediaAsset);
+router.delete('/media/:id', verifyToken, requireRole(['ADMIN']), deleteMediaAsset);
+
 // Categories
 router.get('/categories', getCategories);
 router.post('/categories', verifyToken, requireRole(['ADMIN']), createCategory);
 router.put('/categories/:id', verifyToken, requireRole(['ADMIN']), updateCategory);
 router.delete('/categories/:id', verifyToken, requireRole(['ADMIN']), deleteCategory);
 
-// Menu Items
-router.get('/menu', getMenuItems);
+// Menu Items. The public catalogue never exposes temporarily unavailable dishes.
+router.get('/menu', getPublicMenuItems);
+router.get('/admin/menu', verifyToken, requireRole(['ADMIN']), getMenuItems);
 router.post('/menu', verifyToken, requireRole(['ADMIN']), createMenuItem);
 router.put('/menu/:id', verifyToken, requireRole(['ADMIN']), updateMenuItem);
 router.delete('/menu/:id', verifyToken, requireRole(['ADMIN']), deleteMenuItem);
