@@ -1,6 +1,7 @@
 import cors, { type CorsOptions } from 'cors';
 import type { Application, RequestHandler } from 'express';
-import { rateLimit } from 'express-rate-limit';
+import { rateLimit, ipKeyGenerator } from 'express-rate-limit';
+import { isIP } from 'node:net';
 import helmet from 'helmet';
 
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
@@ -73,10 +74,12 @@ export const staticAssetSecurityHeaders: Readonly<Record<string, string>> = {
   'X-Permitted-Cross-Domain-Policies': 'none',
 };
 
-export const configureSecurity = (app: Application): void => {
+export const configureSecurity = (app: Application, options: { cloudflare?: boolean } = {}): void => {
   // Cloudflare/other reverse proxies provide the client address through
   // X-Forwarded-For, allowing the limiter to identify callers correctly.
-  app.set('trust proxy', 1);
+  app.set('trust proxy', options.cloudflare ? false : 1);
+  // Only the Worker entry point may trust Cloudflare's overwritten edge header.
+  app.set('cloudflare client ip', options.cloudflare === true);
 
   app.use(
     helmet({
@@ -111,7 +114,17 @@ export const configureSecurity = (app: Application): void => {
 export const publicWriteRateLimiter: RequestHandler = rateLimit({
   windowMs: RATE_LIMIT_WINDOW_MS,
   limit: RATE_LIMIT_MAX_REQUESTS,
-  standardHeaders: 'draft-8',
+  // draft-7 avoids draft-8 partition hashing in the Workers Node adapter.
+  standardHeaders: 'draft-7',
+  keyGenerator: (req) => {
+    const edgeIp = req.app.get('cloudflare client ip') === true
+      ? req.get('CF-Connecting-IP')
+      : undefined;
+    const ip = edgeIp && isIP(edgeIp) ? edgeIp : req.ip;
+    // The Workers HTTP adapter may not provide a socket remoteAddress. Never
+    // pass undefined to the limiter; unknown callers share a conservative quota.
+    return ip && isIP(ip) ? ipKeyGenerator(ip) : 'unknown-client';
+  },
   legacyHeaders: false,
   message: {
     success: false,
