@@ -74,3 +74,33 @@ test('keeps the equivalent security headers for Cloudflare static assets', () =>
   assert.equal(staticAssetSecurityHeaders['X-Content-Type-Options'], 'nosniff');
   assert.match(staticAssetSecurityHeaders['Content-Security-Policy'], /default-src 'self'/);
 });
+
+test('Worker clients without a socket IP keep separate quotas and cannot rotate X-Forwarded-For', async () => {
+  const app = express();
+  configureSecurity(app, { cloudflare: true });
+  app.use((req, _res, next) => {
+    Object.defineProperty(req, 'ip', { value: undefined });
+    next();
+  });
+  app.post('/write', publicWriteRateLimiter, (_req, res) => res.status(201).end());
+  app.use(errorHandler);
+  const server = await startServer(app);
+  const send = (ip: string, forwarded = '198.51.100.1') => fetch(`${server.url}/write`, {
+    method: 'POST', headers: { 'CF-Connecting-IP': ip, 'X-Forwarded-For': forwarded },
+  });
+  try {
+    for (let i = 0; i < 5; i++) {
+      const response = await send('192.0.2.10', `198.51.100.${i + 1}`);
+      assert.equal(response.status, 201);
+      assert.match(response.headers.get('ratelimit') ?? '', /limit=5/);
+    }
+    assert.equal((await send('192.0.2.10', '198.51.100.99')).status, 429);
+    assert.equal((await send('192.0.2.11')).status, 201);
+    for (let i = 0; i < 5; i++) assert.equal((await send(`2001:db8:1234:5600::${i + 1}`)).status, 201);
+    assert.equal((await send('2001:db8:1234:5600::99')).status, 429);
+    for (let i = 0; i < 5; i++) assert.equal((await send('invalid')).status, 201);
+    assert.equal((await send('also-invalid')).status, 429);
+  } finally {
+    await server.close();
+  }
+});
