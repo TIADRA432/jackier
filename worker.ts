@@ -10,7 +10,7 @@ import './src/config/supabase';
 
 const app = express();
 
-configureSecurity(app);
+configureSecurity(app, { cloudflare: true });
 app.use(express.json({ limit: '64kb' }));
 app.use('/api', routes);
 app.use(errorHandler);
