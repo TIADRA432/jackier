@@ -184,15 +184,16 @@ export class ReservationComponent {
       };
       
       try {
-        const success = await this.reservationService.makeReservation(data);
-        if (success) {
+        const result = await this.reservationService.makeReservation(data);
+        if (result.success) {
           this.lastReservationName.set(data.name);
           this.lastReservationDate.set(`${data.date} à ${data.time}`);
           this.successMessage.set(true);
         } else {
-          // La réservation a été rejetée par le serveur (créneau invalide, validation...) :
-          // on ne doit jamais afficher un faux succès dans ce cas.
-          this.submitError.set('Impossible de confirmer la réservation. Vérifiez vos informations et réessayez, ou contactez-nous directement.');
+          // La réservation a été rejetée par le serveur : on affiche le message précis
+          // renvoyé par ReservationService (distingue 429 / 400 / 500 / coupure réseau)
+          // plutôt qu'un message générique qui masquerait la vraie cause.
+          this.submitError.set(result.errorMessage ?? 'Impossible de confirmer la réservation. Merci de réessayer, ou contactez-nous directement.');
         }
       } catch (e) {
         console.error(e);
