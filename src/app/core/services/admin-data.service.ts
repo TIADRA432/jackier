@@ -49,17 +49,34 @@ export interface SchoolProgram {
   level?: string;
 }
 
+// Valeurs acceptées par le filtre public de la page /menu (menu.component.ts) — ne pas
+// désynchroniser : une catégorie hors de cette liste n'apparaîtra dans aucun filtre public.
+export const MENU_ITEM_CATEGORIES = ['entree', 'plat', 'dessert', 'boisson', 'fruits_de_mer', 'local', 'vin'] as const;
+export type MenuItemCategory = typeof MENU_ITEM_CATEGORIES[number];
+
 export interface MenuItem {
   id: string;
   name?: string;
   category?: string;
+  categoryId?: string;
   price?: number | string;
   imageUrl?: string;
   image?: string;
+  shortDescription?: string;
   description?: string;
   active?: boolean;
   displayOrder?: number;
+  isFeatured?: boolean;
+  isVegetarian?: boolean;
+  isSpicy?: boolean;
+  isLocalSpecialty?: boolean;
 }
+
+/** Champs acceptés par POST/PUT /api/menu (voir menu.controller.ts validateMenuPayload). */
+export type MenuItemPayload = Partial<Pick<MenuItem,
+  'name' | 'category' | 'categoryId' | 'price' | 'shortDescription' | 'imageUrl' |
+  'active' | 'displayOrder' | 'isFeatured' | 'isVegetarian' | 'isSpicy' | 'isLocalSpecialty'
+>>;
 
 export interface MenuCategory {
   id: string;
@@ -198,8 +215,16 @@ export class AdminDataService {
     return firstValueFrom(this.http.get<MenuItem[]>(`${this.apiUrl}/admin/menu`));
   }
 
-  async updateMenuItem(id: string, payload: { active: boolean }): Promise<MenuItem> {
+  async createMenuItem(payload: MenuItemPayload): Promise<MenuItem> {
+    return firstValueFrom(this.http.post<MenuItem>(`${this.apiUrl}/menu`, payload));
+  }
+
+  async updateMenuItem(id: string, payload: MenuItemPayload): Promise<MenuItem> {
     return firstValueFrom(this.http.put<MenuItem>(`${this.apiUrl}/menu/${id}`, payload));
+  }
+
+  async deleteMenuItem(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`${this.apiUrl}/menu/${id}`));
   }
 
   async getCategories(): Promise<MenuCategory[]> {
