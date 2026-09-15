@@ -2730,7 +2730,7 @@
       "file_type": "code",
       "norm_label": "configuresecurity()",
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L76"
+      "source_location": "L77"
     },
     {
       "id": "tests_security_middleware_test_startserver",
@@ -3247,7 +3247,7 @@
       "file_type": "code",
       "norm_label": "createcorserror()",
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L26"
+      "source_location": "L27"
     },
     {
       "id": "src_middlewares_security_middleware_normalizeorigin",
@@ -3258,7 +3258,7 @@
       "file_type": "code",
       "norm_label": "normalizeorigin()",
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L10"
+      "source_location": "L11"
     },
     {
       "id": "src_app_pages_admin_categories_categories_component_admincategoriescomponent_constructor",
@@ -7026,7 +7026,7 @@
       "file_type": "code",
       "norm_label": "allowedorigins",
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L24"
+      "source_location": "L25"
     },
     {
       "id": "src_middlewares_security_middleware_configuredorigins",
@@ -7036,7 +7036,7 @@
       "file_type": "code",
       "norm_label": "configuredorigins",
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L18"
+      "source_location": "L19"
     },
     {
       "id": "src_middlewares_security_middleware_contentsecuritypolicy",
@@ -7046,7 +7046,7 @@
       "file_type": "code",
       "norm_label": "contentsecuritypolicy",
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L48"
+      "source_location": "L49"
     },
     {
       "id": "src_middlewares_security_middleware_corsoptions",
@@ -7056,7 +7056,7 @@
       "file_type": "code",
       "norm_label": "corsoptions",
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L32"
+      "source_location": "L33"
     },
     {
       "id": "src_middlewares_security_middleware_publicwriteratelimiter",
@@ -7066,7 +7066,7 @@
       "file_type": "code",
       "norm_label": "publicwriteratelimiter",
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L111"
+      "source_location": "L114"
     },
     {
       "id": "ref_cors",
@@ -7427,7 +7427,7 @@
       "file_type": "code",
       "norm_label": "staticassetsecurityheaders",
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L64"
+      "source_location": "L65"
     },
     {
       "id": "worker",
@@ -17683,7 +17683,7 @@
       "confidence_score": 1.0,
       "context": "import",
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L4",
+      "source_location": "L5",
       "weight": 1.0
     },
     {
@@ -22682,7 +22682,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L111",
+      "source_location": "L114",
       "weight": 1.0
     },
     {
@@ -22693,7 +22693,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L18",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -22704,7 +22704,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L24",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -22715,7 +22715,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L26",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -22726,7 +22726,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L32",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -22737,7 +22737,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L48",
+      "source_location": "L49",
       "weight": 1.0
     },
     {
@@ -22748,7 +22748,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L64",
+      "source_location": "L65",
       "weight": 1.0
     },
     {
@@ -22759,7 +22759,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L76",
+      "source_location": "L77",
       "weight": 1.0
     },
     {
@@ -25637,7 +25637,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "src/middlewares/security.middleware.ts",
-      "source_location": "L22",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -26302,5 +26302,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "c6a25ea907e018fc45530127476403ec72282310"
+  "built_at_commit": "e492bba5bb6f338168aad5b31e9d0871786f7aab"
 }
