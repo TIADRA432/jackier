@@ -20,3 +20,9 @@ Référence main avant intervention : c1f79dd65f77d7503e9b6d26e325ea1a35b055b0. 
 
 ## Graphify
 La commande graphify update . a été tentée localement mais le binaire est absent. Le workflow Graphify du dépôt doit actualiser le graphe après fusion.
+
+## Résultat confirmé en production
+Le 15 septembre 2026 à 20:24 UTC, POST /api/reservations a renvoyé HTTP 201 avec une réservation créée (statut pending). La ligne fictive a ensuite été supprimée par son UUID et son adresse de diagnostic, avec retour de l'UUID supprimé.
+Déploiement réussi : https://github.com/TIADRA432/jackier/actions/runs/35019225159
+Version Cloudflare : dc9b44a0-e054-4125-a47a-db9ced15d8aa.
+PR #5 fusionnée pour déploiement ; PR #6 fusionnée pour synchroniser main. Le workflow Graphify a actualisé le graphe. Les vérifications portent sur l'API en production et les tests automatisés ; le parcours visuel navigateur n'a pas été rejoué.
