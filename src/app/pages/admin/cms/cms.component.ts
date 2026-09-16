@@ -1,6 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { DashboardComponent } from '@uppy/angular';
+import Uppy from '@uppy/core';
+import type { DashboardOptions } from '@uppy/dashboard';
+import French from '@uppy/locales/lib/fr_FR';
 import { AdminDataService, MediaAsset, MediaCategory, MediaTag } from '../../../core/services/admin-data.service';
 
 const CATEGORIES: Array<{ value: MediaCategory; label: string }> = [
@@ -9,10 +13,10 @@ const CATEGORIES: Array<{ value: MediaCategory; label: string }> = [
   { value: 'gallery', label: 'Galerie publique' }, { value: 'team', label: 'Équipe' },
 ];
 
-type UploadDraft = { file: File; title: string; altText: string };
+type UploadDraft = { id: string; file: File; title: string; altText: string };
 
 @Component({
-  selector: 'app-admin-cms', standalone: true, imports: [CommonModule, FormsModule], changeDetection: ChangeDetectionStrategy.OnPush,
+  selector: 'app-admin-cms', standalone: true, imports: [CommonModule, FormsModule, DashboardComponent], changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="space-y-6 animate-fade-in">
       <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
@@ -27,9 +31,9 @@ type UploadDraft = { file: File; title: string; altText: string };
       @if (showForm()) {
         <form (ngSubmit)="uploadAll()" class="space-y-5 rounded-2xl border border-jacquier-gold/30 bg-[#1a1a1a] p-6">
           <h2 class="text-lg font-serif font-bold text-white">Nouvel import</h2>
-          <label class="block text-sm text-gray-300">Images
-            <input type="file" multiple accept="image/jpeg,image/png,image/webp" required (change)="selectFiles($event)" class="mt-2 block w-full rounded-xl border border-gray-700 bg-gray-900 px-3 py-2 text-sm text-gray-300 file:mr-4 file:rounded-lg file:border-0 file:bg-jacquier-gold file:px-3 file:py-2 file:text-sm file:font-bold file:text-jacquier-dark" />
-          </label>
+          <div class="uppy-shell" aria-label="Sélection des images">
+            <uppy-dashboard [uppy]="uppy" [props]="uppyProps"></uppy-dashboard>
+          </div>
           <label class="block text-sm text-gray-300">Zone d’utilisation
             <select [(ngModel)]="uploadCategory" name="uploadCategory" class="mt-2 w-full rounded-xl bg-gray-900 px-3 py-3 text-white outline-none ring-jacquier-gold focus:ring-1">@for (item of categories; track item.value) { <option [value]="item.value">{{ item.label }}</option> }</select>
           </label>
@@ -37,7 +41,7 @@ type UploadDraft = { file: File; title: string; altText: string };
           @if (uploadDrafts().length) {
             <div class="space-y-3">
               <p class="text-sm font-bold text-white">{{ uploadDrafts().length }} image(s) sélectionnée(s)</p>
-              @for (draft of uploadDrafts(); track draft.file.name + draft.file.lastModified) {
+              @for (draft of uploadDrafts(); track draft.id) {
                 <div class="grid gap-3 rounded-xl border border-gray-800 bg-gray-900/70 p-4 md:grid-cols-2">
                   <p class="truncate text-xs text-gray-400 md:col-span-2">{{ draft.file.name }} · {{ fileSize(draft.file.size) }}</p>
                   <label class="text-xs text-gray-300">Titre<input [(ngModel)]="draft.title" [name]="'title-' + $index" maxlength="200" class="mt-1 w-full rounded-lg bg-black/30 px-3 py-2 text-white" /></label>
@@ -92,9 +96,18 @@ type UploadDraft = { file: File; title: string; altText: string };
       }
     </div>
   `,
-  styles: [`.animate-fade-in { animation: fadeIn 0.6s ease-out forwards; } @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }`]
+  styles: [`
+    .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
+    .uppy-shell { overflow: hidden; border-radius: 1rem; }
+    .uppy-shell ::ng-deep .uppy-Dashboard-inner { border-color: rgb(55 65 81); background: rgb(17 24 39); }
+    .uppy-shell ::ng-deep .uppy-Dashboard-AddFiles { border-color: rgb(75 85 99); }
+    .uppy-shell ::ng-deep .uppy-Dashboard-AddFiles-title,
+    .uppy-shell ::ng-deep .uppy-Dashboard-dropFilesHereHint { color: rgb(209 213 219); }
+    .uppy-shell ::ng-deep .uppy-Dashboard-browse { color: #d4af37; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  `]
 })
-export class CMSComponent {
+export class CMSComponent implements OnDestroy {
   private readonly adminData = inject(AdminDataService);
   readonly media = signal<MediaAsset[]>([]); readonly tags = signal<MediaTag[]>([]);
   readonly loading = signal(true); readonly saving = signal(false); readonly savingTag = signal(false);
@@ -104,6 +117,23 @@ export class CMSComponent {
   readonly uploadDrafts = signal<UploadDraft[]>([]); readonly uploadTagIds = signal<string[]>([]); readonly uploadProgress = signal(0);
   readonly query = signal(''); readonly categoryFilter = signal('all'); readonly tagFilter = signal('all');
   readonly categories = CATEGORIES;
+  readonly uppy = new Uppy({
+    autoProceed: false,
+    locale: French,
+    restrictions: {
+      maxNumberOfFiles: 20,
+      maxFileSize: 5 * 1024 * 1024,
+      allowedFileTypes: ['image/jpeg', 'image/png', 'image/webp'],
+    },
+  });
+  readonly uppyProps: DashboardOptions<Record<string, never>, Record<string, unknown>> = {
+    inline: true,
+    height: 360,
+    hideUploadButton: true,
+    proudlyDisplayPoweredByUppy: false,
+    theme: 'dark',
+    note: 'JPEG, PNG ou WebP · 5 Mo maximum · 20 images maximum',
+  };
   uploadCategory: MediaCategory = 'menu'; newTagName = '';
   readonly filteredMedia = computed(() => {
     const query = this.normalize(this.query()); const category = this.categoryFilter(); const tag = this.tagFilter();
@@ -114,16 +144,26 @@ export class CMSComponent {
     });
   });
 
-  constructor() { void this.load(); }
+  constructor() {
+    this.uppy.on('file-added', file => {
+      const selectedFile = file.data as File;
+      this.uploadDrafts.update(drafts => [...drafts, {
+        id: file.id,
+        file: selectedFile,
+        title: selectedFile.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' '),
+        altText: '',
+      }]);
+    });
+    this.uppy.on('file-removed', file => this.uploadDrafts.update(drafts => drafts.filter(draft => draft.id !== file.id)));
+    this.uppy.on('restriction-failed', (_file, error) => this.errorMessage.set(error.message));
+    void this.load();
+  }
+  ngOnDestroy(): void { this.uppy.destroy(); }
   async load(): Promise<void> {
     this.loading.set(true); this.errorMessage.set('');
     try { const [media, tags] = await Promise.all([this.adminData.getMediaAssets(), this.adminData.getMediaTags()]); this.media.set(media); this.tags.set(tags); }
     catch { this.errorMessage.set('Impossible de charger la médiathèque. Réessayez dans un instant.'); }
     finally { this.loading.set(false); }
-  }
-  selectFiles(event: Event): void {
-    const files = Array.from((event.target as HTMLInputElement).files ?? []).slice(0, 20);
-    this.uploadDrafts.set(files.map(file => ({ file, title: file.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' '), altText: '' })));
   }
   canUpload(): boolean {
     return this.uploadDrafts().length > 0 && this.uploadDrafts().every(draft => draft.altText.trim().length > 0);
@@ -139,7 +179,7 @@ export class CMSComponent {
         created.push(asset); this.uploadProgress.update(value => value + 1);
         if (asset.category === 'gallery') await this.adminData.createGalleryMedia({ imageUrl: asset.publicUrl, title: asset.title, category: 'gallery' });
       }
-      this.media.update(items => [...created.reverse(), ...items]); this.uploadDrafts.set([]); this.uploadTagIds.set([]); this.showForm.set(false);
+      this.media.update(items => [...created.reverse(), ...items]); this.uppy.clear(); this.uploadTagIds.set([]); this.showForm.set(false);
       this.successMessage.set(`${created.length} image(s) importée(s)${this.uploadCategory === 'gallery' ? ' et publiée(s) dans la galerie' : ''}.`);
     } catch { this.errorMessage.set(`Import interrompu après ${created.length} image(s). Vérifiez le format, la taille et les textes alternatifs.`); if (created.length) this.media.update(items => [...created.reverse(), ...items]); }
     finally { this.saving.set(false); }

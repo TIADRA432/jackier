@@ -172,7 +172,7 @@ test('gallery writes validate image URLs while the CMS uses the authenticated me
   assert.match(component, /this\.adminData\.getMediaAssets\(\)/);
   assert.match(component, /this\.adminData\.uploadMediaAsset/);
   assert.match(component, /this\.adminData\.deleteMediaAsset/);
-  assert.match(component, /type="file"/);
+  assert.match(component, /<uppy-dashboard \[uppy\]="uppy"/);
   assert.match(component, /Texte alternatif/);
 });
 

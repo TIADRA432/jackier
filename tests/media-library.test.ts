@@ -50,7 +50,10 @@ test('admin media UI supports batch import, tags, filters and authenticated down
   const component = await source('src', 'app', 'pages', 'admin', 'cms', 'cms.component.ts');
   const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
 
-  assert.match(component, /type="file" multiple/);
+  assert.match(component, /DashboardComponent/);
+  assert.match(component, /<uppy-dashboard \[uppy\]="uppy"/);
+  assert.match(component, /maxNumberOfFiles: 20/);
+  assert.match(component, /allowedFileTypes: \['image\/jpeg', 'image\/png', 'image\/webp'\]/);
   assert.match(component, /uploadDrafts/);
   assert.match(component, /canUpload\(\): boolean/);
   assert.doesNotMatch(component, /readonly canUpload = computed/);

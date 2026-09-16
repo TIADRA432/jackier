@@ -7,6 +7,8 @@ import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/
 import { AppComponent } from './src/app.component';
 import { routes } from './src/app/app.routes';
 import { authInterceptor } from './src/app/core/interceptors/auth.interceptor';
+import '@uppy/core/css/style.min.css';
+import '@uppy/dashboard/css/style.min.css';
 
 bootstrapApplication(AppComponent, {
   providers: [
