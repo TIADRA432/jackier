@@ -4,7 +4,9 @@ export interface Dish {
   name: string;
   description: string;
   price: number;
-  category: 'entree' | 'plat' | 'dessert' | 'boisson' | 'fruits_de_mer' | 'local' | 'vin';
+  category: string;
+  categoryId?: string;
+  isFeatured?: boolean;
   image: string;
   isVegetarian?: boolean;
   isSpicy?: boolean;

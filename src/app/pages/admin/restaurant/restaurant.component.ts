@@ -14,7 +14,7 @@ import { AdminDataService, MenuItem } from '../../../core/services/admin-data.se
           <h1 class="text-2xl font-serif font-bold text-white">Gestion Restaurant</h1>
           <p class="mt-1 text-sm text-gray-400">Plats publiés et disponibilité de la carte.</p>
         </div>
-        <button type="button" (click)="load()" [disabled]="loading()" class="self-start rounded-xl border border-gray-700 px-4 py-2 text-sm font-bold text-gray-200 hover:border-jacquier-gold hover:text-jacquier-gold disabled:opacity-50">
+        <button type="button" (click)="load()" [disabled]="loading() || !!savingId()" class="self-start rounded-xl border border-gray-700 px-4 py-2 text-sm font-bold text-gray-200 hover:border-jacquier-gold hover:text-jacquier-gold disabled:opacity-50">
           {{ loading() ? 'Actualisation…' : 'Actualiser' }}
         </button>
       </header>
@@ -54,7 +54,8 @@ import { AdminDataService, MenuItem } from '../../../core/services/admin-data.se
                     </span>
                   </td>
                   <td class="px-6 py-4 text-right">
-                    <button type="button" (click)="toggleAvailability(dish)" [disabled]="savingId() === dish.id" [attr.aria-label]="isActive(dish) ? 'Marquer ' + (dish.name || 'ce plat') + ' indisponible' : 'Marquer ' + (dish.name || 'ce plat') + ' disponible'" class="rounded-lg border border-gray-700 px-3 py-2 text-xs font-bold text-gray-200 hover:border-jacquier-gold hover:text-jacquier-gold disabled:cursor-wait disabled:opacity-50">
+                    <button type="button" (click)="toggleFeatured(dish)" [disabled]="!!savingId()" [attr.aria-pressed]="dish.isFeatured === true" [attr.aria-label]="'Suggestion de la Cheffe : ' + dish.name" class="mb-2 rounded-lg border border-gray-700 px-3 py-2 text-xs font-bold text-jacquier-gold disabled:opacity-50">{{ dish.isFeatured ? 'Retirer des suggestions' : 'Suggérer ce plat' }}</button>
+                    <button type="button" (click)="toggleAvailability(dish)" [disabled]="!!savingId()" [attr.aria-label]="isActive(dish) ? 'Marquer ' + (dish.name || 'ce plat') + ' indisponible' : 'Marquer ' + (dish.name || 'ce plat') + ' disponible'" class="rounded-lg border border-gray-700 px-3 py-2 text-xs font-bold text-gray-200 hover:border-jacquier-gold hover:text-jacquier-gold disabled:cursor-wait disabled:opacity-50">
                       {{ savingId() === dish.id ? 'Enregistrement…' : (isActive(dish) ? 'Rendre indisponible' : 'Rendre disponible') }}
                     </button>
                   </td>
@@ -64,7 +65,7 @@ import { AdminDataService, MenuItem } from '../../../core/services/admin-data.se
           </table>
         </section>
       }
-      <p class="text-xs text-gray-500">Un plat indisponible reste visible pour l’administration mais disparaît immédiatement de la carte publique.</p>
+      <p class="text-xs text-gray-500">Un plat indisponible reste visible pour l’administration mais disparaît de la carte publique à son prochain chargement.</p>
     </div>
   `,
   styles: [`.animate-fade-in { animation: fadeIn .6s ease-out forwards; } @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }`]
@@ -98,15 +99,23 @@ export class AdminRestaurantComponent {
     }
   }
 
+  async toggleFeatured(dish: MenuItem): Promise<void> {
+    await this.saveDish(dish, { isFeatured: !dish.isFeatured });
+  }
+
   async toggleAvailability(dish: MenuItem): Promise<void> {
+    await this.saveDish(dish, { active: !this.isActive(dish) });
+  }
+
+  private async saveDish(dish: MenuItem, payload: { active?: boolean; isFeatured?: boolean }): Promise<void> {
     if (this.savingId()) return;
     this.savingId.set(dish.id);
     this.errorMessage.set('');
     try {
-      const updated = await this.adminData.updateMenuItem(dish.id, { active: !this.isActive(dish) });
+      const updated = await this.adminData.updateMenuItem(dish.id, payload);
       this.items.update(items => items.map(item => item.id === updated.id ? { ...item, ...updated } : item));
     } catch {
-      this.errorMessage.set(`La disponibilité de « ${dish.name || 'ce plat'} » n’a pas pu être mise à jour.`);
+      this.errorMessage.set(`La modification de « ${dish.name || 'ce plat'} » n’a pas pu être mise à jour.`);
     } finally {
       this.savingId.set(null);
     }

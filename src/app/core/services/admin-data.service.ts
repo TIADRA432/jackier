@@ -58,6 +58,7 @@ export interface MenuItem {
   image?: string;
   description?: string;
   active?: boolean;
+  isFeatured?: boolean;
   displayOrder?: number;
 }
 
@@ -198,7 +199,7 @@ export class AdminDataService {
     return firstValueFrom(this.http.get<MenuItem[]>(`${this.apiUrl}/admin/menu`));
   }
 
-  async updateMenuItem(id: string, payload: { active: boolean }): Promise<MenuItem> {
+  async updateMenuItem(id: string, payload: { active?: boolean; isFeatured?: boolean }): Promise<MenuItem> {
     return firstValueFrom(this.http.put<MenuItem>(`${this.apiUrl}/menu/${id}`, payload));
   }
 
