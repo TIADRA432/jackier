@@ -53,10 +53,12 @@ export interface MenuItem {
   id: string;
   name?: string;
   category?: string;
+  categoryId?: string;
   price?: number | string;
   imageUrl?: string;
   image?: string;
   description?: string;
+  shortDescription?: string;
   active?: boolean;
   isFeatured?: boolean;
   displayOrder?: number;
@@ -197,6 +199,19 @@ export class AdminDataService {
 
   async getMenuItems(): Promise<MenuItem[]> {
     return firstValueFrom(this.http.get<MenuItem[]>(`${this.apiUrl}/admin/menu`));
+  }
+
+  async createMenuItem(payload: {
+    name: string;
+    category: string;
+    categoryId: string;
+    price: number;
+    shortDescription?: string;
+    imageUrl?: string;
+    active: boolean;
+    isFeatured: boolean;
+  }): Promise<MenuItem> {
+    return firstValueFrom(this.http.post<MenuItem>(`${this.apiUrl}/menu`, payload));
   }
 
   async updateMenuItem(id: string, payload: { active?: boolean; isFeatured?: boolean }): Promise<MenuItem> {

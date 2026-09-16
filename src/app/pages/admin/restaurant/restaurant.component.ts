@@ -1,11 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AdminDataService, MenuItem } from '../../../core/services/admin-data.service';
+import { FormsModule } from '@angular/forms';
+import { AdminDataService, MediaAsset, MenuCategory, MenuItem } from '../../../core/services/admin-data.service';
 
 @Component({
   selector: 'app-admin-restaurant',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="space-y-6 animate-fade-in">
@@ -14,10 +15,47 @@ import { AdminDataService, MenuItem } from '../../../core/services/admin-data.se
           <h1 class="text-2xl font-serif font-bold text-white">Gestion Restaurant</h1>
           <p class="mt-1 text-sm text-gray-400">Plats publiés et disponibilité de la carte.</p>
         </div>
-        <button type="button" (click)="load()" [disabled]="loading() || !!savingId()" class="self-start rounded-xl border border-gray-700 px-4 py-2 text-sm font-bold text-gray-200 hover:border-jacquier-gold hover:text-jacquier-gold disabled:opacity-50">
-          {{ loading() ? 'Actualisation…' : 'Actualiser' }}
-        </button>
+        <div class="flex gap-3">
+          <button type="button" (click)="showCreateForm.set(!showCreateForm())" class="rounded-xl bg-jacquier-gold px-4 py-2 text-sm font-bold text-jacquier-dark hover:bg-white">{{ showCreateForm() ? 'Fermer' : 'Nouveau plat' }}</button>
+          <button type="button" (click)="load()" [disabled]="loading() || !!savingId()" class="rounded-xl border border-gray-700 px-4 py-2 text-sm font-bold text-gray-200 hover:border-jacquier-gold hover:text-jacquier-gold disabled:opacity-50">{{ loading() ? 'Actualisation…' : 'Actualiser' }}</button>
+        </div>
       </header>
+
+      @if (showCreateForm()) {
+        <form (ngSubmit)="createDish()" class="grid gap-4 rounded-2xl border border-jacquier-gold/30 bg-[#1a1a1a] p-6 md:grid-cols-2">
+          <h2 class="text-xl font-serif font-bold text-white md:col-span-2">Créer un plat</h2>
+          <label class="text-sm text-gray-300">Nom du plat *
+            <input [(ngModel)]="draft.name" name="name" required maxlength="120" class="mt-2 w-full rounded-xl bg-gray-900 px-3 py-3 text-white outline-none focus:ring-1 focus:ring-jacquier-gold" />
+          </label>
+          <label class="text-sm text-gray-300">Catégorie *
+            <select [(ngModel)]="draft.categoryId" name="categoryId" required class="mt-2 w-full rounded-xl bg-gray-900 px-3 py-3 text-white outline-none focus:ring-1 focus:ring-jacquier-gold">
+              <option value="" disabled>Choisir une catégorie</option>
+              @for (category of categories(); track category.id) { <option [value]="category.id">{{ category.name }}</option> }
+            </select>
+          </label>
+          <label class="text-sm text-gray-300">Prix en GNF *
+            <input [(ngModel)]="draft.price" name="price" type="number" required min="0" max="100000000" step="1000" class="mt-2 w-full rounded-xl bg-gray-900 px-3 py-3 text-white outline-none focus:ring-1 focus:ring-jacquier-gold" />
+          </label>
+          <label class="text-sm text-gray-300">Photo
+            <select [(ngModel)]="draft.imageUrl" name="imageUrl" class="mt-2 w-full rounded-xl bg-gray-900 px-3 py-3 text-white outline-none focus:ring-1 focus:ring-jacquier-gold">
+              <option value="">Sans photo</option>
+              @for (asset of menuImages(); track asset.id) { <option [value]="asset.publicUrl">{{ asset.title || asset.originalName }}</option> }
+            </select>
+            <span class="mt-1 block text-xs text-gray-500">Ajoutez d’abord les nouvelles photos dans CMS & Contenu.</span>
+          </label>
+          <label class="text-sm text-gray-300 md:col-span-2">Description
+            <textarea [(ngModel)]="draft.shortDescription" name="shortDescription" maxlength="1000" rows="3" class="mt-2 w-full rounded-xl bg-gray-900 px-3 py-3 text-white outline-none focus:ring-1 focus:ring-jacquier-gold"></textarea>
+          </label>
+          <div class="flex flex-wrap gap-6 text-sm text-gray-300 md:col-span-2">
+            <label class="flex items-center gap-2"><input [(ngModel)]="draft.active" name="active" type="checkbox" /> Publier immédiatement</label>
+            <label class="flex items-center gap-2"><input [(ngModel)]="draft.isFeatured" name="isFeatured" type="checkbox" /> Suggestion de la Cheffe</label>
+          </div>
+          <div class="flex items-center justify-end gap-4 md:col-span-2">
+            @if (createSuccess()) { <span role="status" class="text-sm text-emerald-300">{{ createSuccess() }}</span> }
+            <button type="submit" [disabled]="creating() || !draft.name.trim() || !draft.categoryId || draft.price < 0" class="rounded-xl bg-jacquier-gold px-5 py-3 font-bold text-jacquier-dark disabled:opacity-50">{{ creating() ? 'Création…' : 'Créer le plat' }}</button>
+          </div>
+        </form>
+      }
 
       <input type="search" [value]="query()" (input)="query.set($any($event.target).value)" placeholder="Rechercher un plat…" aria-label="Rechercher un plat" class="w-full rounded-xl border border-gray-800 bg-[#1a1a1a] px-4 py-3 text-white outline-none focus:border-jacquier-gold" />
 
@@ -46,7 +84,7 @@ import { AdminDataService, MenuItem } from '../../../core/services/admin-data.se
                       {{ dish.name || 'Plat sans nom' }}
                     </div>
                   </td>
-                  <td class="px-6 py-4 text-gray-300">{{ dish.category || 'Non classé' }}</td>
+                  <td class="px-6 py-4 text-gray-300">{{ categoryName(dish) }}</td>
                   <td class="px-6 py-4 text-white">{{ dish.price || 'Prix non renseigné' }}{{ dish.price ? ' FG' : '' }}</td>
                   <td class="px-6 py-4">
                     <span [class]="isActive(dish) ? 'rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-bold text-emerald-300' : 'rounded-full bg-gray-700 px-3 py-1 text-xs font-bold text-gray-300'">
@@ -74,10 +112,17 @@ export class AdminRestaurantComponent {
   private readonly adminData = inject(AdminDataService);
 
   readonly items = signal<MenuItem[]>([]);
+  readonly categories = signal<MenuCategory[]>([]);
+  readonly media = signal<MediaAsset[]>([]);
   readonly loading = signal(true);
+  readonly creating = signal(false);
+  readonly showCreateForm = signal(false);
+  readonly createSuccess = signal('');
   readonly errorMessage = signal('');
   readonly query = signal('');
   readonly savingId = signal<string | null>(null);
+  readonly menuImages = computed(() => this.media().filter(asset => asset.category === 'menu'));
+  draft = this.emptyDraft();
   readonly filteredItems = computed(() => {
     const query = this.query().trim().toLocaleLowerCase('fr');
     return this.items().filter(item => !query || `${item.name || ''} ${item.category || ''}`.toLocaleLowerCase('fr').includes(query));
@@ -91,12 +136,51 @@ export class AdminRestaurantComponent {
     this.loading.set(true);
     this.errorMessage.set('');
     try {
-      this.items.set(await this.adminData.getMenuItems());
+      const [items, categories] = await Promise.all([
+        this.adminData.getMenuItems(), this.adminData.getCategories()
+      ]);
+      this.items.set(items);
+      this.categories.set(categories);
+      try {
+        this.media.set(await this.adminData.getMediaAssets());
+      } catch {
+        this.media.set([]);
+      }
     } catch {
       this.errorMessage.set('Impossible de charger le menu. Vérifiez votre session administrateur puis réessayez.');
     } finally {
       this.loading.set(false);
     }
+  }
+
+  categoryName(dish: MenuItem): string {
+    return this.categories().find(category => category.id === dish.categoryId)?.name ?? dish.category ?? 'Non classé';
+  }
+
+  async createDish(): Promise<void> {
+    const category = this.categories().find(item => item.id === this.draft.categoryId);
+    if (!category || !this.draft.name.trim() || this.creating()) return;
+    this.creating.set(true);
+    this.errorMessage.set('');
+    this.createSuccess.set('');
+    try {
+      const created = await this.adminData.createMenuItem({
+        name: this.draft.name.trim(), category: category.name, categoryId: category.id,
+        price: Number(this.draft.price), shortDescription: this.draft.shortDescription.trim() || undefined,
+        imageUrl: this.draft.imageUrl || undefined, active: this.draft.active, isFeatured: this.draft.isFeatured
+      });
+      this.items.update(items => [...items, created]);
+      this.draft = this.emptyDraft();
+      this.createSuccess.set(`« ${created.name} » a été créé.`);
+    } catch {
+      this.errorMessage.set('Le plat n’a pas pu être créé. Vérifiez les champs puis réessayez.');
+    } finally {
+      this.creating.set(false);
+    }
+  }
+
+  private emptyDraft() {
+    return { name: '', categoryId: '', price: 0, shortDescription: '', imageUrl: '', active: true, isFeatured: false };
   }
 
   async toggleFeatured(dish: MenuItem): Promise<void> {

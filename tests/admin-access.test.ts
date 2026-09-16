@@ -68,15 +68,23 @@ test('the school screen displays real programs instead of fictitious students', 
   assert.match(component, /gestion des étudiants n’est pas encore modélisée/);
 });
 
-test('the restaurant screen reads all protected menu data and persists availability changes', async () => {
+test('the restaurant screen creates dishes and persists editorial changes', async () => {
   const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
   const component = await source('src', 'app', 'pages', 'admin', 'restaurant', 'restaurant.component.ts');
+  const controller = await source('src', 'controllers', 'menu.controller.ts');
 
   assert.match(service, /get<MenuItem\[\]>\(`\$\{this\.apiUrl\}\/admin\/menu`\)/);
+  assert.match(service, /post<MenuItem>\(`\$\{this\.apiUrl\}\/menu`, payload\)/);
   assert.match(service, /put<MenuItem>\(`\$\{this\.apiUrl\}\/menu\/\$\{id\}`, payload\)/);
   assert.match(component, /this\.adminData\.getMenuItems\(\)/);
+  assert.match(component, /this\.adminData\.createMenuItem/);
+  assert.match(component, /this\.adminData\.getCategories\(\)/);
+  assert.match(component, /this\.adminData\.getMediaAssets\(\)/);
   assert.match(component, /this\.adminData\.updateMenuItem/);
+  assert.match(component, /Créer un plat/);
   assert.match(component, /toggleAvailability/);
+  assert.match(controller, /category id is required/);
+  assert.match(controller, /toMenuRow\(payload\)/);
 });
 
 test('menu availability has a public-safe contract and protected admin catalogue', async () => {
