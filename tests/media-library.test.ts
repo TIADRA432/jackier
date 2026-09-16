@@ -52,6 +52,8 @@ test('admin media UI supports batch import, tags, filters and authenticated down
 
   assert.match(component, /type="file" multiple/);
   assert.match(component, /uploadDrafts/);
+  assert.match(component, /canUpload\(\): boolean/);
+  assert.doesNotMatch(component, /readonly canUpload = computed/);
   assert.match(component, /getMediaTags\(\)/);
   assert.match(component, /createTag\(\)/);
   assert.match(component, /filteredMedia/);

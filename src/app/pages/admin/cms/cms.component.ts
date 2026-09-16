@@ -105,7 +105,6 @@ export class CMSComponent {
   readonly query = signal(''); readonly categoryFilter = signal('all'); readonly tagFilter = signal('all');
   readonly categories = CATEGORIES;
   uploadCategory: MediaCategory = 'menu'; newTagName = '';
-  readonly canUpload = computed(() => this.uploadDrafts().length > 0 && this.uploadDrafts().every(draft => draft.altText.trim().length > 0));
   readonly filteredMedia = computed(() => {
     const query = this.normalize(this.query()); const category = this.categoryFilter(); const tag = this.tagFilter();
     return this.media().filter(item => {
@@ -125,6 +124,9 @@ export class CMSComponent {
   selectFiles(event: Event): void {
     const files = Array.from((event.target as HTMLInputElement).files ?? []).slice(0, 20);
     this.uploadDrafts.set(files.map(file => ({ file, title: file.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' '), altText: '' })));
+  }
+  canUpload(): boolean {
+    return this.uploadDrafts().length > 0 && this.uploadDrafts().every(draft => draft.altText.trim().length > 0);
   }
   toggleUploadTag(id: string) { this.uploadTagIds.update(ids => ids.includes(id) ? ids.filter(value => value !== id) : [...ids, id]); }
   async uploadAll(): Promise<void> {
