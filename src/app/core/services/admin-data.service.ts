@@ -139,7 +139,10 @@ export interface MediaAsset {
   mimeType: 'image/jpeg' | 'image/png' | 'image/webp';
   sizeBytes: number;
   createdAt: string;
+  tags: MediaTag[];
 }
+
+export interface MediaTag { id: string; name: string; slug: string; }
 
 export interface GalleryMedia {
   id: string;
@@ -278,21 +281,34 @@ export class AdminDataService {
     return firstValueFrom(this.http.get<MediaAsset[]>(`${this.apiUrl}/media`));
   }
 
-  async uploadMediaAsset(file: File, payload: Pick<MediaAsset, 'title' | 'altText' | 'category'>): Promise<MediaAsset> {
+  async uploadMediaAsset(file: File, payload: Pick<MediaAsset, 'title' | 'altText' | 'category'> & { tagIds?: string[] }): Promise<MediaAsset> {
     const formData = new FormData();
     formData.set('image', file);
     formData.set('title', payload.title);
     formData.set('altText', payload.altText);
     formData.set('category', payload.category);
+    formData.set('tagIds', JSON.stringify(payload.tagIds ?? []));
     return firstValueFrom(this.http.post<MediaAsset>(`${this.apiUrl}/media`, formData));
   }
 
-  async updateMediaAsset(id: string, payload: Partial<Pick<MediaAsset, 'title' | 'altText' | 'category'>>): Promise<MediaAsset> {
+  async updateMediaAsset(id: string, payload: Partial<Pick<MediaAsset, 'title' | 'altText' | 'category'>> & { tagIds?: string[] }): Promise<MediaAsset> {
     return firstValueFrom(this.http.put<MediaAsset>(`${this.apiUrl}/media/${id}`, payload));
   }
 
   async deleteMediaAsset(id: string): Promise<void> {
     await firstValueFrom(this.http.delete(`${this.apiUrl}/media/${id}`));
+  }
+
+  async getMediaTags(): Promise<MediaTag[]> {
+    return firstValueFrom(this.http.get<MediaTag[]>(`${this.apiUrl}/media/tags`));
+  }
+
+  async createMediaTag(name: string): Promise<MediaTag> {
+    return firstValueFrom(this.http.post<MediaTag>(`${this.apiUrl}/media/tags`, { name }));
+  }
+
+  async downloadMediaAsset(id: string): Promise<Blob> {
+    return firstValueFrom(this.http.get(`${this.apiUrl}/media/${id}/download`, { responseType: 'blob' }));
   }
 
   async getGalleryMedia(): Promise<GalleryMedia[]> {
