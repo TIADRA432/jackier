@@ -4,7 +4,7 @@ import { getCategories, createCategory, updateCategory, deleteCategory } from '.
 import { getMenuItems, getPublicMenuItems, createMenuItem, updateMenuItem, deleteMenuItem } from '../controllers/menu.controller';
 import { getWines, createWine, updateWine, deleteWine } from '../controllers/wine.controller';
 import { uploadMenuImage, uploadWineImage } from '../controllers/upload.controller';
-import { createMediaAsset, deleteMediaAsset, getMediaAssets, updateMediaAsset } from '../controllers/media.controller';
+import { createMediaAsset, createMediaTag, deleteMediaAsset, downloadMediaAsset, getMediaAssets, getMediaTags, updateMediaAsset } from '../controllers/media.controller';
 import { getGalleryImages, createGalleryImage, deleteGalleryImage } from '../controllers/gallery.controller';
 import { getDashboardOverview } from '../controllers/dashboard.controller';
 import { getReservations, createReservation, updateReservationStatus, deleteReservation } from '../controllers/reservation.controller';
@@ -86,6 +86,9 @@ router.delete('/gallery/:id', verifyToken, requireRole(['ADMIN']), deleteGallery
 // Central media library. The browser uploads only through these administrator-only
 // endpoints; the Worker keeps the Storage service key outside the client.
 router.get('/media', verifyToken, requireRole(['ADMIN']), getMediaAssets);
+router.get('/media/tags', verifyToken, requireRole(['ADMIN']), getMediaTags);
+router.post('/media/tags', verifyToken, requireRole(['ADMIN']), createMediaTag);
+router.get('/media/:id/download', verifyToken, requireRole(['ADMIN']), downloadMediaAsset);
 router.post('/media', verifyToken, requireRole(['ADMIN']), upload.single('image'), createMediaAsset);
 router.put('/media/:id', verifyToken, requireRole(['ADMIN']), updateMediaAsset);
 router.delete('/media/:id', verifyToken, requireRole(['ADMIN']), deleteMediaAsset);

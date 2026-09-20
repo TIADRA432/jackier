@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { Dish, Review, TeamMember, CateringService, SchoolProgram, Wine, GalleryImage } from '../models';
 import { environment } from '../../../environments/environment';
+import { MenuCategory } from '../models/menu-catalog';
 
 @Injectable({
   providedIn: 'root'
@@ -22,6 +23,7 @@ export class RestaurantService {
   };
 
   private dishes = signal<Dish[]>([]);
+  readonly menuCategories = signal<MenuCategory[]>([]);
   private wines = signal<Wine[]>([]);
   private galleryImages = signal<GalleryImage[]>([]);
   private schoolPrograms = signal<SchoolProgram[]>([]);
@@ -61,6 +63,7 @@ export class RestaurantService {
 
   constructor() {
     this.loadDishes();
+    this.loadMenuCategories();
     this.loadWines();
     this.loadGallery();
     this.loadSchoolPrograms();
@@ -79,6 +82,8 @@ export class RestaurantService {
         description: item.shortDescription ?? item.description ?? '',
         price: item.price,
         category: item.category,
+        categoryId: item.categoryId,
+        isFeatured: item.isFeatured === true,
         image: item.imageUrl ?? item.image ?? '',
         isVegetarian: item.isVegetarian,
         isSpicy: item.isSpicy,
@@ -89,6 +94,15 @@ export class RestaurantService {
       this.errorMenu.set('Le menu n\'a pas pu être chargé. Merci de réessayer dans un instant.');
     } finally {
       this.loadingMenu.set(false);
+    }
+  }
+
+  private async loadMenuCategories() {
+    try {
+      this.menuCategories.set(await firstValueFrom(this.http.get<MenuCategory[]>(`${this.apiUrl}/categories`)));
+    } catch {
+      // The catalogue stays usable with the category labels carried by each dish.
+      this.menuCategories.set([]);
     }
   }
 

@@ -24,6 +24,13 @@ const configuredOrigins = (process.env.CORS_ORIGINS ?? '')
 
 const allowedOrigins = new Set(configuredOrigins);
 
+// Chaque déploiement Cloudflare Workers (Gradual Deployments) génère une URL de preview
+// préfixée par un hash de version, ex: https://bd293e49-jackier.abdourahmane591.workers.dev
+// Ce préfixe change à chaque déploiement : une entrée statique dans CORS_ORIGINS devrait
+// être mise à jour manuellement à chaque fois. On accepte donc le motif de ces URLs de
+// preview pour CE worker précis, en plus de la liste explicite CORS_ORIGINS.
+const PREVIEW_ORIGIN_PATTERN = /^https:\/\/[a-f0-9]{8}-jackier\.abdourahmane591\.workers\.dev$/;
+
 const createCorsError = () =>
   Object.assign(new Error('Origin is not allowed by CORS policy'), {
     code: 'CORS_ORIGIN_DENIED',
@@ -33,8 +40,9 @@ const createCorsError = () =>
 const corsOptions: CorsOptions = {
   origin(origin, callback) {
     // Requests without Origin are non-browser or same-origin requests. Browsers
-    // sending another origin must be explicitly listed in CORS_ORIGINS.
-    if (!origin || allowedOrigins.has(origin)) {
+    // sending another origin must be explicitly listed in CORS_ORIGINS, or match
+    // the version-preview URL pattern for this worker.
+    if (!origin || allowedOrigins.has(origin) || PREVIEW_ORIGIN_PATTERN.test(origin)) {
       callback(null, true);
       return;
     }

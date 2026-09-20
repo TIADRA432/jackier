@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 import { adminAuthGuard } from './core/guards/admin-auth.guard';
 
 export const routes: Routes = [
+  { path: 'carte', redirectTo: 'menu', pathMatch: 'full' },
   {
     path: '',
     loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent),

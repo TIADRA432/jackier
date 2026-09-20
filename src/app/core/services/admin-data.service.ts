@@ -49,17 +49,33 @@ export interface SchoolProgram {
   level?: string;
 }
 
+// Catégories historiques ; les filtres publics utilisent les catégories du catalogue.
+export const MENU_ITEM_CATEGORIES = ['entree', 'plat', 'dessert', 'boisson', 'fruits_de_mer', 'local', 'vin'] as const;
+export type MenuItemCategory = typeof MENU_ITEM_CATEGORIES[number];
+
 export interface MenuItem {
   id: string;
   name?: string;
   category?: string;
+  categoryId?: string;
   price?: number | string;
   imageUrl?: string;
   image?: string;
+  shortDescription?: string;
   description?: string;
   active?: boolean;
+  isFeatured?: boolean;
   displayOrder?: number;
+  isVegetarian?: boolean;
+  isSpicy?: boolean;
+  isLocalSpecialty?: boolean;
 }
+
+/** Champs acceptés par POST/PUT /api/menu (voir menu.controller.ts validateMenuPayload). */
+export type MenuItemPayload = Partial<Pick<MenuItem,
+  'name' | 'category' | 'categoryId' | 'price' | 'shortDescription' | 'imageUrl' |
+  'active' | 'displayOrder' | 'isFeatured' | 'isVegetarian' | 'isSpicy' | 'isLocalSpecialty'
+>>;
 
 export interface MenuCategory {
   id: string;
@@ -136,7 +152,10 @@ export interface MediaAsset {
   mimeType: 'image/jpeg' | 'image/png' | 'image/webp';
   sizeBytes: number;
   createdAt: string;
+  tags: MediaTag[];
 }
+
+export interface MediaTag { id: string; name: string; slug: string; }
 
 export interface GalleryMedia {
   id: string;
@@ -198,8 +217,16 @@ export class AdminDataService {
     return firstValueFrom(this.http.get<MenuItem[]>(`${this.apiUrl}/admin/menu`));
   }
 
-  async updateMenuItem(id: string, payload: { active: boolean }): Promise<MenuItem> {
+  async createMenuItem(payload: MenuItemPayload): Promise<MenuItem> {
+    return firstValueFrom(this.http.post<MenuItem>(`${this.apiUrl}/menu`, payload));
+  }
+
+  async updateMenuItem(id: string, payload: MenuItemPayload): Promise<MenuItem> {
     return firstValueFrom(this.http.put<MenuItem>(`${this.apiUrl}/menu/${id}`, payload));
+  }
+
+  async deleteMenuItem(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`${this.apiUrl}/menu/${id}`));
   }
 
   async getCategories(): Promise<MenuCategory[]> {
@@ -262,21 +289,34 @@ export class AdminDataService {
     return firstValueFrom(this.http.get<MediaAsset[]>(`${this.apiUrl}/media`));
   }
 
-  async uploadMediaAsset(file: File, payload: Pick<MediaAsset, 'title' | 'altText' | 'category'>): Promise<MediaAsset> {
+  async uploadMediaAsset(file: File, payload: Pick<MediaAsset, 'title' | 'altText' | 'category'> & { tagIds?: string[] }): Promise<MediaAsset> {
     const formData = new FormData();
     formData.set('image', file);
     formData.set('title', payload.title);
     formData.set('altText', payload.altText);
     formData.set('category', payload.category);
+    formData.set('tagIds', JSON.stringify(payload.tagIds ?? []));
     return firstValueFrom(this.http.post<MediaAsset>(`${this.apiUrl}/media`, formData));
   }
 
-  async updateMediaAsset(id: string, payload: Partial<Pick<MediaAsset, 'title' | 'altText' | 'category'>>): Promise<MediaAsset> {
+  async updateMediaAsset(id: string, payload: Partial<Pick<MediaAsset, 'title' | 'altText' | 'category'>> & { tagIds?: string[] }): Promise<MediaAsset> {
     return firstValueFrom(this.http.put<MediaAsset>(`${this.apiUrl}/media/${id}`, payload));
   }
 
   async deleteMediaAsset(id: string): Promise<void> {
     await firstValueFrom(this.http.delete(`${this.apiUrl}/media/${id}`));
+  }
+
+  async getMediaTags(): Promise<MediaTag[]> {
+    return firstValueFrom(this.http.get<MediaTag[]>(`${this.apiUrl}/media/tags`));
+  }
+
+  async createMediaTag(name: string): Promise<MediaTag> {
+    return firstValueFrom(this.http.post<MediaTag>(`${this.apiUrl}/media/tags`, { name }));
+  }
+
+  async downloadMediaAsset(id: string): Promise<Blob> {
+    return firstValueFrom(this.http.get(`${this.apiUrl}/media/${id}/download`, { responseType: 'blob' }));
   }
 
   async getGalleryMedia(): Promise<GalleryMedia[]> {

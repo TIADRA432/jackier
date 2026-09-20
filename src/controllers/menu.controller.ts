@@ -63,6 +63,11 @@ const optionalImageUrl = (value: unknown): string | undefined => {
 
 type MenuPayload = Record<string, string | number | boolean>;
 
+const toMenuRow = (payload: MenuPayload): MenuPayload => {
+  const { category: _categoryLabel, ...row } = payload;
+  return row;
+};
+
 export const validateMenuPayload = (body: unknown, partial: boolean): MenuPayload => {
   if (!isRecord(body)) throw new ValidationError('Invalid menu payload');
   const keys = Object.keys(body);
@@ -139,7 +144,8 @@ export const getMenuItems = async (_req: Request, res: Response, next: NextFunct
 export const createMenuItem = async (req: Request, res: Response) => {
   try {
     const payload = validateMenuPayload(req.body, false);
-    res.status(201).json(await addDoc('menuItems', { ...payload, active: payload.active ?? true }));
+    if (!payload.categoryId) throw new ValidationError('category id is required');
+    res.status(201).json(await addDoc('menuItems', { ...toMenuRow(payload), active: payload.active ?? true }));
   } catch (error) {
     return respond(error, res, 'Failed to create menu item');
   }
@@ -149,7 +155,7 @@ export const updateMenuItem = async (req: Request, res: Response) => {
   try {
     const id = validateId(req.params.id);
     const payload = validateMenuPayload(req.body, true);
-    res.json(await updateDoc('menuItems', id, payload));
+    res.json(await updateDoc('menuItems', id, toMenuRow(payload)));
   } catch (error) {
     return respond(error, res, 'Failed to update menu item');
   }
