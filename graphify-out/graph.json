@@ -17882,18 +17882,6 @@
       "weight": 1.0
     },
     {
-      "source": "src_routes_index",
-      "target": "src_controllers_gallery_controller_updategalleryimage",
-      "relation": "imports",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "import",
-      "source_file": "src/routes/index.ts",
-      "source_location": "L8",
-      "weight": 1.0
-    },
-    {
       "source": "src_services_db_service",
       "target": "src_config_supabase_supabase",
       "relation": "imports",
@@ -31186,7 +31174,7 @@
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_category_controller_updatecategory",
+      "target": "src_controllers_category_controller_createcategory",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -31198,7 +31186,7 @@
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_category_controller_deletecategory",
+      "target": "src_controllers_category_controller_updatecategory",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -31210,19 +31198,19 @@
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_menu_controller_getpublicmenuitems",
+      "target": "src_controllers_category_controller_deletecategory",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "src/routes/index.ts",
-      "source_location": "L104",
+      "source_location": "L102",
       "weight": 1.0
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_menu_controller_getmenuitems",
+      "target": "src_controllers_menu_controller_getpublicmenuitems",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -31234,7 +31222,7 @@
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_menu_controller_createmenuitem",
+      "target": "src_controllers_menu_controller_getmenuitems",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -31246,7 +31234,7 @@
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_menu_controller_updatemenuitem",
+      "target": "src_controllers_menu_controller_createmenuitem",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -31258,7 +31246,7 @@
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_menu_controller_deletemenuitem",
+      "target": "src_controllers_menu_controller_updatemenuitem",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -31270,19 +31258,19 @@
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_wine_controller_getwines",
+      "target": "src_controllers_menu_controller_deletemenuitem",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "src/routes/index.ts",
-      "source_location": "L111",
+      "source_location": "L109",
       "weight": 1.0
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_wine_controller_createwine",
+      "target": "src_controllers_wine_controller_getwines",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -31294,7 +31282,7 @@
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_wine_controller_updatewine",
+      "target": "src_controllers_wine_controller_createwine",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -31306,7 +31294,7 @@
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_wine_controller_deletewine",
+      "target": "src_controllers_wine_controller_updatewine",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -31318,6 +31306,18 @@
     },
     {
       "source": "src_routes_index",
+      "target": "src_controllers_wine_controller_deletewine",
+      "relation": "indirect_call",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "argument",
+      "source_file": "src/routes/index.ts",
+      "source_location": "L115",
+      "weight": 1.0
+    },
+    {
+      "source": "src_routes_index",
       "target": "src_controllers_upload_controller_uploadmenuimage",
       "relation": "indirect_call",
       "_origin": "ast",
@@ -31325,7 +31325,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "src/routes/index.ts",
-      "source_location": "L117",
+      "source_location": "L118",
       "weight": 1.0
     },
     {
@@ -31337,7 +31337,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "src/routes/index.ts",
-      "source_location": "L118",
+      "source_location": "L119",
       "weight": 1.0
     },
     {
@@ -31714,7 +31714,7 @@
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_gallery_controller_deletegalleryimage",
+      "target": "src_controllers_gallery_controller_updategalleryimage",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -31726,19 +31726,19 @@
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_media_controller_getmediaassets",
+      "target": "src_controllers_gallery_controller_deletegalleryimage",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "src/routes/index.ts",
-      "source_location": "L88",
+      "source_location": "L85",
       "weight": 1.0
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_media_controller_getmediatags",
+      "target": "src_controllers_media_controller_getmediaassets",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -31750,7 +31750,7 @@
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_media_controller_createmediatag",
+      "target": "src_controllers_media_controller_getmediatags",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -31762,7 +31762,7 @@
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_media_controller_downloadmediaasset",
+      "target": "src_controllers_media_controller_createmediatag",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -31774,7 +31774,7 @@
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_media_controller_getmediaassetusage",
+      "target": "src_controllers_media_controller_downloadmediaasset",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -31786,7 +31786,7 @@
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_media_controller_createmediaasset",
+      "target": "src_controllers_media_controller_getmediaassetusage",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -31798,7 +31798,7 @@
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_media_controller_updatemediaasset",
+      "target": "src_controllers_media_controller_createmediaasset",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -31810,7 +31810,7 @@
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_media_controller_deletemediaasset",
+      "target": "src_controllers_media_controller_updatemediaasset",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -31822,19 +31822,19 @@
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_category_controller_getcategories",
+      "target": "src_controllers_media_controller_deletemediaasset",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "src/routes/index.ts",
-      "source_location": "L98",
+      "source_location": "L96",
       "weight": 1.0
     },
     {
       "source": "src_routes_index",
-      "target": "src_controllers_category_controller_createcategory",
+      "target": "src_controllers_category_controller_getcategories",
       "relation": "indirect_call",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -31966,5 +31966,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "7ea728bdc8668242137c161b93507a11f9248a25"
+  "built_at_commit": "e972dd10b8cfee7b7d4c317f430f8f681901ec87"
 }
