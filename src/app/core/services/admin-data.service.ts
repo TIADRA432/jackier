@@ -73,9 +73,12 @@ export interface MenuItem {
 
 /** Champs acceptés par POST/PUT /api/menu (voir menu.controller.ts validateMenuPayload). */
 export type MenuItemPayload = Partial<Pick<MenuItem,
-  'name' | 'category' | 'categoryId' | 'price' | 'shortDescription' | 'imageUrl' |
+  'name' | 'category' | 'categoryId' | 'price' |
   'active' | 'displayOrder' | 'isFeatured' | 'isVegetarian' | 'isSpicy' | 'isLocalSpecialty'
->>;
+>> & {
+  shortDescription?: string | null;
+  imageUrl?: string | null;
+};
 
 export interface MenuCategory {
   id: string;
