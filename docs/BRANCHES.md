@@ -1,21 +1,27 @@
 # Branches de référence — Le Jacquier
 
-Harmonisation du 20 septembre 2026 pour préparer une présentation au restaurant.
+Depuis le 22 septembre 2026, le dépôt suit un modèle volontairement simple à deux branches permanentes.
 
-- `main` : base commune de développement et de préparation de la démonstration.
-- `harmonisation/demo-base-2026-09-20` : intégration des historiques, soumise aux contrôles qualité avant fusion dans `main`.
-- `integration/backend-supabase` : branche déclenchant le déploiement Cloudflare en production. Conservée sans modification pendant cette harmonisation.
-- `fix/cloudflare-production-deploy` : fonctionnalités carte, création des plats et médiathèque intégrées à la base commune.
-- `feat/media-library` et `fix/cloudflare-reservation-rate-limit` : historiques déjà intégrés à `main`, conservés pour traçabilité.
+- `main` : version stable, validée et déployable en production. Tout push sur `main` déclenche les contrôles puis le déploiement Cloudflare.
+- `develop` : branche de travail unique pour les corrections, améliorations et nouvelles fonctionnalités.
 
-## Résolution des divergences
+## Flux de travail
 
-Conserver la carte à catégories dynamiques, la médiathèque Uppy et ses tags, les méthodes d'administration du menu et les origines de prévisualisation Cloudflare. Préserver les messages d'erreur de réservation et le limiteur Cloudflare corrigés sur `main`.
+1. Faire les modifications sur `develop`.
+2. Laisser GitHub Actions exécuter les tests, le type-check et le build.
+3. Vérifier fonctionnellement la version candidate.
+4. Ouvrir une pull request `develop -> main`.
+5. Fusionner uniquement quand la version est prête à devenir la nouvelle production.
+6. Le push résultant sur `main` déclenche automatiquement le déploiement Cloudflare.
 
-Les branches anciennes ne sont ni supprimées ni réécrites. Commencer les prochains travaux depuis `main`, dans une branche dédiée, puis ouvrir une pull request vers `main`.
+## Règles
 
-## Présentation puis production
+- Ne pas développer directement sur `main`, sauf correction d'urgence explicitement assumée.
+- Ne pas créer de branches `feat/*`, `fix/*` ou `harmonisation/*` permanentes pour ce projet simple.
+- Les anciennes branches historiques sont considérées comme obsolètes dès lors que leur contenu est déjà intégré à `main`.
+- Les previews Cloudflare versionnées de la production restent désactivées ; les tests de changement se font depuis `develop` et les contrôles CI.
+- `main` reste la branche par défaut et la seule source autorisée pour la production.
 
-Cette harmonisation ne constitue pas une validation fonctionnelle de livraison. Préparer la démonstration en environnement de test, avec données fictives et notifications désactivées. La migration des tags médias est conservée dans le dépôt mais n'est pas exécutée sur la base de production.
+## Objectif
 
-Après acceptation du projet par le restaurant : planifier les corrections de production, la recette complète et les migrations. Toute intégration vers `integration/backend-supabase` déclenche un déploiement et doit faire partie de cette étape explicitement autorisée. Ne pas lancer manuellement le workflow de déploiement pendant la préparation.
+Avoir un historique lisible : `develop` contient la prochaine version, `main` contient la version livrable actuellement en production.
