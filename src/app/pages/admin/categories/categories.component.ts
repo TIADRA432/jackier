@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AdminDataService, MenuCategory } from '../../../core/services/admin-data.service';
+import { AdminDataService, MenuCategory, MenuItem } from '../../../core/services/admin-data.service';
 
 type CategoryDraft = Omit<MenuCategory, 'id'>;
 
@@ -34,7 +34,7 @@ type CategoryDraft = Omit<MenuCategory, 'id'>;
 
       @if (loading()) { <div role="status" class="rounded-2xl border border-gray-800 bg-[#1a1a1a] p-12 text-center text-gray-400">Chargement des catégories…</div> }
       @else if (!categories().length) { <div class="rounded-2xl border border-gray-800 bg-[#1a1a1a] p-12 text-center text-gray-400">Aucune catégorie n’est encore enregistrée.</div> }
-      @else { <section class="overflow-x-auto rounded-2xl border border-gray-800 bg-[#1a1a1a]"><table class="w-full min-w-[560px] text-left text-sm"><thead class="border-b border-gray-800 bg-[#121212] text-xs uppercase text-gray-500"><tr><th class="px-6 py-4">Nom</th><th class="px-6 py-4">Ordre</th><th class="px-6 py-4 text-right"><span class="sr-only">Actions</span></th></tr></thead><tbody>@for (category of sortedCategories(); track category.id) { <tr class="border-b border-gray-800/50"><td class="px-6 py-4 font-medium text-white">{{ category.name }}</td><td class="px-6 py-4 text-gray-300">{{ category.order ?? 0 }}</td><td class="px-6 py-4 text-right">@if (pendingDeleteId() === category.id) { <span class="mr-3 text-xs text-red-200">Supprimer ?</span><button type="button" (click)="deleteCategory(category)" [disabled]="saving()" class="mr-2 rounded-lg bg-red-900 px-3 py-2 text-xs font-bold text-white disabled:opacity-50">Confirmer</button><button type="button" (click)="pendingDeleteId.set(null)" class="rounded-lg border border-gray-700 px-3 py-2 text-xs text-gray-300">Annuler</button> } @else { <button type="button" (click)="edit(category)" class="mr-2 rounded-lg border border-gray-700 px-3 py-2 text-xs font-bold text-gray-200 hover:border-jacquier-gold hover:text-jacquier-gold">Modifier</button><button type="button" (click)="pendingDeleteId.set(category.id)" [attr.aria-label]="'Supprimer la catégorie ' + category.name" class="rounded-lg border border-red-900/70 px-3 py-2 text-xs font-bold text-red-200 hover:bg-red-950/40">Supprimer</button> }</td></tr> }</tbody></table></section> }
+      @else { <section class="overflow-x-auto rounded-2xl border border-gray-800 bg-[#1a1a1a]"><table class="w-full min-w-[560px] text-left text-sm"><thead class="border-b border-gray-800 bg-[#121212] text-xs uppercase text-gray-500"><tr><th class="px-6 py-4">Nom</th><th class="px-6 py-4">Ordre</th><th class="px-6 py-4">Plats</th><th class="px-6 py-4 text-right"><span class="sr-only">Actions</span></th></tr></thead><tbody>@for (category of sortedCategories(); track category.id) { <tr class="border-b border-gray-800/50"><td class="px-6 py-4 font-medium text-white">{{ category.name }}</td><td class="px-6 py-4 text-gray-300">{{ category.order ?? 0 }}</td><td class="px-6 py-4 text-gray-300">{{ categoryUsage(category.id) }}</td><td class="px-6 py-4 text-right">@if (pendingDeleteId() === category.id) { <span class="mr-3 text-xs text-red-200">Supprimer ?</span><button type="button" (click)="deleteCategory(category)" [disabled]="saving()" class="mr-2 rounded-lg bg-red-900 px-3 py-2 text-xs font-bold text-white disabled:opacity-50">Confirmer</button><button type="button" (click)="pendingDeleteId.set(null)" class="rounded-lg border border-gray-700 px-3 py-2 text-xs text-gray-300">Annuler</button> } @else { <button type="button" (click)="edit(category)" class="mr-2 rounded-lg border border-gray-700 px-3 py-2 text-xs font-bold text-gray-200 hover:border-jacquier-gold hover:text-jacquier-gold">Modifier</button><button type="button" (click)="pendingDeleteId.set(category.id)" [disabled]="categoryUsage(category.id) > 0" [attr.aria-label]="'Supprimer la catégorie ' + category.name" [attr.title]="categoryUsage(category.id) > 0 ? 'Déplacez d’abord les plats de cette catégorie.' : 'Supprimer cette catégorie'" class="rounded-lg border border-red-900/70 px-3 py-2 text-xs font-bold text-red-200 hover:bg-red-950/40 disabled:cursor-not-allowed disabled:opacity-40">Supprimer</button> }</td></tr> }</tbody></table></section> }
     </div>
   `,
   styles: [`.animate-fade-in { animation: fadeIn .6s ease-out forwards; } @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }`]
@@ -42,6 +42,7 @@ type CategoryDraft = Omit<MenuCategory, 'id'>;
 export class AdminCategoriesComponent {
   private readonly adminData = inject(AdminDataService);
   readonly categories = signal<MenuCategory[]>([]);
+  readonly menuItems = signal<MenuItem[]>([]);
   readonly loading = signal(true);
   readonly saving = signal(false);
   readonly errorMessage = signal('');
@@ -58,10 +59,18 @@ export class AdminCategoriesComponent {
 
   async load(): Promise<void> {
     this.loading.set(true); this.errorMessage.set('');
-    try { this.categories.set(await this.adminData.getCategories()); }
+    try {
+      const [categories, menuItems] = await Promise.all([
+        this.adminData.getCategories(), this.adminData.getMenuItems()
+      ]);
+      this.categories.set(categories);
+      this.menuItems.set(menuItems);
+    }
     catch { this.errorMessage.set('Impossible de charger les catégories. Vérifiez votre session puis réessayez.'); }
     finally { this.loading.set(false); }
   }
+
+  categoryUsage(categoryId: string): number { return this.menuItems().filter(item => item.categoryId === categoryId).length; }
 
   edit(category: MenuCategory): void { this.pendingDeleteId.set(null); this.editingId.set(category.id); this.draft.set({ name: category.name, order: category.order ?? 0 }); }
 
@@ -79,6 +88,12 @@ export class AdminCategoriesComponent {
   }
 
   async deleteCategory(category: MenuCategory): Promise<void> {
+    const usage = this.categoryUsage(category.id);
+    if (usage) {
+      this.pendingDeleteId.set(null);
+      this.errorMessage.set(`Impossible de supprimer « ${category.name} » : ${usage} plat(s) utilisent encore cette catégorie.`);
+      return;
+    }
     this.saving.set(true); this.errorMessage.set('');
     try { await this.adminData.deleteCategory(category.id); this.categories.update(categories => categories.filter(item => item.id !== category.id)); this.resetDraft(); }
     catch { this.errorMessage.set(`La catégorie « ${category.name} » n’a pas pu être supprimée.`); }

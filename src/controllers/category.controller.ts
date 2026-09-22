@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { addDoc, deleteDoc, getCollection, updateDoc } from '../services/db.service';
-import { catalogError, optionalOrder, optionalText, requireKnownFields, requiredText, validateUuid } from './catalog.validation';
+import { CatalogValidationError, catalogError, optionalOrder, optionalText, requireKnownFields, requiredText, validateUuid } from './catalog.validation';
 
 const CATEGORY_FIELDS = new Set(['name', 'order']);
 type CategoryPayload = Record<string, string | number>;
@@ -43,7 +43,13 @@ export const updateCategory = async (req: Request, res: Response) => {
 
 export const deleteCategory = async (req: Request, res: Response) => {
   try {
-    await deleteDoc('menuCategories', validateUuid(req.params.id, 'category'));
+    const id = validateUuid(req.params.id, 'category');
+    const menuItems = await getCollection('menuItems');
+    const linkedItems = menuItems.filter(item => item.categoryId === id);
+    if (linkedItems.length) {
+      throw new CatalogValidationError(`Category is used by ${linkedItems.length} menu item(s)`);
+    }
+    await deleteDoc('menuCategories', id);
     res.json({ success: true });
   } catch (error) {
     return catalogError(error, res, 'Failed to delete category');

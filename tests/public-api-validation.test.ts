@@ -6,6 +6,7 @@ process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-service-role-key';
 
 const { validateReservation } = await import('../src/controllers/reservation.controller');
 const { validateCateringPayload } = await import('../src/controllers/catering.controller');
+const { validateMenuPayload } = await import('../src/controllers/menu.controller');
 
 test('accepts a valid public reservation payload', () => {
   const reservation = validateReservation({
@@ -45,5 +46,20 @@ test('rejects excessively nested catering payloads', () => {
   assert.deepEqual(validateCateringPayload({ eventType: 'Mariage', guests: 120 }), {
     eventType: 'Mariage',
     guests: 120,
+  });
+});
+
+
+test('accepts menu edits that clear optional presentation fields', () => {
+  assert.deepEqual(validateMenuPayload({
+    shortDescription: null,
+    imageUrl: null,
+    displayOrder: 3,
+    isFeatured: true,
+  }, true), {
+    shortDescription: null,
+    imageUrl: null,
+    displayOrder: 3,
+    isFeatured: true,
   });
 });
