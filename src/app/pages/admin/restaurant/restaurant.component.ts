@@ -49,6 +49,8 @@ import { AdminDataService, MediaAsset, MenuCategory, MenuItem } from '../../../c
           <div class="flex flex-wrap gap-6 text-sm text-gray-300 md:col-span-2">
             <label class="flex items-center gap-2"><input [(ngModel)]="draft.active" name="active" type="checkbox" /> Publier immédiatement</label>
             <label class="flex items-center gap-2"><input [(ngModel)]="draft.isFeatured" name="isFeatured" type="checkbox" /> Suggestion de la Cheffe</label>
+            <label class="flex items-center gap-2"><input [(ngModel)]="draft.isVegetarian" name="isVegetarian" type="checkbox" /> Végétarien</label>
+            <label class="flex items-center gap-2"><input [(ngModel)]="draft.isSpicy" name="isSpicy" type="checkbox" /> Épicé</label>
           </div>
           <div class="flex items-center justify-end gap-4 md:col-span-2">
             @if (createSuccess()) { <span role="status" class="text-sm text-emerald-300">{{ createSuccess() }}</span> }
@@ -71,9 +73,9 @@ import { AdminDataService, MediaAsset, MenuCategory, MenuItem } from '../../../c
         <div class="rounded-2xl border border-gray-800 bg-[#1a1a1a] p-12 text-center text-gray-400">Aucun plat ne correspond à cette recherche.</div>
       } @else {
         <section class="overflow-x-auto rounded-2xl border border-gray-800 bg-[#1a1a1a]">
-          <table class="w-full min-w-[720px] text-left text-sm">
+          <table class="w-full min-w-[980px] text-left text-sm">
             <thead class="border-b border-gray-800 bg-[#121212] text-xs uppercase text-gray-500">
-              <tr><th class="px-6 py-4">Plat</th><th class="px-6 py-4">Catégorie</th><th class="px-6 py-4">Prix</th><th class="px-6 py-4">Carte</th><th class="px-6 py-4"><span class="sr-only">Actions</span></th></tr>
+              <tr><th class="px-6 py-4">Plat</th><th class="px-6 py-4">Catégorie</th><th class="px-6 py-4">Prix</th><th class="px-6 py-4">Repères</th><th class="px-6 py-4">Carte</th><th class="px-6 py-4"><span class="sr-only">Actions</span></th></tr>
             </thead>
             <tbody>
               @for (dish of filteredItems(); track dish.id) {
@@ -87,15 +89,27 @@ import { AdminDataService, MediaAsset, MenuCategory, MenuItem } from '../../../c
                   <td class="px-6 py-4 text-gray-300">{{ categoryName(dish) }}</td>
                   <td class="px-6 py-4 text-white">{{ dish.price || 'Prix non renseigné' }}{{ dish.price ? ' FG' : '' }}</td>
                   <td class="px-6 py-4">
+                    <div class="flex flex-wrap gap-2">
+                      @if (dish.isFeatured) { <span class="rounded-full bg-jacquier-gold/15 px-2.5 py-1 text-xs font-bold text-jacquier-gold">Cheffe</span> }
+                      @if (dish.isVegetarian) { <span class="rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-bold text-emerald-300">Végétarien</span> }
+                      @if (dish.isSpicy) { <span class="rounded-full bg-red-500/15 px-2.5 py-1 text-xs font-bold text-red-300">Épicé</span> }
+                      @if (!dish.isFeatured && !dish.isVegetarian && !dish.isSpicy) { <span class="text-xs text-gray-500">—</span> }
+                    </div>
+                  </td>
+                  <td class="px-6 py-4">
                     <span [class]="isActive(dish) ? 'rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-bold text-emerald-300' : 'rounded-full bg-gray-700 px-3 py-1 text-xs font-bold text-gray-300'">
                       {{ isActive(dish) ? 'Disponible' : 'Indisponible' }}
                     </span>
                   </td>
                   <td class="px-6 py-4 text-right">
-                    <button type="button" (click)="toggleFeatured(dish)" [disabled]="!!savingId()" [attr.aria-pressed]="dish.isFeatured === true" [attr.aria-label]="'Suggestion de la Cheffe : ' + dish.name" class="mb-2 rounded-lg border border-gray-700 px-3 py-2 text-xs font-bold text-jacquier-gold disabled:opacity-50">{{ dish.isFeatured ? 'Retirer des suggestions' : 'Suggérer ce plat' }}</button>
-                    <button type="button" (click)="toggleAvailability(dish)" [disabled]="!!savingId()" [attr.aria-label]="isActive(dish) ? 'Marquer ' + (dish.name || 'ce plat') + ' indisponible' : 'Marquer ' + (dish.name || 'ce plat') + ' disponible'" class="rounded-lg border border-gray-700 px-3 py-2 text-xs font-bold text-gray-200 hover:border-jacquier-gold hover:text-jacquier-gold disabled:cursor-wait disabled:opacity-50">
-                      {{ savingId() === dish.id ? 'Enregistrement…' : (isActive(dish) ? 'Rendre indisponible' : 'Rendre disponible') }}
-                    </button>
+                    <div class="flex flex-wrap justify-end gap-2">
+                      <button type="button" (click)="toggleFeatured(dish)" [disabled]="!!savingId()" [attr.aria-pressed]="dish.isFeatured === true" class="rounded-lg border border-gray-700 px-3 py-2 text-xs font-bold text-jacquier-gold disabled:opacity-50">{{ dish.isFeatured ? 'Retirer Cheffe' : 'Ajouter Cheffe' }}</button>
+                      <button type="button" (click)="toggleVegetarian(dish)" [disabled]="!!savingId()" [attr.aria-pressed]="dish.isVegetarian === true" class="rounded-lg border border-gray-700 px-3 py-2 text-xs font-bold text-emerald-300 disabled:opacity-50">{{ dish.isVegetarian ? 'Non végétarien' : 'Végétarien' }}</button>
+                      <button type="button" (click)="toggleSpicy(dish)" [disabled]="!!savingId()" [attr.aria-pressed]="dish.isSpicy === true" class="rounded-lg border border-gray-700 px-3 py-2 text-xs font-bold text-red-300 disabled:opacity-50">{{ dish.isSpicy ? 'Non épicé' : 'Épicé' }}</button>
+                      <button type="button" (click)="toggleAvailability(dish)" [disabled]="!!savingId()" [attr.aria-label]="isActive(dish) ? 'Marquer ' + (dish.name || 'ce plat') + ' indisponible' : 'Marquer ' + (dish.name || 'ce plat') + ' disponible'" class="rounded-lg border border-gray-700 px-3 py-2 text-xs font-bold text-gray-200 hover:border-jacquier-gold hover:text-jacquier-gold disabled:cursor-wait disabled:opacity-50">
+                        {{ savingId() === dish.id ? 'Enregistrement…' : (isActive(dish) ? 'Indisponible' : 'Disponible') }}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               }
@@ -167,7 +181,8 @@ export class AdminRestaurantComponent {
       const created = await this.adminData.createMenuItem({
         name: this.draft.name.trim(), category: category.name, categoryId: category.id,
         price: Number(this.draft.price), shortDescription: this.draft.shortDescription.trim() || undefined,
-        imageUrl: this.draft.imageUrl || undefined, active: this.draft.active, isFeatured: this.draft.isFeatured
+        imageUrl: this.draft.imageUrl || undefined, active: this.draft.active, isFeatured: this.draft.isFeatured,
+        isVegetarian: this.draft.isVegetarian, isSpicy: this.draft.isSpicy
       });
       this.items.update(items => [...items, created]);
       this.draft = this.emptyDraft();
@@ -180,18 +195,32 @@ export class AdminRestaurantComponent {
   }
 
   private emptyDraft() {
-    return { name: '', categoryId: '', price: 0, shortDescription: '', imageUrl: '', active: true, isFeatured: false };
+    return {
+      name: '', categoryId: '', price: 0, shortDescription: '', imageUrl: '',
+      active: true, isFeatured: false, isVegetarian: false, isSpicy: false
+    };
   }
 
   async toggleFeatured(dish: MenuItem): Promise<void> {
     await this.saveDish(dish, { isFeatured: !dish.isFeatured });
   }
 
+  async toggleVegetarian(dish: MenuItem): Promise<void> {
+    await this.saveDish(dish, { isVegetarian: !dish.isVegetarian });
+  }
+
+  async toggleSpicy(dish: MenuItem): Promise<void> {
+    await this.saveDish(dish, { isSpicy: !dish.isSpicy });
+  }
+
   async toggleAvailability(dish: MenuItem): Promise<void> {
     await this.saveDish(dish, { active: !this.isActive(dish) });
   }
 
-  private async saveDish(dish: MenuItem, payload: { active?: boolean; isFeatured?: boolean }): Promise<void> {
+  private async saveDish(
+    dish: MenuItem,
+    payload: { active?: boolean; isFeatured?: boolean; isVegetarian?: boolean; isSpicy?: boolean }
+  ): Promise<void> {
     if (this.savingId()) return;
     this.savingId.set(dish.id);
     this.errorMessage.set('');
