@@ -92,38 +92,38 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
             </div>
           </details>
 
-          <div class="flex flex-wrap justify-center gap-4">
-            <button type="button" (click)="showFeatured.set(!showFeatured())" [attr.aria-pressed]="showFeatured()" class="rounded-xl border border-jacquier-primary px-5 py-3 font-bold" [class.bg-jacquier-primary]="showFeatured()" [class.text-white]="showFeatured()">Suggestions de la Cheffe</button>
-            <button type="button" (click)="resetFilters()" class="px-4 py-3 underline">Réinitialiser les filtres</button>
-          </div>
-          <!-- Preference Toggles -->
-          <div class="flex flex-wrap justify-center gap-8 text-sm font-bold text-jacquier-text">
-            <label class="flex items-center cursor-pointer space-x-3 select-none group min-h-[44px]">
-              <div class="relative">
-                <input type="checkbox" class="peer sr-only" [checked]="showVegetarian()" (change)="showVegetarian.set(!showVegetarian())">
-                <div class="peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 w-12 h-7 bg-gray-200 rounded-full shadow-inner transition-colors" [class.bg-jacquier-green]="showVegetarian()"></div>
-                <div class="dot absolute left-1 top-1 w-5 h-5 bg-white rounded-full shadow transition-transform" [class.translate-x-5]="showVegetarian()"></div>
-              </div>
-              <span class="group-hover:text-jacquier-green transition-colors">Végétarien</span>
-            </label>
+          <!-- Preference chips -->
+          <div class="flex flex-wrap items-center justify-center gap-3" role="group" aria-label="Préférences alimentaires">
+            <button
+              type="button"
+              (click)="showVegetarian.set(!showVegetarian())"
+              [attr.aria-pressed]="showVegetarian()"
+              class="min-h-[44px] rounded-full border border-jacquier-primary px-5 py-2.5 text-sm font-bold transition-colors"
+              [class.bg-jacquier-primary]="showVegetarian()"
+              [class.text-white]="showVegetarian()"
+            >
+              Végétarien
+            </button>
+            <button
+              type="button"
+              (click)="showSpicy.set(!showSpicy())"
+              [attr.aria-pressed]="showSpicy()"
+              class="min-h-[44px] rounded-full border border-jacquier-primary px-5 py-2.5 text-sm font-bold transition-colors"
+              [class.bg-jacquier-primary]="showSpicy()"
+              [class.text-white]="showSpicy()"
+            >
+              Épicé
+            </button>
 
-            <label class="flex items-center cursor-pointer space-x-3 select-none group min-h-[44px]">
-              <div class="relative">
-                <input type="checkbox" class="peer sr-only" [checked]="showSpicy()" (change)="showSpicy.set(!showSpicy())">
-                <div class="peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 w-12 h-7 bg-gray-200 rounded-full shadow-inner transition-colors" [class.bg-red-500]="showSpicy()"></div>
-                <div class="dot absolute left-1 top-1 w-5 h-5 bg-white rounded-full shadow transition-transform" [class.translate-x-5]="showSpicy()"></div>
-              </div>
-              <span class="group-hover:text-red-500 transition-colors">Épicé</span>
-            </label>
-
-            <label class="flex items-center cursor-pointer space-x-3 select-none group min-h-[44px]">
-              <div class="relative">
-                <input type="checkbox" class="peer sr-only" [checked]="showLocal()" (change)="showLocal.set(!showLocal())">
-                <div class="peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 w-12 h-7 bg-gray-200 rounded-full shadow-inner transition-colors" [class.bg-jacquier-gold]="showLocal()"></div>
-                <div class="dot absolute left-1 top-1 w-5 h-5 bg-white rounded-full shadow transition-transform" [class.translate-x-5]="showLocal()"></div>
-              </div>
-              <span class="group-hover:text-jacquier-gold transition-colors">Spécialité Locale</span>
-            </label>
+            @if (hasActiveFilters()) {
+              <button
+                type="button"
+                (click)="resetFilters()"
+                class="min-h-[44px] px-3 py-2.5 text-sm font-semibold underline underline-offset-4"
+              >
+                Réinitialiser les filtres
+              </button>
+            }
           </div>
         </div>
 
@@ -154,20 +154,31 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
         <!-- Grid -->
         @else if (filteredDishes().length > 0) {
           <p role="status" aria-live="polite" class="mb-6 text-jacquier-primary">{{ filteredDishes().length }} plat(s) à découvrir</p>
-          @if (featuredDishes().length && !showFeatured()) {
+
+          @if (featuredDishes().length) {
             <section aria-labelledby="chef-title" class="mb-12">
-              <h2 id="chef-title" class="mb-6 text-3xl font-serif text-jacquier-primary">Les suggestions de la Cheffe</h2>
+              <div class="mb-6 flex items-end justify-between gap-4">
+                <div>
+                  <p class="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-jacquier-gold">Sélection maison</p>
+                  <h2 id="chef-title" class="text-3xl font-serif text-jacquier-primary">Les suggestions de la Cheffe</h2>
+                </div>
+              </div>
               <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                @for (dish of featuredDishes(); track dish.id) { <app-dish-card [dish]="dish" /> }
+                @for (dish of featuredDishes(); track dish.id) {
+                  <app-dish-card [dish]="dish" />
+                }
               </div>
             </section>
           }
-          <h2 class="mb-6 text-3xl font-serif text-jacquier-primary">La carte</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up">
-            @for (dish of filteredDishes(); track dish.id) {
-              <app-dish-card [dish]="dish" />
-            }
-          </div>
+
+          @if (menuDishes().length) {
+            <h2 class="mb-6 text-3xl font-serif text-jacquier-primary">La carte</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up">
+              @for (dish of menuDishes(); track dish.id) {
+                <app-dish-card [dish]="dish" />
+              }
+            </div>
+          }
         } @else {
           <div class="text-center py-24 bg-white rounded-3xl shadow-lg border border-gray-100">
             <div class="w-20 h-20 mx-auto bg-jacquier-cream rounded-full flex items-center justify-center mb-6">
@@ -199,10 +210,8 @@ export class MenuComponent {
   searchQuery = signal<string>('');
   showVegetarian = signal<boolean>(false);
   showSpicy = signal<boolean>(false);
-  showLocal = signal<boolean>(false);
   minPrice = signal<number>(0);
   maxPrice = signal<number | null>(null);
-  showFeatured = signal(false);
   priceCeiling = computed(() => Math.max(5000, ...this.allDishes().map(dish => Math.ceil(dish.price / 5000) * 5000)));
   effectiveMaxPrice = computed(() => this.maxPrice() ?? this.priceCeiling());
   setMinPrice(value: number) { this.minPrice.set(Math.min(Number(value), this.effectiveMaxPrice())); }
@@ -211,20 +220,30 @@ export class MenuComponent {
   filters = computed(() => categoryFilters(this.allDishes(), this.restaurantService.menuCategories()));
   filteredDishes = computed(() => filterDishes(this.allDishes(), this.restaurantService.menuCategories(), {
     query: this.searchQuery(), category: this.activeFilter(), vegetarian: this.showVegetarian(),
-    spicy: this.showSpicy(), local: this.showLocal(), featured: this.showFeatured(),
+    spicy: this.showSpicy(), local: false, featured: false,
     minPrice: this.minPrice(), maxPrice: this.effectiveMaxPrice()
   }));
   featuredDishes = computed(() => this.filteredDishes().filter(dish => dish.isFeatured).slice(0, 3));
+  menuDishes = computed(() => {
+    const featuredIds = new Set(this.featuredDishes().map(dish => dish.id));
+    return this.filteredDishes().filter(dish => !featuredIds.has(dish.id));
+  });
+  hasActiveFilters = computed(() =>
+    this.activeFilter() !== 'all' ||
+    this.searchQuery().trim().length > 0 ||
+    this.showVegetarian() ||
+    this.showSpicy() ||
+    this.minPrice() > 0 ||
+    this.maxPrice() !== null
+  );
 
   resetFilters() {
     this.activeFilter.set('all');
     this.searchQuery.set('');
     this.showVegetarian.set(false);
     this.showSpicy.set(false);
-    this.showLocal.set(false);
     this.minPrice.set(0);
     this.maxPrice.set(null);
-    this.showFeatured.set(false);
   }
 
   retry() {
