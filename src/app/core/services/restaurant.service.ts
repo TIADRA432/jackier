@@ -27,6 +27,26 @@ export class RestaurantService {
   private wines = signal<Wine[]>([]);
   private galleryImages = signal<GalleryImage[]>([]);
   private schoolPrograms = signal<SchoolProgram[]>([]);
+  private team = signal<TeamMember[]>([]);
+
+  private loadingMenu = signal(true);
+  private loadingWines = signal(true);
+  private loadingGallery = signal(true);
+  private loadingSchool = signal(true);
+  private loadingTeam = signal(true);
+  private errorMenu = signal<string | null>(null);
+  private errorWines = signal<string | null>(null);
+  private errorGallery = signal<string | null>(null);
+  private errorSchool = signal<string | null>(null);
+  private errorTeam = signal<string | null>(null);
+
+  // Les avis restent éditoriaux pour le moment. L’équipe publique est chargée depuis l’API administrée.
+  private reviews = signal<Review[]>([
+    { author: 'Mariam C.', rating: 5, comment: 'Une expérience incroyable ! Le cadre est magnifique et les plats sont délicieux.', date: '2023-10-15' },
+    { author: 'Jean-Pierre L.', rating: 4, comment: 'Très bonne cuisine fusion. Le service est impeccable.', date: '2023-11-02' },
+    { author: 'Fatim D.', rating: 5, comment: 'Le meilleur restaurant de Kipé. Je recommande le Yassa revisité.', date: '2023-12-10' }
+  ]);
+
   // Cartes marketing statiques présentées sur la page traiteur (distinctes des demandes de devis, qui elles sont envoyées via /api/catering).
   private cateringServices = signal<CateringService[]>([
     { id: '1', title: 'Mariages & Cérémonies', description: 'Des menus sur-mesure pour votre grand jour.', icon: '💍' },
