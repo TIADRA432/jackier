@@ -61,6 +61,7 @@ export const routes: Routes = [
       { path: 'stock', loadComponent: () => import('./pages/admin/stock/stock.component').then(m => m.StockComponent), title: 'Admin - Stock' },
       { path: 'analytics', loadComponent: () => import('./pages/admin/analytics/analytics.component').then(m => m.AnalyticsComponent), title: 'Admin - Analyses' },
       { path: 'cms', loadComponent: () => import('./pages/admin/cms/cms.component').then(m => m.CMSComponent), title: 'Admin - CMS' },
+      { path: 'galerie', loadComponent: () => import('./pages/admin/gallery/admin-gallery.component').then(m => m.AdminGalleryComponent), title: 'Admin - Galerie publique' },
       { path: 'traiteur', loadComponent: () => import('./pages/admin/traiteur/traiteur.component').then(m => m.AdminTraiteurComponent), title: 'Admin - Traiteur' },
       { path: 'ecole', loadComponent: () => import('./pages/admin/school/school.component').then(m => m.AdminSchoolComponent), title: 'Admin - École' },
       { path: 'finance', loadComponent: () => import('./pages/admin/finance/finance.component').then(m => m.AdminFinanceComponent), title: 'Admin - Finance' },
