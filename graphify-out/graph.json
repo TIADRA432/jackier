@@ -697,7 +697,7 @@
       "file_type": "code",
       "norm_label": "admincomponent",
       "source_file": "src/app/pages/admin/admin.component.ts",
-      "source_location": "L485"
+      "source_location": "L522"
     },
     {
       "id": "src_controllers_gallery_controller_galleryrow",
@@ -3204,7 +3204,7 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "src/app/pages/admin/admin.component.ts",
-      "source_location": "L486"
+      "source_location": "L523"
     },
     {
       "id": "src_app_pages_admin_admin_component_admincomponent_signout",
@@ -3215,7 +3215,7 @@
       "file_type": "code",
       "norm_label": ".signout()",
       "source_file": "src/app/pages/admin/admin.component.ts",
-      "source_location": "L494"
+      "source_location": "L531"
     },
     {
       "id": "src_app_pages_admin_admin_component_admincomponent_togglesidebar",
@@ -3226,7 +3226,7 @@
       "file_type": "code",
       "norm_label": ".togglesidebar()",
       "source_file": "src/app/pages/admin/admin.component.ts",
-      "source_location": "L490"
+      "source_location": "L527"
     },
     {
       "id": "src_controllers_gallery_controller_deletegalleryimage",
@@ -21223,7 +21223,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/app/pages/admin/admin.component.ts",
-      "source_location": "L486",
+      "source_location": "L523",
       "weight": 1.0
     },
     {
@@ -24275,7 +24275,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/admin/admin.component.ts",
-      "source_location": "L485",
+      "source_location": "L522",
       "weight": 1.0
     },
     {
@@ -28496,7 +28496,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/admin/admin.component.ts",
-      "source_location": "L486",
+      "source_location": "L523",
       "weight": 1.0
     },
     {
@@ -28507,7 +28507,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/admin/admin.component.ts",
-      "source_location": "L490",
+      "source_location": "L527",
       "weight": 1.0
     },
     {
@@ -28518,7 +28518,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/admin/admin.component.ts",
-      "source_location": "L494",
+      "source_location": "L531",
       "weight": 1.0
     },
     {
@@ -30136,7 +30136,7 @@
       "confidence_score": 0.8,
       "context": "call",
       "source_file": "src/app/pages/admin/admin.component.ts",
-      "source_location": "L495",
+      "source_location": "L532",
       "weight": 1.0
     },
     {
@@ -31005,5 +31005,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "278a2366275742c56b8f7ba9e3bebe9d3ddb8e1a"
+  "built_at_commit": "00da4ee5db3bced78b3dcddc0ec1821cf320eb51"
 }
