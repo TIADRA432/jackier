@@ -458,7 +458,7 @@ import { AdminAuthService } from '../../core/services/admin-auth.service';
         </header>
 
         <!-- Page Content -->
-        <main class="flex-1 overflow-y-auto p-6 lg:p-10 custom-scrollbar">
+        <main class="admin-scroll-area flex-1 overflow-y-auto overflow-x-hidden p-6 lg:p-10 custom-scrollbar">
           <router-outlet></router-outlet>
         </main>
       </div>
@@ -466,18 +466,55 @@ import { AdminAuthService } from '../../core/services/admin-auth.service';
   `,
   styles: [
     `
-      .custom-scrollbar::-webkit-scrollbar {
-        width: 6px;
+      .custom-scrollbar,
+      .admin-scroll-area,
+      :host ::ng-deep .overflow-x-auto,
+      :host ::ng-deep .overflow-y-auto {
+        scrollbar-width: auto;
+        scrollbar-color: rgba(212, 175, 55, 0.78) #1a1a1a;
       }
-      .custom-scrollbar::-webkit-scrollbar-track {
-        background: transparent;
+
+      .admin-scroll-area {
+        scrollbar-gutter: stable;
+        overscroll-behavior: contain;
       }
-      .custom-scrollbar::-webkit-scrollbar-thumb {
-        background-color: #333;
-        border-radius: 20px;
+
+      .custom-scrollbar::-webkit-scrollbar,
+      .admin-scroll-area::-webkit-scrollbar,
+      :host ::ng-deep .overflow-x-auto::-webkit-scrollbar,
+      :host ::ng-deep .overflow-y-auto::-webkit-scrollbar {
+        width: 10px;
+        height: 10px;
       }
-      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background-color: #555;
+
+      .custom-scrollbar::-webkit-scrollbar-track,
+      .admin-scroll-area::-webkit-scrollbar-track,
+      :host ::ng-deep .overflow-x-auto::-webkit-scrollbar-track,
+      :host ::ng-deep .overflow-y-auto::-webkit-scrollbar-track {
+        background: #1a1a1a;
+        border-radius: 999px;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar-thumb,
+      .admin-scroll-area::-webkit-scrollbar-thumb,
+      :host ::ng-deep .overflow-x-auto::-webkit-scrollbar-thumb,
+      :host ::ng-deep .overflow-y-auto::-webkit-scrollbar-thumb {
+        min-height: 42px;
+        background: rgba(212, 175, 55, 0.72);
+        border: 2px solid #1a1a1a;
+        border-radius: 999px;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover,
+      .admin-scroll-area::-webkit-scrollbar-thumb:hover,
+      :host ::ng-deep .overflow-x-auto::-webkit-scrollbar-thumb:hover,
+      :host ::ng-deep .overflow-y-auto::-webkit-scrollbar-thumb:hover {
+        background: #d4af37;
+      }
+
+      :host ::ng-deep .overflow-x-auto {
+        scrollbar-gutter: stable;
+        padding-bottom: 4px;
       }
     `,
   ],
