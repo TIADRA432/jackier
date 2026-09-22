@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   deploy:
+    if: github.ref == 'refs/heads/integration/backend-supabase'
     name: Build and deploy production Worker
     runs-on: ubuntu-latest
     timeout-minutes: 15
