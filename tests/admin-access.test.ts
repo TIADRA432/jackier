@@ -219,3 +219,14 @@ test('the internal team directory uses protected data without storing sensitive 
   assert.doesNotMatch(component, /Masse Salariale/);
   assert.doesNotMatch(component, /Présents Aujourd'hui/);
 });
+
+
+test('admin layout keeps visible scrollbars for long pages and horizontal tables', async () => {
+  const component = await source('src', 'app', 'pages', 'admin', 'admin.component.ts');
+
+  assert.match(component, /admin-scroll-area/);
+  assert.match(component, /scrollbar-color: rgba\(212, 175, 55, 0\.78\) #1a1a1a/);
+  assert.match(component, /overflow-x-auto::\-webkit-scrollbar/);
+  assert.match(component, /height: 10px/);
+  assert.match(component, /scrollbar-gutter: stable/);
+});
