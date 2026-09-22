@@ -35,8 +35,10 @@ type EditDraft = { title: string; altText: string; category: MediaCategory };
           <div class="uppy-shell" aria-label="Sélection des images">
             <uppy-dashboard [uppy]="uppy" [props]="uppyProps"></uppy-dashboard>
           </div>
-          <label class="block text-sm text-gray-300">Zone d’utilisation
+          <label class="block text-sm text-gray-300">Zone d’utilisation du lot
             <select [(ngModel)]="uploadCategory" name="uploadCategory" class="mt-2 w-full rounded-xl bg-gray-900 px-3 py-3 text-white outline-none ring-jacquier-gold focus:ring-1">@for (item of categories; track item.value) { <option [value]="item.value">{{ item.label }}</option> }</select>
+            <span class="mt-1 block text-xs text-gray-500">Cette zone sera appliquée à toutes les images de cet import.</span>
+            @if (uploadCategory === 'gallery') { <span class="mt-1 block text-xs font-semibold text-emerald-300">Les images seront aussi publiées automatiquement dans la galerie publique.</span> }
           </label>
 
           @if (uploadDrafts().length) {
@@ -44,7 +46,10 @@ type EditDraft = { title: string; altText: string; category: MediaCategory };
               <p class="text-sm font-bold text-white">{{ uploadDrafts().length }} image(s) sélectionnée(s)</p>
               @for (draft of uploadDrafts(); track draft.id) {
                 <div class="grid gap-3 rounded-xl border border-gray-800 bg-gray-900/70 p-4 md:grid-cols-2">
-                  <p class="truncate text-xs text-gray-400 md:col-span-2">{{ draft.file.name }} · {{ fileSize(draft.file.size) }}</p>
+                  <div class="flex items-center justify-between gap-3 md:col-span-2">
+                    <p class="min-w-0 truncate text-xs text-gray-400">{{ draft.file.name }} · {{ fileSize(draft.file.size) }}</p>
+                    <button type="button" (click)="removeUploadDraft(draft.id)" [disabled]="saving()" class="shrink-0 text-xs font-bold text-red-300 hover:text-red-200 disabled:opacity-50">Retirer</button>
+                  </div>
                   <label class="text-xs text-gray-300">Titre<input [(ngModel)]="draft.title" [name]="'title-' + $index" maxlength="200" class="mt-1 w-full rounded-lg bg-black/30 px-3 py-2 text-white" /></label>
                   <label class="text-xs text-gray-300">Texte alternatif *<input [(ngModel)]="draft.altText" [name]="'alt-' + $index" maxlength="200" required class="mt-1 w-full rounded-lg bg-black/30 px-3 py-2 text-white" /></label>
                 </div>
@@ -52,14 +57,18 @@ type EditDraft = { title: string; altText: string; category: MediaCategory };
             </div>
           }
 
-          <fieldset class="space-y-2"><legend class="text-sm font-bold text-white">Tags appliqués à cet import</legend>
+          <fieldset class="space-y-2"><legend class="text-sm font-bold text-white">Tags appliqués à tout le lot</legend>
             <div class="flex flex-wrap gap-2">@for (tag of tags(); track tag.id) {
               <label class="cursor-pointer rounded-full border px-3 py-2 text-xs" [class.border-jacquier-gold]="uploadTagIds().includes(tag.id)" [class.text-jacquier-gold]="uploadTagIds().includes(tag.id)" [class.border-gray-700]="!uploadTagIds().includes(tag.id)" [class.text-gray-300]="!uploadTagIds().includes(tag.id)">
                 <input type="checkbox" class="sr-only" [checked]="uploadTagIds().includes(tag.id)" (change)="toggleUploadTag(tag.id)" />{{ tag.name }}
               </label>
             }</div>
           </fieldset>
-          <div class="flex justify-end"><button type="submit" [disabled]="saving() || !canUpload()" class="rounded-xl bg-jacquier-gold px-5 py-3 text-sm font-bold text-jacquier-dark disabled:opacity-50">{{ saving() ? 'Import ' + uploadProgress() + '/' + uploadDrafts().length : 'Importer les images' }}</button></div>
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            @if (missingAltCount()) { <p class="text-xs font-semibold text-amber-300">{{ missingAltCount() }} texte(s) alternatif(s) à compléter avant l’import.</p> }
+            @else if (uploadDrafts().length) { <p class="text-xs text-emerald-300">Les informations obligatoires sont complètes.</p> }
+            <button type="submit" [disabled]="saving() || !canUpload()" class="self-end rounded-xl bg-jacquier-gold px-5 py-3 text-sm font-bold text-jacquier-dark disabled:opacity-50">{{ saving() ? 'Import ' + uploadProgress() + '/' + (uploadProgress() + uploadDrafts().length) : 'Importer les images' }}</button>
+          </div>
         </form>
       }
 
@@ -244,27 +253,56 @@ export class CMSComponent implements OnDestroy {
     catch { this.errorMessage.set('Impossible de charger la médiathèque. Réessayez dans un instant.'); }
     finally { this.loading.set(false); }
   }
+  missingAltCount(): number { return this.uploadDrafts().filter(draft => !draft.altText.trim()).length; }
   canUpload(): boolean {
-    return this.uploadDrafts().length > 0 && this.uploadDrafts().every(draft => draft.altText.trim().length > 0);
+    return this.uploadDrafts().length > 0 && this.missingAltCount() === 0;
   }
+  removeUploadDraft(id: string): void { this.uppy.removeFile(id); }
   toggleUploadTag(id: string) { this.uploadTagIds.update(ids => ids.includes(id) ? ids.filter(value => value !== id) : [...ids, id]); }
   async uploadAll(): Promise<void> {
-    const drafts = this.uploadDrafts(); if (!this.canUpload() || this.saving()) return;
+    const drafts = [...this.uploadDrafts()];
+    if (!this.canUpload() || this.saving()) return;
+
     this.saving.set(true); this.uploadProgress.set(0); this.errorMessage.set(''); this.successMessage.set('');
     const created: MediaAsset[] = [];
     try {
       for (const draft of drafts) {
-        const asset = await this.adminData.uploadMediaAsset(draft.file, { title: draft.title.trim(), altText: draft.altText.trim(), category: this.uploadCategory, tagIds: this.uploadTagIds() });
-        created.push(asset); this.uploadProgress.update(value => value + 1);
-        if (asset.category === 'gallery') {
-          const galleryItem = await this.adminData.createGalleryMedia({ imageUrl: asset.publicUrl, title: asset.title, category: 'gallery' });
-          this.gallery.update(items => [galleryItem, ...items]);
+        let asset: MediaAsset | undefined;
+        try {
+          asset = await this.adminData.uploadMediaAsset(draft.file, {
+            title: draft.title.trim(), altText: draft.altText.trim(),
+            category: this.uploadCategory, tagIds: this.uploadTagIds()
+          });
+
+          if (asset.category === 'gallery') {
+            const galleryItem = await this.adminData.createGalleryMedia({
+              imageUrl: asset.publicUrl, title: asset.title, category: 'gallery'
+            });
+            this.gallery.update(items => [galleryItem, ...items]);
+          }
+
+          created.push(asset);
+          this.uploadProgress.update(value => value + 1);
+          this.uppy.removeFile(draft.id);
+        } catch (error) {
+          if (asset) {
+            try { await this.adminData.deleteMediaAsset(asset.id); } catch { /* cleanup best effort */ }
+          }
+          throw error;
         }
       }
-      this.media.update(items => [...created.reverse(), ...items]); this.uppy.clear(); this.uploadTagIds.set([]); this.showForm.set(false);
+
+      this.media.update(items => [...created.slice().reverse(), ...items]);
+      this.uploadTagIds.set([]); this.showForm.set(false);
       this.successMessage.set(`${created.length} image(s) importée(s)${this.uploadCategory === 'gallery' ? ' et publiée(s) dans la galerie' : ''}.`);
-    } catch { this.errorMessage.set(`Import interrompu après ${created.length} image(s). Vérifiez le format, la taille et les textes alternatifs.`); if (created.length) this.media.update(items => [...created.reverse(), ...items]); }
-    finally { this.saving.set(false); }
+    } catch {
+      if (created.length) this.media.update(items => [...created.slice().reverse(), ...items]);
+      this.errorMessage.set(
+        `Import interrompu après ${created.length} image(s). Les images déjà terminées ont été retirées de la sélection ; vous pouvez corriger puis relancer uniquement les fichiers restants.`
+      );
+    } finally {
+      this.saving.set(false);
+    }
   }
   async createTag(): Promise<void> {
     const name = this.newTagName.trim(); if (!name || this.savingTag()) return;
