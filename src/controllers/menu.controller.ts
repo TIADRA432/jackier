@@ -27,6 +27,12 @@ const optionalText = (value: unknown, field: string, maxLength: number): string 
   return requiredText(value, field, maxLength);
 };
 
+const optionalNullableText = (value: unknown, field: string, maxLength: number): string | null | undefined => {
+  if (value === undefined) return undefined;
+  if (value === null || value === '') return null;
+  return requiredText(value, field, maxLength);
+};
+
 const optionalBoolean = (value: unknown, field: string): boolean | undefined => {
   if (value === undefined) return undefined;
   if (typeof value !== 'boolean') throw new ValidationError(`Invalid ${field}`);
@@ -49,9 +55,9 @@ const optionalOrder = (value: unknown): number | undefined => {
   return value;
 };
 
-const optionalImageUrl = (value: unknown): string | undefined => {
-  const url = optionalText(value, 'image URL', 2_000);
-  if (!url) return url;
+const optionalImageUrl = (value: unknown): string | null | undefined => {
+  const url = optionalNullableText(value, 'image URL', 2_000);
+  if (url === undefined || url === null) return url;
   try {
     const parsed = new URL(url);
     if (!['http:', 'https:'].includes(parsed.protocol)) throw new Error();
@@ -61,7 +67,7 @@ const optionalImageUrl = (value: unknown): string | undefined => {
   }
 };
 
-type MenuPayload = Record<string, string | number | boolean>;
+type MenuPayload = Record<string, string | number | boolean | null>;
 
 const toMenuRow = (payload: MenuPayload): MenuPayload => {
   const { category: _categoryLabel, ...row } = payload;
@@ -87,7 +93,7 @@ export const validateMenuPayload = (body: unknown, partial: boolean): MenuPayloa
   if (categoryId !== undefined) result.categoryId = categoryId;
   if (price !== undefined) result.price = price;
 
-  const shortDescription = optionalText(body.shortDescription, 'short description', 1_000);
+  const shortDescription = optionalNullableText(body.shortDescription, 'short description', 1_000);
   const imageUrl = optionalImageUrl(body.imageUrl);
   const active = optionalBoolean(body.active, 'active');
   const displayOrder = optionalOrder(body.displayOrder);
