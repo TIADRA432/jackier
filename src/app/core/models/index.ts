@@ -52,8 +52,10 @@ export interface TeamMember {
   id: string;
   name: string;
   role: string;
+  department?: string;
   image: string;
   bio?: string;
+  displayOrder?: number;
 }
 
 export interface CateringService {
