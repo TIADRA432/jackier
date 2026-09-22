@@ -66,6 +66,10 @@ test('admin media UI supports batch import, tags, filters and authenticated down
   assert.match(component, /toggleGallery\(item/);
   assert.match(component, /copyUrl\(item/);
   assert.match(component, /inspectUsage\(item/);
+  assert.match(component, /Réglages Galerie/);
+  assert.match(component, /saveGalleryEdit\(item/);
+  assert.match(component, /galleryDraft\.displayOrder/);
+  assert.match(service, /updateGalleryMedia\(id/);
   assert.match(component, /removeUploadDraft\(draft\.id\)/);
   assert.match(component, /missingAltCount\(\)/);
   assert.match(component, /this\.uppy\.removeFile\(draft\.id\)/);
