@@ -70,6 +70,10 @@ test('admin media UI supports batch import, tags, filters and authenticated down
   assert.match(component, /missingAltCount\(\)/);
   assert.match(component, /this\.uppy\.removeFile\(draft\.id\)/);
   assert.match(component, /Les images déjà terminées ont été retirées de la sélection/);
+  assert.match(component, /altText: label/);
+  assert.match(component, /sticky bottom-3/);
+  assert.match(component, /cancelUpload\(\)/);
+  assert.match(component, /uppy-Dashboard-inner \{ width: 100% !important/);
   assert.match(service, /getMediaAssetUsage\(id/);
   assert.match(service, /formData\.set\('tagIds', JSON\.stringify/);
   assert.match(service, /responseType: 'blob'/);

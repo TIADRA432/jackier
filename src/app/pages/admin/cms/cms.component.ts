@@ -64,10 +64,16 @@ type EditDraft = { title: string; altText: string; category: MediaCategory };
               </label>
             }</div>
           </fieldset>
-          <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            @if (missingAltCount()) { <p class="text-xs font-semibold text-amber-300">{{ missingAltCount() }} texte(s) alternatif(s) à compléter avant l’import.</p> }
-            @else if (uploadDrafts().length) { <p class="text-xs text-emerald-300">Les informations obligatoires sont complètes.</p> }
-            <button type="submit" [disabled]="saving() || !canUpload()" class="self-end rounded-xl bg-jacquier-gold px-5 py-3 text-sm font-bold text-jacquier-dark disabled:opacity-50">{{ saving() ? 'Import ' + uploadProgress() + '/' + (uploadProgress() + uploadDrafts().length) : 'Importer les images' }}</button>
+          <div class="sticky bottom-3 z-20 flex flex-col gap-3 rounded-2xl border border-jacquier-gold/30 bg-[#111111]/95 p-4 shadow-2xl backdrop-blur sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              @if (missingAltCount()) { <p class="text-xs font-semibold text-amber-300">{{ missingAltCount() }} texte(s) alternatif(s) à compléter avant l’import.</p> }
+              @else if (uploadDrafts().length) { <p class="text-xs text-emerald-300">Les informations obligatoires sont complètes.</p> }
+              @else { <p class="text-xs text-gray-500">Sélectionnez au moins une image à importer.</p> }
+            </div>
+            <div class="flex flex-wrap justify-end gap-2">
+              <button type="button" (click)="cancelUpload()" [disabled]="saving()" class="rounded-xl border border-gray-700 px-4 py-3 text-sm font-bold text-gray-200 hover:border-white disabled:opacity-50">Annuler</button>
+              <button type="submit" [disabled]="saving() || !canUpload()" class="rounded-xl bg-jacquier-gold px-5 py-3 text-sm font-bold text-jacquier-dark shadow-lg shadow-black/20 hover:bg-white disabled:opacity-50">{{ saving() ? 'Import ' + uploadProgress() + '/' + (uploadProgress() + uploadDrafts().length) : 'Importer les images' }}</button>
+            </div>
           </div>
         </form>
       }
@@ -178,8 +184,9 @@ type EditDraft = { title: string; altText: string; category: MediaCategory };
   `,
   styles: [`
     .animate-fade-in { animation: fadeIn 0.6s ease-out forwards; }
-    .uppy-shell { overflow: hidden; border-radius: 1rem; }
-    .uppy-shell ::ng-deep .uppy-Dashboard-inner { border-color: rgb(55 65 81); background: rgb(17 24 39); }
+    .uppy-shell { width: 100%; overflow: hidden; border-radius: 1rem; }
+    .uppy-shell ::ng-deep .uppy-Dashboard { width: 100%; }
+    .uppy-shell ::ng-deep .uppy-Dashboard-inner { width: 100% !important; max-width: none !important; border-color: rgb(55 65 81); background: rgb(17 24 39); }
     .uppy-shell ::ng-deep .uppy-Dashboard-AddFiles { border-color: rgb(75 85 99); }
     .uppy-shell ::ng-deep .uppy-Dashboard-AddFiles-title,
     .uppy-shell ::ng-deep .uppy-Dashboard-dropFilesHereHint { color: rgb(209 213 219); }
@@ -230,11 +237,12 @@ export class CMSComponent implements OnDestroy {
   constructor() {
     this.uppy.on('file-added', file => {
       const selectedFile = file.data as File;
+      const label = this.fileLabel(selectedFile.name);
       this.uploadDrafts.update(drafts => [...drafts, {
         id: file.id,
         file: selectedFile,
-        title: selectedFile.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' '),
-        altText: '',
+        title: label,
+        altText: label,
       }]);
     });
     this.uppy.on('file-removed', file => this.uploadDrafts.update(drafts => drafts.filter(draft => draft.id !== file.id)));
@@ -258,6 +266,14 @@ export class CMSComponent implements OnDestroy {
     return this.uploadDrafts().length > 0 && this.missingAltCount() === 0;
   }
   removeUploadDraft(id: string): void { this.uppy.removeFile(id); }
+  cancelUpload(): void {
+    if (this.saving()) return;
+    this.uppy.clear();
+    this.uploadTagIds.set([]);
+    this.uploadProgress.set(0);
+    this.showForm.set(false);
+    this.errorMessage.set('');
+  }
   toggleUploadTag(id: string) { this.uploadTagIds.update(ids => ids.includes(id) ? ids.filter(value => value !== id) : [...ids, id]); }
   async uploadAll(): Promise<void> {
     const drafts = [...this.uploadDrafts()];
@@ -419,5 +435,8 @@ export class CMSComponent implements OnDestroy {
   categoryLabel(category: MediaCategory): string { return CATEGORIES.find(item => item.value === category)?.label ?? category; }
   formatDate(value: string): string { return new Intl.DateTimeFormat('fr-FR', { dateStyle: 'medium' }).format(new Date(value)); }
   fileSize(value: number): string { return value >= 1024 * 1024 ? `${(value / 1024 / 1024).toFixed(1)} Mo` : `${Math.ceil(value / 1024)} Ko`; }
+  private fileLabel(name: string): string {
+    return name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').replace(/\s+/g, ' ').trim();
+  }
   private normalize(value: string): string { return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('fr').trim(); }
 }
