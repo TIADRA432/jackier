@@ -26,3 +26,7 @@ dist-ssr
 
 # Graphify AST cache is regenerated locally; version only its shared reports.
 graphify-out/cache/ast/
+
+# Generated isolated preview configuration
+.preview/
+src/environments/environment.preview.ts

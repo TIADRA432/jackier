@@ -27,6 +27,9 @@ const withStaticSecurityHeaders = (response: Response): Response => {
   for (const [name, value] of Object.entries(staticAssetSecurityHeaders)) {
     headers.set(name, value);
   }
+  if (process.env.APP_ENV === 'preview') {
+    headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
+  }
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,

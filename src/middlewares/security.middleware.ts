@@ -6,7 +6,7 @@ import helmet from 'helmet';
 
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 5;
-const SUPABASE_ORIGIN = 'https://pesraxtkhkruiipjkrty.supabase.co';
+const SUPABASE_ORIGIN = new URL(process.env.SUPABASE_URL || 'https://pesraxtkhkruiipjkrty.supabase.co').origin;
 
 const normalizeOrigin = (value: string): string => {
   const url = new URL(value.trim());
