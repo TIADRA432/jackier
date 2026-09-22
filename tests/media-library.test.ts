@@ -15,6 +15,7 @@ test('media library remains server-mediated, authenticated and constrained to sa
   assert.match(routes, /router\.get\('\/media\/tags', verifyToken, requireRole\(\['ADMIN'\]\), getMediaTags\)/);
   assert.match(routes, /router\.post\('\/media\/tags', verifyToken, requireRole\(\['ADMIN'\]\), createMediaTag\)/);
   assert.match(routes, /router\.get\('\/media\/:id\/download', verifyToken, requireRole\(\['ADMIN'\]\), downloadMediaAsset\)/);
+  assert.match(routes, /router\.get\('\/media\/:id\/usage', verifyToken, requireRole\(\['ADMIN'\]\), getMediaAssetUsage\)/);
   assert.match(controller, /validateUploadedImage\(req\)/);
   assert.match(controller, /upsert: false/);
   assert.match(controller, /cacheControl: '31536000'/);
@@ -61,6 +62,15 @@ test('admin media UI supports batch import, tags, filters and authenticated down
   assert.match(component, /createTag\(\)/);
   assert.match(component, /filteredMedia/);
   assert.match(component, /download\(item\)/);
+  assert.match(component, /saveEdit\(item/);
+  assert.match(component, /toggleGallery\(item/);
+  assert.match(component, /copyUrl\(item/);
+  assert.match(component, /inspectUsage\(item/);
+  assert.match(component, /removeUploadDraft\(draft\.id\)/);
+  assert.match(component, /missingAltCount\(\)/);
+  assert.match(component, /this\.uppy\.removeFile\(draft\.id\)/);
+  assert.match(component, /Les images déjà terminées ont été retirées de la sélection/);
+  assert.match(service, /getMediaAssetUsage\(id/);
   assert.match(service, /formData\.set\('tagIds', JSON\.stringify/);
   assert.match(service, /responseType: 'blob'/);
 });

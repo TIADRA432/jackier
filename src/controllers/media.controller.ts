@@ -108,6 +108,55 @@ const validatePartialMediaPayload = (body: unknown) => {
   return payload;
 };
 
+
+type MediaUsage = { type: 'gallery' | 'menu' | 'wine' | 'team' | 'branding' | 'hero'; label: string };
+
+const collectMediaUsage = async (asset: MediaRow): Promise<MediaUsage[]> => {
+  const [settingResult, galleryResult, menuResult, wineResult, teamResult] = await Promise.all([
+    supabase.from('settings').select('data').eq('id', 'global').maybeSingle(),
+    supabase.from('gallery_images').select('id,title').eq('image_url', asset.public_url),
+    supabase.from('menu_items').select('id,name').eq('image_url', asset.public_url),
+    supabase.from('wine_items').select('id,name').eq('image_url', asset.public_url),
+    supabase.from('team_members').select('id,name').eq('photo_url', asset.public_url),
+  ]);
+  if (settingResult.error || galleryResult.error || menuResult.error || wineResult.error || teamResult.error) {
+    throw settingResult.error ?? galleryResult.error ?? menuResult.error ?? wineResult.error ?? teamResult.error;
+  }
+
+  const usages: MediaUsage[] = [];
+  for (const row of galleryResult.data ?? []) usages.push({ type: 'gallery', label: `Galerie publique — ${row.title || asset.title || asset.original_name}` });
+  for (const row of menuResult.data ?? []) usages.push({ type: 'menu', label: `Plat — ${row.name || 'sans nom'}` });
+  for (const row of wineResult.data ?? []) usages.push({ type: 'wine', label: `Vin — ${row.name || 'sans nom'}` });
+  for (const row of teamResult.data ?? []) usages.push({ type: 'team', label: `Équipe — ${row.name || 'sans nom'}` });
+
+  const brand = isRecord(settingResult.data?.data) && isRecord(settingResult.data?.data.brand)
+    ? settingResult.data.data.brand
+    : undefined;
+  if (brand) {
+    const logo = isRecord(brand.logo) ? brand.logo : undefined;
+    if (logo && (logo.id === asset.id || logo.url === asset.public_url)) {
+      usages.push({ type: 'branding', label: 'Logo du site' });
+    }
+    const siteMedia = isRecord(brand.siteMedia) ? brand.siteMedia : undefined;
+    const slotLabels: Record<string, string> = {
+      homeHero: 'Accueil — image principale',
+      menuHero: 'Menu — couverture',
+      reservationHero: 'Réservation — couverture',
+      aboutHero: 'À propos — couverture',
+      contactHero: 'Contact — couverture',
+      schoolHero: 'École — couverture',
+      galleryHero: 'Galerie — couverture',
+      cateringHero: 'Traiteur — couverture',
+    };
+    for (const [slot, reference] of Object.entries(siteMedia ?? {})) {
+      if (isRecord(reference) && (reference.id === asset.id || reference.url === asset.public_url)) {
+        usages.push({ type: 'hero', label: slotLabels[slot] ?? `Image permanente — ${slot}` });
+      }
+    }
+  }
+  return usages;
+};
+
 export const getMediaAssets = async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const { data, error } = await supabase
@@ -227,6 +276,22 @@ export const createMediaTag = async (req: Request, res: Response) => {
   } catch (error) { return catalogError(error, res, 'Failed to create media tag'); }
 };
 
+
+export const getMediaAssetUsage = async (req: Request, res: Response) => {
+  try {
+    const id = validateUuid(req.params.id, 'media asset');
+    const { data, error } = await supabase
+      .from('media_assets')
+      .select('id,bucket_id,path,public_url,original_name,title,alt_text,category,mime_type,size_bytes,created_at')
+      .eq('id', id)
+      .single();
+    if (error) throw error;
+    return res.json({ usages: await collectMediaUsage(data as MediaRow) });
+  } catch (error) {
+    return catalogError(error, res, 'Failed to inspect media asset usage');
+  }
+};
+
 export const downloadMediaAsset = async (req: Request, res: Response) => {
   try {
     const id = validateUuid(req.params.id, 'media asset');
@@ -254,19 +319,9 @@ export const deleteMediaAsset = async (req: Request, res: Response) => {
     if (error) throw error;
     const asset = data as MediaRow;
 
-    const [settingResult, galleryResult, menuResult, wineResult, teamResult] = await Promise.all([
-      supabase.from('settings').select('data').eq('id', 'global').maybeSingle(),
-      supabase.from('gallery_images').select('id').eq('image_url', asset.public_url).limit(1),
-      supabase.from('menu_items').select('id').eq('image_url', asset.public_url).limit(1),
-      supabase.from('wine_items').select('id').eq('image_url', asset.public_url).limit(1),
-      supabase.from('team_members').select('id').eq('photo_url', asset.public_url).limit(1),
-    ]);
-    if (settingResult.error || galleryResult.error || menuResult.error || wineResult.error || teamResult.error) {
-      throw settingResult.error ?? galleryResult.error ?? menuResult.error ?? wineResult.error ?? teamResult.error;
-    }
-    if (JSON.stringify(settingResult.data?.data ?? {}).includes(asset.id)
-      || galleryResult.data?.length || menuResult.data?.length || wineResult.data?.length || teamResult.data?.length) {
-      return res.status(409).json({ error: 'This media asset is currently used by the site' });
+    const usages = await collectMediaUsage(asset);
+    if (usages.length) {
+      return res.status(409).json({ error: 'This media asset is currently used by the site', usages });
     }
 
     const { error: storageError } = await supabase.storage.from(asset.bucket_id).remove([asset.path]);

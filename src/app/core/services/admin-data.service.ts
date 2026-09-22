@@ -159,6 +159,7 @@ export interface MediaAsset {
 }
 
 export interface MediaTag { id: string; name: string; slug: string; }
+export interface MediaUsage { type: 'gallery' | 'menu' | 'wine' | 'team' | 'branding' | 'hero'; label: string; }
 
 export interface GalleryMedia {
   id: string;
@@ -320,6 +321,11 @@ export class AdminDataService {
 
   async downloadMediaAsset(id: string): Promise<Blob> {
     return firstValueFrom(this.http.get(`${this.apiUrl}/media/${id}/download`, { responseType: 'blob' }));
+  }
+
+  async getMediaAssetUsage(id: string): Promise<MediaUsage[]> {
+    const response = await firstValueFrom(this.http.get<{ usages: MediaUsage[] }>(`${this.apiUrl}/media/${id}/usage`));
+    return response.usages;
   }
 
   async getGalleryMedia(): Promise<GalleryMedia[]> {
