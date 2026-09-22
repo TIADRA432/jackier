@@ -5,7 +5,7 @@ import { getMenuItems, getPublicMenuItems, createMenuItem, updateMenuItem, delet
 import { getWines, createWine, updateWine, deleteWine } from '../controllers/wine.controller';
 import { uploadMenuImage, uploadWineImage } from '../controllers/upload.controller';
 import { createMediaAsset, createMediaTag, deleteMediaAsset, downloadMediaAsset, getMediaAssetUsage, getMediaAssets, getMediaTags, updateMediaAsset } from '../controllers/media.controller';
-import { getGalleryImages, createGalleryImage, deleteGalleryImage } from '../controllers/gallery.controller';
+import { getGalleryImages, createGalleryImage, updateGalleryImage, deleteGalleryImage } from '../controllers/gallery.controller';
 import { getDashboardOverview } from '../controllers/dashboard.controller';
 import { getReservations, createReservation, updateReservationStatus, deleteReservation } from '../controllers/reservation.controller';
 import { getCateringEvents, createCateringEvent, updateCateringEvent, deleteCateringEvent } from '../controllers/catering.controller';
@@ -81,6 +81,7 @@ router.get('/logs', verifyToken, requireRole(['ADMIN']), getLogs);
 // Gallery
 router.get('/gallery', getGalleryImages); // Public
 router.post('/gallery', verifyToken, requireRole(['ADMIN']), upload.single('image'), createGalleryImage);
+router.put('/gallery/:id', verifyToken, requireRole(['ADMIN']), updateGalleryImage);
 router.delete('/gallery/:id', verifyToken, requireRole(['ADMIN']), deleteGalleryImage);
 
 // Central media library. The browser uploads only through these administrator-only

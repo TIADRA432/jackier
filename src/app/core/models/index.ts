@@ -27,6 +27,7 @@ export interface GalleryImage {
   imageUrl: string;
   title: string;
   category: string;
+  displayOrder: number;
   uploadedAt: string;
 }
 

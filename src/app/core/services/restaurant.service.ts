@@ -137,6 +137,7 @@ export class RestaurantService {
         imageUrl: item.imageUrl,
         title: item.title,
         category: item.category,
+        displayOrder: item.displayOrder ?? 0,
         uploadedAt: item.uploadedAt
       })));
     } catch (err) {

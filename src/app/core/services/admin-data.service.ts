@@ -166,6 +166,7 @@ export interface GalleryMedia {
   imageUrl: string;
   title: string;
   category: string;
+  displayOrder: number;
   uploadedAt: string;
 }
 
@@ -334,6 +335,10 @@ export class AdminDataService {
 
   async createGalleryMedia(payload: Omit<GalleryMedia, 'id' | 'uploadedAt'>): Promise<GalleryMedia> {
     return firstValueFrom(this.http.post<GalleryMedia>(`${this.apiUrl}/gallery`, payload));
+  }
+
+  async updateGalleryMedia(id: string, payload: Partial<Pick<GalleryMedia, 'title' | 'category' | 'displayOrder'>>): Promise<GalleryMedia> {
+    return firstValueFrom(this.http.put<GalleryMedia>(`${this.apiUrl}/gallery/${id}`, payload));
   }
 
   async deleteGalleryMedia(id: string): Promise<void> {

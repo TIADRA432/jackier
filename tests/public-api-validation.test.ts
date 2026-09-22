@@ -7,6 +7,7 @@ process.env.SUPABASE_SERVICE_ROLE_KEY = 'test-service-role-key';
 const { validateReservation } = await import('../src/controllers/reservation.controller');
 const { validateCateringPayload } = await import('../src/controllers/catering.controller');
 const { validateMenuPayload } = await import('../src/controllers/menu.controller');
+const { validateGalleryPayload } = await import('../src/controllers/gallery.controller');
 
 test('accepts a valid public reservation payload', () => {
   const reservation = validateReservation({
@@ -62,4 +63,27 @@ test('accepts menu edits that clear optional presentation fields', () => {
     displayOrder: 3,
     isFeatured: true,
   });
+});
+
+
+test('validates gallery editorial category and display order', () => {
+  assert.deepEqual(validateGalleryPayload({
+    imageUrl: 'https://example.com/gallery.webp',
+    title: 'Service en terrasse',
+    category: 'ambiance',
+    displayOrder: 20,
+  }), {
+    imageUrl: 'https://example.com/gallery.webp',
+    title: 'Service en terrasse',
+    category: 'ambiance',
+    displayOrder: 20,
+  });
+
+  assert.deepEqual(validateGalleryPayload({ category: 'cuisine', displayOrder: 5 }, true), {
+    category: 'cuisine',
+    displayOrder: 5,
+  });
+
+  assert.throws(() => validateGalleryPayload({ category: 'inconnue' }, true), /Invalid gallery category/);
+  assert.throws(() => validateGalleryPayload({ displayOrder: -1 }, true), /Invalid display order/);
 });
