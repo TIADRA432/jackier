@@ -949,7 +949,7 @@
       "file_type": "code",
       "norm_label": "menucomponent",
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L189"
+      "source_location": "L200"
     },
     {
       "id": "src_app_shared_components_dish_card_dish_detail_component_dishdetailcomponent",
@@ -4378,7 +4378,7 @@
       "file_type": "code",
       "norm_label": ".resetfilters()",
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L219"
+      "source_location": "L240"
     },
     {
       "id": "src_app_pages_menu_menu_component_menucomponent_retry",
@@ -4389,7 +4389,7 @@
       "file_type": "code",
       "norm_label": ".retry()",
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L230"
+      "source_location": "L249"
     },
     {
       "id": "src_app_pages_menu_menu_component_menucomponent_setmaxprice",
@@ -4400,7 +4400,7 @@
       "file_type": "code",
       "norm_label": ".setmaxprice()",
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L209"
+      "source_location": "L218"
     },
     {
       "id": "src_app_pages_menu_menu_component_menucomponent_setminprice",
@@ -4411,7 +4411,7 @@
       "file_type": "code",
       "norm_label": ".setminprice()",
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L208"
+      "source_location": "L217"
     },
     {
       "id": "src_app_shared_components_dish_card_dish_detail_component_dishdetailcomponent_close",
@@ -23774,7 +23774,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L189",
+      "source_location": "L200",
       "weight": 1.0
     },
     {
@@ -28679,7 +28679,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L208",
+      "source_location": "L217",
       "weight": 1.0
     },
     {
@@ -28690,7 +28690,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L209",
+      "source_location": "L218",
       "weight": 1.0
     },
     {
@@ -28701,7 +28701,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L219",
+      "source_location": "L240",
       "weight": 1.0
     },
     {
@@ -28712,7 +28712,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L230",
+      "source_location": "L249",
       "weight": 1.0
     },
     {
@@ -29779,5 +29779,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "99ca8ca24ff2b56b51d97c6c9ef103eb80a6c6cf"
+  "built_at_commit": "80107b7268f897775981e1a03f83c30355fd1683"
 }
