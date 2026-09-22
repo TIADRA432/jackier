@@ -13,8 +13,18 @@ const CATEGORIES: Array<{ value: MediaCategory; label: string }> = [
   { value: 'gallery', label: 'Galerie publique' }, { value: 'team', label: 'Équipe' },
 ];
 
+const GALLERY_CATEGORIES = [
+  { value: 'restaurant', label: 'Restaurant' },
+  { value: 'cuisine', label: 'Cuisine' },
+  { value: 'evenements', label: 'Événements' },
+  { value: 'equipe', label: 'Équipe' },
+  { value: 'ambiance', label: 'Ambiance' },
+  { value: 'ecole', label: 'École gastronomique' },
+] as const;
+
 type UploadDraft = { id: string; file: File; title: string; altText: string };
 type EditDraft = { title: string; altText: string; category: MediaCategory };
+type GalleryDraft = { title: string; category: string; displayOrder: number };
 
 @Component({
   selector: 'app-admin-cms', standalone: true, imports: [CommonModule, FormsModule, DashboardComponent], changeDetection: ChangeDetectionStrategy.OnPush,
@@ -137,6 +147,36 @@ type EditDraft = { title: string; altText: string; category: MediaCategory };
                 }</div>
               </details>
 
+              @if (galleryEntry(item); as published) {
+                <details class="rounded-xl border border-emerald-900/60 bg-emerald-950/10 p-3" (toggle)="onGallerySettingsToggle(item, $event)">
+                  <summary class="cursor-pointer text-xs font-bold text-emerald-300">
+                    Réglages Galerie · {{ galleryCategoryLabel(published.category) }} · ordre {{ published.displayOrder }}
+                  </summary>
+                  @if (galleryEditingId() === item.id) {
+                    <div class="mt-3 grid gap-3">
+                      <label class="text-xs text-gray-300">Titre public
+                        <input [(ngModel)]="galleryDraft.title" maxlength="200" class="mt-1 w-full rounded-lg bg-gray-900 px-3 py-2 text-white" />
+                      </label>
+                      <label class="text-xs text-gray-300">Catégorie Galerie
+                        <select [(ngModel)]="galleryDraft.category" class="mt-1 w-full rounded-lg bg-gray-900 px-3 py-2 text-white">
+                          @for (category of galleryCategories; track category.value) {
+                            <option [value]="category.value">{{ category.label }}</option>
+                          }
+                        </select>
+                      </label>
+                      <label class="text-xs text-gray-300">Ordre d’affichage
+                        <input [(ngModel)]="galleryDraft.displayOrder" type="number" min="0" max="10000" step="1" class="mt-1 w-full rounded-lg bg-gray-900 px-3 py-2 text-white" />
+                        <span class="mt-1 block text-[11px] text-gray-500">Les plus petits numéros apparaissent en premier.</span>
+                      </label>
+                      <div class="flex justify-end gap-2">
+                        <button type="button" (click)="cancelGalleryEdit()" class="rounded-lg border border-gray-700 px-3 py-2 text-xs text-gray-300">Annuler</button>
+                        <button type="button" (click)="saveGalleryEdit(item)" [disabled]="savingAssetId() === item.id || galleryDraft.displayOrder < 0" class="rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white disabled:opacity-50">Enregistrer</button>
+                      </div>
+                    </div>
+                  }
+                </details>
+              }
+
               <details class="rounded-xl border border-gray-800 p-3" (toggle)="onUsageToggle(item, $event)">
                 <summary class="cursor-pointer text-xs font-bold text-gray-300">Utilisations</summary>
                 <div class="mt-3 space-y-1 text-xs text-gray-400">
@@ -200,12 +240,14 @@ export class CMSComponent implements OnDestroy {
   readonly loading = signal(true); readonly saving = signal(false); readonly savingTag = signal(false);
   readonly showForm = signal(false); readonly pendingDeleteId = signal<string | null>(null);
   readonly editingId = signal<string | null>(null); readonly previewItem = signal<MediaAsset | null>(null);
+  readonly galleryEditingId = signal<string | null>(null);
   readonly usageLoadingId = signal<string | null>(null); readonly usageByAsset = signal<Record<string, MediaUsage[]>>({});
   readonly savingAssetId = signal<string | null>(null); readonly downloadingId = signal<string | null>(null);
   readonly errorMessage = signal(''); readonly successMessage = signal('');
   readonly uploadDrafts = signal<UploadDraft[]>([]); readonly uploadTagIds = signal<string[]>([]); readonly uploadProgress = signal(0);
   readonly query = signal(''); readonly categoryFilter = signal('all'); readonly tagFilter = signal('all');
   readonly categories = CATEGORIES;
+  readonly galleryCategories = GALLERY_CATEGORIES;
   readonly uppy = new Uppy({
     autoProceed: false,
     locale: French,
@@ -225,6 +267,7 @@ export class CMSComponent implements OnDestroy {
   };
   uploadCategory: MediaCategory = 'menu'; newTagName = '';
   editDraft: EditDraft = { title: '', altText: '', category: 'menu' };
+  galleryDraft: GalleryDraft = { title: '', category: 'restaurant', displayOrder: 0 };
   readonly filteredMedia = computed(() => {
     const query = this.normalize(this.query()); const category = this.categoryFilter(); const tag = this.tagFilter();
     return this.media().filter(item => {
@@ -292,7 +335,10 @@ export class CMSComponent implements OnDestroy {
 
           if (asset.category === 'gallery') {
             const galleryItem = await this.adminData.createGalleryMedia({
-              imageUrl: asset.publicUrl, title: asset.title, category: 'gallery'
+              imageUrl: asset.publicUrl,
+              title: asset.title,
+              category: 'restaurant',
+              displayOrder: this.nextGalleryOrder()
             });
             this.gallery.update(items => [galleryItem, ...items]);
           }
@@ -345,12 +391,6 @@ export class CMSComponent implements OnDestroy {
         title: this.editDraft.title.trim(), altText: this.editDraft.altText.trim(), category: this.editDraft.category
       });
       this.media.update(items => items.map(value => value.id === item.id ? updated : value));
-      const published = this.galleryEntry(item);
-      if (published && published.title !== updated.title) {
-        await this.adminData.deleteGalleryMedia(published.id);
-        const replacement = await this.adminData.createGalleryMedia({ imageUrl: updated.publicUrl, title: updated.title, category: 'gallery' });
-        this.gallery.update(items => [replacement, ...items.filter(value => value.id !== published.id)]);
-      }
       this.editingId.set(null); this.successMessage.set('Les informations de l’image ont été mises à jour.');
     } catch { this.errorMessage.set('Impossible de modifier cette image. Vérifiez le titre, le texte alternatif et la zone.'); }
     finally { this.savingAssetId.set(null); }
@@ -364,15 +404,77 @@ export class CMSComponent implements OnDestroy {
       if (published) {
         await this.adminData.deleteGalleryMedia(published.id);
         this.gallery.update(items => items.filter(value => value.id !== published.id));
+        if (this.galleryEditingId() === item.id) this.cancelGalleryEdit();
         this.successMessage.set('Image retirée de la galerie publique.');
       } else {
-        const created = await this.adminData.createGalleryMedia({ imageUrl: item.publicUrl, title: item.title, category: 'gallery' });
+        const created = await this.adminData.createGalleryMedia({
+          imageUrl: item.publicUrl,
+          title: item.title,
+          category: 'restaurant',
+          displayOrder: this.nextGalleryOrder()
+        });
         this.gallery.update(items => [created, ...items]);
         this.successMessage.set('Image publiée dans la galerie publique.');
       }
       await this.inspectUsage(item, true);
     } catch { this.errorMessage.set('Impossible de modifier la publication dans la galerie.'); }
     finally { this.savingAssetId.set(null); }
+  }
+
+  galleryCategoryLabel(value: string): string {
+    if (value === 'gallery') return 'Restaurant';
+    return GALLERY_CATEGORIES.find(category => category.value === value)?.label ?? 'Restaurant';
+  }
+
+  private normalizedGalleryCategory(value: string): string {
+    return GALLERY_CATEGORIES.some(category => category.value === value) ? value : 'restaurant';
+  }
+
+  private nextGalleryOrder(): number {
+    const max = this.gallery().reduce((value, item) => Math.max(value, Number(item.displayOrder ?? 0)), -10);
+    return max + 10;
+  }
+
+  startGalleryEdit(item: MediaAsset): void {
+    const published = this.galleryEntry(item);
+    if (!published) return;
+    this.galleryEditingId.set(item.id);
+    this.galleryDraft = {
+      title: published.title,
+      category: this.normalizedGalleryCategory(published.category),
+      displayOrder: Number(published.displayOrder ?? 0)
+    };
+  }
+
+  cancelGalleryEdit(): void {
+    this.galleryEditingId.set(null);
+  }
+
+  onGallerySettingsToggle(item: MediaAsset, event: Event): void {
+    const details = event.currentTarget as HTMLDetailsElement;
+    if (details.open) this.startGalleryEdit(item);
+    else if (this.galleryEditingId() === item.id) this.cancelGalleryEdit();
+  }
+
+  async saveGalleryEdit(item: MediaAsset): Promise<void> {
+    const published = this.galleryEntry(item);
+    if (!published || this.savingAssetId()) return;
+    this.savingAssetId.set(item.id); this.errorMessage.set(''); this.successMessage.set('');
+    try {
+      const updated = await this.adminData.updateGalleryMedia(published.id, {
+        title: this.galleryDraft.title.trim(),
+        category: this.galleryDraft.category,
+        displayOrder: Number(this.galleryDraft.displayOrder)
+      });
+      this.gallery.update(items => items
+        .map(value => value.id === updated.id ? updated : value)
+        .sort((a, b) => a.displayOrder - b.displayOrder));
+      this.successMessage.set('Publication Galerie mise à jour.');
+    } catch {
+      this.errorMessage.set('Impossible de modifier les réglages de la Galerie.');
+    } finally {
+      this.savingAssetId.set(null);
+    }
   }
 
   async copyUrl(item: MediaAsset): Promise<void> {
