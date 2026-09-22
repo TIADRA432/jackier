@@ -66,6 +66,10 @@ test('admin media UI supports batch import, tags, filters and authenticated down
   assert.match(component, /toggleGallery\(item/);
   assert.match(component, /copyUrl\(item/);
   assert.match(component, /inspectUsage\(item/);
+  assert.match(component, /removeUploadDraft\(draft\.id\)/);
+  assert.match(component, /missingAltCount\(\)/);
+  assert.match(component, /this\.uppy\.removeFile\(draft\.id\)/);
+  assert.match(component, /Les images déjà terminées ont été retirées de la sélection/);
   assert.match(service, /getMediaAssetUsage\(id/);
   assert.match(service, /formData\.set\('tagIds', JSON\.stringify/);
   assert.match(service, /responseType: 'blob'/);
