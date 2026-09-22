@@ -187,8 +187,12 @@ export interface AdminTeamMember {
   id: string;
   name: string;
   role: string;
+  department: string;
   photoUrl?: string | null;
+  bio?: string | null;
   active: boolean;
+  publicVisible: boolean;
+  displayOrder: number;
   createdAt: string;
   updatedAt: string;
 }
