@@ -2593,7 +2593,7 @@
       "file_type": "code",
       "norm_label": ".getcateringservices()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L169"
+      "source_location": "L189"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_getdailyspecial",
@@ -2604,7 +2604,7 @@
       "file_type": "code",
       "norm_label": ".getdailyspecial()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L190"
+      "source_location": "L210"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_getdishes",
@@ -2615,7 +2615,7 @@
       "file_type": "code",
       "norm_label": ".getdishes()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L164"
+      "source_location": "L184"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_getgalleryerror",
@@ -2626,7 +2626,7 @@
       "file_type": "code",
       "norm_label": ".getgalleryerror()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L180"
+      "source_location": "L200"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_getgalleryimages",
@@ -2637,7 +2637,7 @@
       "file_type": "code",
       "norm_label": ".getgalleryimages()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L166"
+      "source_location": "L186"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_getmenuerror",
@@ -2648,7 +2648,7 @@
       "file_type": "code",
       "norm_label": ".getmenuerror()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L178"
+      "source_location": "L198"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_getreviews",
@@ -2659,7 +2659,7 @@
       "file_type": "code",
       "norm_label": ".getreviews()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L167"
+      "source_location": "L187"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_getschoolerror",
@@ -2670,7 +2670,7 @@
       "file_type": "code",
       "norm_label": ".getschoolerror()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L181"
+      "source_location": "L201"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_getschoolprograms",
@@ -2681,7 +2681,7 @@
       "file_type": "code",
       "norm_label": ".getschoolprograms()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L170"
+      "source_location": "L190"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_getteam",
@@ -2692,7 +2692,7 @@
       "file_type": "code",
       "norm_label": ".getteam()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L168"
+      "source_location": "L188"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_getteamerror",
@@ -2703,7 +2703,7 @@
       "file_type": "code",
       "norm_label": ".getteamerror()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L182"
+      "source_location": "L202"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_getwines",
@@ -2714,7 +2714,7 @@
       "file_type": "code",
       "norm_label": ".getwines()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L165"
+      "source_location": "L185"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_getwineserror",
@@ -2725,7 +2725,7 @@
       "file_type": "code",
       "norm_label": ".getwineserror()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L179"
+      "source_location": "L199"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_isloadinggallery",
@@ -2736,7 +2736,7 @@
       "file_type": "code",
       "norm_label": ".isloadinggallery()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L175"
+      "source_location": "L195"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_isloadingmenu",
@@ -2747,7 +2747,7 @@
       "file_type": "code",
       "norm_label": ".isloadingmenu()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L173"
+      "source_location": "L193"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_isloadingschool",
@@ -2758,7 +2758,7 @@
       "file_type": "code",
       "norm_label": ".isloadingschool()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L176"
+      "source_location": "L196"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_isloadingteam",
@@ -2769,7 +2769,7 @@
       "file_type": "code",
       "norm_label": ".isloadingteam()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L177"
+      "source_location": "L197"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_isloadingwines",
@@ -2780,7 +2780,7 @@
       "file_type": "code",
       "norm_label": ".isloadingwines()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L174"
+      "source_location": "L194"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_loadschoolprograms",
@@ -2791,7 +2791,7 @@
       "file_type": "code",
       "norm_label": ".loadschoolprograms()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L149"
+      "source_location": "L169"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_retryloadschoolprograms",
@@ -2802,7 +2802,7 @@
       "file_type": "code",
       "norm_label": ".retryloadschoolprograms()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L187"
+      "source_location": "L207"
     },
     {
       "id": "src_app_pages_admin_equipe_equipe_component_adminequipecomponent_canceledit",
@@ -4639,7 +4639,7 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L38"
+      "source_location": "L58"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_loaddishes",
@@ -4650,7 +4650,7 @@
       "file_type": "code",
       "norm_label": ".loaddishes()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L47"
+      "source_location": "L67"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_loadgallery",
@@ -4661,7 +4661,7 @@
       "file_type": "code",
       "norm_label": ".loadgallery()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L105"
+      "source_location": "L125"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_loadmenucategories",
@@ -4672,7 +4672,7 @@
       "file_type": "code",
       "norm_label": ".loadmenucategories()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L75"
+      "source_location": "L95"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_loadteam",
@@ -4683,7 +4683,7 @@
       "file_type": "code",
       "norm_label": ".loadteam()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L126"
+      "source_location": "L146"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_loadwines",
@@ -4694,7 +4694,7 @@
       "file_type": "code",
       "norm_label": ".loadwines()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L84"
+      "source_location": "L104"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_retryloaddishes",
@@ -4705,7 +4705,7 @@
       "file_type": "code",
       "norm_label": ".retryloaddishes()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L185"
+      "source_location": "L205"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_retryloadgallery",
@@ -4716,7 +4716,7 @@
       "file_type": "code",
       "norm_label": ".retryloadgallery()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L186"
+      "source_location": "L206"
     },
     {
       "id": "src_app_core_services_restaurant_service_restaurantservice_retryloadteam",
@@ -4727,7 +4727,7 @@
       "file_type": "code",
       "norm_label": ".retryloadteam()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L188"
+      "source_location": "L208"
     },
     {
       "id": "src_app_pages_admin_reservations_reservations_component_reservationscomponent_constructor",
@@ -5376,7 +5376,7 @@
       "file_type": "code",
       "norm_label": ".submitcateringrequest()",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L196"
+      "source_location": "L216"
     },
     {
       "id": "src_app_pages_admin_dashboard_dashboard_component_dashboardcomponent_chartheight",
@@ -11145,7 +11145,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L39",
+      "source_location": "L59",
       "weight": 1.0
     },
     {
@@ -11157,7 +11157,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L40",
+      "source_location": "L60",
       "weight": 1.0
     },
     {
@@ -11169,7 +11169,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L41",
+      "source_location": "L61",
       "weight": 1.0
     },
     {
@@ -11181,7 +11181,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L42",
+      "source_location": "L62",
       "weight": 1.0
     },
     {
@@ -11193,7 +11193,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L43",
+      "source_location": "L63",
       "weight": 1.0
     },
     {
@@ -11205,7 +11205,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L44",
+      "source_location": "L64",
       "weight": 1.0
     },
     {
@@ -11217,7 +11217,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L185",
+      "source_location": "L205",
       "weight": 1.0
     },
     {
@@ -11229,7 +11229,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L186",
+      "source_location": "L206",
       "weight": 1.0
     },
     {
@@ -11241,7 +11241,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L187",
+      "source_location": "L207",
       "weight": 1.0
     },
     {
@@ -11253,7 +11253,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L188",
+      "source_location": "L208",
       "weight": 1.0
     },
     {
@@ -30428,13 +30428,24 @@
     },
     {
       "source": "src_app_core_services_restaurant_service_restaurantservice",
+      "target": "src_app_core_services_restaurant_service_restaurantservice_loadwines",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/core/services/restaurant.service.ts",
+      "source_location": "L104",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_core_services_restaurant_service_restaurantservice",
       "target": "src_app_core_services_restaurant_service_restaurantservice_loadgallery",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L105",
+      "source_location": "L125",
       "weight": 1.0
     },
     {
@@ -30445,7 +30456,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L126",
+      "source_location": "L146",
       "weight": 1.0
     },
     {
@@ -30456,7 +30467,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L149",
+      "source_location": "L169",
       "weight": 1.0
     },
     {
@@ -30467,7 +30478,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L164",
+      "source_location": "L184",
       "weight": 1.0
     },
     {
@@ -30478,7 +30489,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L165",
+      "source_location": "L185",
       "weight": 1.0
     },
     {
@@ -30489,7 +30500,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L166",
+      "source_location": "L186",
       "weight": 1.0
     },
     {
@@ -30500,7 +30511,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L167",
+      "source_location": "L187",
       "weight": 1.0
     },
     {
@@ -30511,7 +30522,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L168",
+      "source_location": "L188",
       "weight": 1.0
     },
     {
@@ -30522,7 +30533,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L169",
+      "source_location": "L189",
       "weight": 1.0
     },
     {
@@ -30533,7 +30544,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L170",
+      "source_location": "L190",
       "weight": 1.0
     },
     {
@@ -30544,7 +30555,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L173",
+      "source_location": "L193",
       "weight": 1.0
     },
     {
@@ -30555,7 +30566,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L174",
+      "source_location": "L194",
       "weight": 1.0
     },
     {
@@ -30566,7 +30577,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L175",
+      "source_location": "L195",
       "weight": 1.0
     },
     {
@@ -30577,7 +30588,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L176",
+      "source_location": "L196",
       "weight": 1.0
     },
     {
@@ -30588,7 +30599,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L177",
+      "source_location": "L197",
       "weight": 1.0
     },
     {
@@ -30599,7 +30610,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L178",
+      "source_location": "L198",
       "weight": 1.0
     },
     {
@@ -30610,7 +30621,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L179",
+      "source_location": "L199",
       "weight": 1.0
     },
     {
@@ -30621,7 +30632,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L180",
+      "source_location": "L200",
       "weight": 1.0
     },
     {
@@ -30632,7 +30643,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L181",
+      "source_location": "L201",
       "weight": 1.0
     },
     {
@@ -30643,7 +30654,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L182",
+      "source_location": "L202",
       "weight": 1.0
     },
     {
@@ -30654,7 +30665,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L185",
+      "source_location": "L205",
       "weight": 1.0
     },
     {
@@ -30665,7 +30676,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L186",
+      "source_location": "L206",
       "weight": 1.0
     },
     {
@@ -30676,7 +30687,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L187",
+      "source_location": "L207",
       "weight": 1.0
     },
     {
@@ -30687,7 +30698,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L188",
+      "source_location": "L208",
       "weight": 1.0
     },
     {
@@ -30698,7 +30709,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L190",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -30709,7 +30720,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L196",
+      "source_location": "L216",
       "weight": 1.0
     },
     {
@@ -30720,7 +30731,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L38",
+      "source_location": "L58",
       "weight": 1.0
     },
     {
@@ -30731,7 +30742,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L47",
+      "source_location": "L67",
       "weight": 1.0
     },
     {
@@ -30742,18 +30753,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L75",
-      "weight": 1.0
-    },
-    {
-      "source": "src_app_core_services_restaurant_service_restaurantservice",
-      "target": "src_app_core_services_restaurant_service_restaurantservice_loadwines",
-      "relation": "method",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/app/core/services/restaurant.service.ts",
-      "source_location": "L84",
+      "source_location": "L95",
       "weight": 1.0
     },
     {
@@ -33881,5 +33881,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "c9a78382724a0a41f834ae27a7424e1c78428f09"
+  "built_at_commit": "4e21c52d808f1357ef019b5bbbfe6ccc4ca8c736"
 }
