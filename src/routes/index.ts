@@ -81,6 +81,7 @@ router.get('/logs', verifyToken, requireRole(['ADMIN']), getLogs);
 // Gallery
 router.get('/gallery', getGalleryImages); // Public
 router.post('/gallery', verifyToken, requireRole(['ADMIN']), upload.single('image'), createGalleryImage);
+router.put('/gallery/:id', verifyToken, requireRole(['ADMIN']), updateGalleryImage);
 router.delete('/gallery/:id', verifyToken, requireRole(['ADMIN']), deleteGalleryImage);
 
 // Central media library. The browser uploads only through these administrator-only
