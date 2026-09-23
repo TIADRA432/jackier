@@ -89,11 +89,15 @@ export interface MenuCategory {
 export interface WineItem {
   id: string;
   name: string;
+  origin?: string;
+  grape?: string;
+  year?: number;
   description?: string;
   priceBottle: number;
   priceGlass?: number;
   imageUrl?: string;
   displayOrder?: number;
+  active?: boolean;
 }
 
 export interface FinanceExpense {
@@ -286,7 +290,7 @@ export class AdminDataService {
   }
 
   async getWines(): Promise<WineItem[]> {
-    return firstValueFrom(this.http.get<WineItem[]>(`${this.apiUrl}/wines`));
+    return firstValueFrom(this.http.get<WineItem[]>(`${this.apiUrl}/admin/wines`));
   }
 
   async createWine(payload: Omit<WineItem, 'id'>): Promise<WineItem> {
