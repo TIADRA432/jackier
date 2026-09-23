@@ -27,30 +27,24 @@ export class RestaurantService {
   private wines = signal<Wine[]>([]);
   private galleryImages = signal<GalleryImage[]>([]);
   private schoolPrograms = signal<SchoolProgram[]>([]);
+  private team = signal<TeamMember[]>([]);
 
-  // États de chargement/erreur exposés aux pages, pour éviter l'écran figé ou les faux
-  // messages "aucun résultat" pendant que les données arrivent encore du serveur.
   private loadingMenu = signal(true);
   private loadingWines = signal(true);
   private loadingGallery = signal(true);
   private loadingSchool = signal(true);
+  private loadingTeam = signal(true);
   private errorMenu = signal<string | null>(null);
   private errorWines = signal<string | null>(null);
   private errorGallery = signal<string | null>(null);
   private errorSchool = signal<string | null>(null);
+  private errorTeam = signal<string | null>(null);
 
-  // Pas de table backend dédiée pour les avis clients et l'équipe : contenu éditorial statique pour le moment.
+  // Les avis restent éditoriaux pour le moment. L’équipe publique est chargée depuis l’API administrée.
   private reviews = signal<Review[]>([
     { author: 'Mariam C.', rating: 5, comment: 'Une expérience incroyable ! Le cadre est magnifique et les plats sont délicieux.', date: '2023-10-15' },
     { author: 'Jean-Pierre L.', rating: 4, comment: 'Très bonne cuisine fusion. Le service est impeccable.', date: '2023-11-02' },
     { author: 'Fatim D.', rating: 5, comment: 'Le meilleur restaurant de Kipé. Je recommande le Yassa revisité.', date: '2023-12-10' }
-  ]);
-
-  private team = signal<TeamMember[]>([
-    { id: '1', name: 'Chef Amadou Diallo', role: 'Chef Exécutif', image: 'https://picsum.photos/seed/chef1/300/300', bio: '20 ans d\'expérience entre Paris et Conakry.' },
-    { id: '2', name: 'Sophie Martin', role: 'Responsable Salle', image: 'https://picsum.photos/seed/staff2/300/300', bio: 'Experte en hospitalité et sommelier.' },
-    { id: '3', name: 'Ibrahima Bah', role: 'Chef Pâtissier', image: 'https://picsum.photos/seed/chef3/300/300', bio: 'Le maître des douceurs et des fruits locaux.' },
-    { id: '4', name: 'Kadiatou Camara', role: 'Responsable Traiteur', image: 'https://picsum.photos/seed/staff4/300/300', bio: 'Organisatrice de vos plus beaux événements.' }
   ]);
 
   // Cartes marketing statiques présentées sur la page traiteur (distinctes des demandes de devis, qui elles sont envoyées via /api/catering).
@@ -67,6 +61,7 @@ export class RestaurantService {
     this.loadWines();
     this.loadGallery();
     this.loadSchoolPrograms();
+    this.loadTeam();
   }
 
   private async loadDishes() {
@@ -148,6 +143,29 @@ export class RestaurantService {
     }
   }
 
+  private async loadTeam() {
+    this.loadingTeam.set(true);
+    this.errorTeam.set(null);
+    try {
+      const raw = await firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/team/public`));
+      this.team.set((raw || []).map(item => ({
+        id: item.id,
+        name: item.name,
+        role: item.role,
+        department: item.department,
+        image: item.photoUrl ?? '',
+        bio: item.bio ?? '',
+        displayOrder: item.displayOrder ?? 0
+      })));
+    } catch (err) {
+      console.error('Impossible de charger l\'équipe publique', err);
+      this.team.set([]);
+      this.errorTeam.set('L’équipe n’a pas pu être chargée.');
+    } finally {
+      this.loadingTeam.set(false);
+    }
+  }
+
   private async loadSchoolPrograms() {
     this.loadingSchool.set(true);
     this.errorSchool.set(null);
@@ -176,15 +194,18 @@ export class RestaurantService {
   isLoadingWines() { return this.loadingWines.asReadonly(); }
   isLoadingGallery() { return this.loadingGallery.asReadonly(); }
   isLoadingSchool() { return this.loadingSchool.asReadonly(); }
+  isLoadingTeam() { return this.loadingTeam.asReadonly(); }
   getMenuError() { return this.errorMenu.asReadonly(); }
   getWinesError() { return this.errorWines.asReadonly(); }
   getGalleryError() { return this.errorGallery.asReadonly(); }
   getSchoolError() { return this.errorSchool.asReadonly(); }
+  getTeamError() { return this.errorTeam.asReadonly(); }
 
   /** Relance le chargement du menu après une erreur (bouton "Réessayer"). */
   retryLoadDishes() { return this.loadDishes(); }
   retryLoadGallery() { return this.loadGallery(); }
   retryLoadSchoolPrograms() { return this.loadSchoolPrograms(); }
+  retryLoadTeam() { return this.loadTeam(); }
 
   getDailySpecial() {
     const list = this.dishes();

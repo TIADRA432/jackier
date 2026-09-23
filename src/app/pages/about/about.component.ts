@@ -120,7 +120,18 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
           <h2 class="text-4xl md:text-5xl font-serif font-bold text-jacquier-primary mb-6">L'Équipe du Jacquier</h2>
           <p class="text-jacquier-text font-light text-lg max-w-2xl mx-auto">Des passionnés dévoués à faire de votre visite une expérience inoubliable.</p>
         </div>
-        <app-team-grid [members]="team()" />
+        @if (teamLoading()) {
+          <p class="py-12 text-center text-jacquier-text/60" role="status">Chargement de l’équipe…</p>
+        } @else if (teamError()) {
+          <div class="text-center">
+            <p class="text-jacquier-text/70">{{ teamError() }}</p>
+            <button type="button" (click)="retryTeam()" class="mt-4 rounded-xl bg-jacquier-primary px-5 py-3 text-sm font-bold text-white">Réessayer</button>
+          </div>
+        } @else if (team().length) {
+          <app-team-grid [members]="team()" />
+        } @else {
+          <p class="py-12 text-center text-jacquier-text/60">L’équipe publique sera bientôt présentée ici.</p>
+        }
       </div>
     </section>
   `
@@ -129,4 +140,10 @@ export class AboutComponent {
   restaurantService = inject(RestaurantService);
   readonly siteSettings = inject(SiteSettingsService);
   team = this.restaurantService.getTeam();
+  teamLoading = this.restaurantService.isLoadingTeam();
+  teamError = this.restaurantService.getTeamError();
+
+  retryTeam(): void {
+    void this.restaurantService.retryLoadTeam();
+  }
 }
