@@ -11,6 +11,13 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
   template: `
     @if (!hidden()) {
       <div class="fixed inset-x-3 bottom-3 z-[70] lg:hidden" style="padding-bottom: env(safe-area-inset-bottom);">
+        @if (siteSettings.openStatus().configured) {
+          <div class="mx-auto mb-2 flex w-fit items-center gap-2 rounded-full border border-white/15 bg-jacquier-dark/90 px-3 py-1.5 text-[11px] font-bold text-white shadow-lg backdrop-blur">
+            <span [class]="siteSettings.openStatus().isOpen ? 'h-2 w-2 rounded-full bg-emerald-400' : 'h-2 w-2 rounded-full bg-gray-500'"></span>
+            <span>{{ siteSettings.openStatus().label }}</span>
+            @if (siteSettings.openStatus().detail) { <span class="font-normal text-white/60">· {{ siteSettings.openStatus().detail }}</span> }
+          </div>
+        }
         <div class="mx-auto flex max-w-md gap-2 rounded-2xl border border-white/15 bg-jacquier-dark/95 p-2 shadow-2xl backdrop-blur">
           <a [routerLink]="primaryPath()"
             class="flex min-h-[48px] flex-1 items-center justify-center rounded-xl bg-jacquier-gold px-4 text-center text-xs font-bold uppercase tracking-wider text-jacquier-dark">
