@@ -62,3 +62,28 @@ test('scroll reveal respects reduced motion and SSR', async () => {
   assert.match(directive, /IntersectionObserver/);
   assert.match(directive, /ngOnDestroy/);
 });
+
+
+test('homepage only exposes real managed restaurant content', async () => {
+  const home = await source('src', 'app', 'pages', 'home', 'home.component.ts');
+  const service = await source('src', 'app', 'core', 'services', 'restaurant.service.ts');
+
+  assert.match(home, /galleryHighlights/);
+  assert.match(home, /schoolHighlights/);
+  assert.match(home, /teamHighlights/);
+  assert.match(home, /Suggestion de la Cheffe/);
+  assert.match(home, /Le restaurant en images/);
+  assert.match(home, /École de Gastronomie/);
+
+  assert.doesNotMatch(home, /Guide Gastronomique 2023/);
+  assert.doesNotMatch(home, /Meilleur Restaurant Conakry/);
+  assert.doesNotMatch(home, /Prix d'Excellence Culinaire/);
+  assert.doesNotMatch(home, />2010</);
+  assert.doesNotMatch(home, />2015</);
+
+  assert.doesNotMatch(service, /Mariam C\./);
+  assert.doesNotMatch(service, /Jean-Pierre L\./);
+  assert.doesNotMatch(service, /Fatim D\./);
+  assert.doesNotMatch(service, /list\[Math\.min\(2/);
+  assert.match(service, /find\(dish => dish\.isFeatured === true\)/);
+});
