@@ -1,5 +1,6 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { isPlatformBrowser } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import type { MediaReference, PublicSettings, SiteMediaSlot } from './admin-data.service';
 import { environment } from '../../../environments/environment';
@@ -28,9 +29,95 @@ const DEFAULT_SETTINGS: Required<Pick<PublicSettings,
 export class SiteSettingsService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = environment.apiUrl;
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly now = signal(new Date());
 
   readonly settings = signal<PublicSettings>({});
   readonly loading = signal(true);
+
+  readonly openStatus = computed(() => {
+    const schedule = this.settings().weeklyHours;
+    if (!schedule?.enabled) {
+      return { configured: false, isOpen: false, label: this.publicInfo().openingHours, detail: '' };
+    }
+
+    const parts = new Intl.DateTimeFormat('en-US', {
+      timeZone: schedule.timezone || 'Africa/Conakry',
+      weekday: 'short',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23'
+    }).formatToParts(this.now());
+
+    const weekdayShort = parts.find(part => part.type === 'weekday')?.value ?? '';
+    const hour = Number(parts.find(part => part.type === 'hour')?.value ?? '0');
+    const minute = Number(parts.find(part => part.type === 'minute')?.value ?? '0');
+    const currentMinutes = hour * 60 + minute;
+
+    const dayMap: Record<string, keyof typeof schedule.days> = {
+      Mon: 'monday', Tue: 'tuesday', Wed: 'wednesday', Thu: 'thursday',
+      Fri: 'friday', Sat: 'saturday', Sun: 'sunday'
+    };
+    const order: Array<keyof typeof schedule.days> = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+    const todayKey = dayMap[weekdayShort] ?? 'monday';
+    const todayIndex = order.indexOf(todayKey);
+    const previousKey = order[(todayIndex + 6) % 7];
+
+    const toMinutes = (value: string) => {
+      const [h, m] = value.split(':').map(Number);
+      return (h || 0) * 60 + (m || 0);
+    };
+
+    const today = schedule.days[todayKey];
+    const previous = schedule.days[previousKey];
+
+    let isOpen = false;
+    let closesAt = '';
+
+    if (today && !today.closed && today.open && today.close) {
+      const open = toMinutes(today.open);
+      const close = toMinutes(today.close);
+      if (open < close) {
+        isOpen = currentMinutes >= open && currentMinutes < close;
+        if (isOpen) closesAt = today.close;
+      } else {
+        isOpen = currentMinutes >= open;
+        if (isOpen) closesAt = today.close;
+      }
+    }
+
+    if (!isOpen && previous && !previous.closed && previous.open && previous.close) {
+      const prevOpen = toMinutes(previous.open);
+      const prevClose = toMinutes(previous.close);
+      if (prevOpen > prevClose && currentMinutes < prevClose) {
+        isOpen = true;
+        closesAt = previous.close;
+      }
+    }
+
+    const nextOpening = (() => {
+      if (isOpen) return '';
+      for (let offset = 0; offset < 7; offset++) {
+        const key = order[(todayIndex + offset) % 7];
+        const entry = schedule.days[key];
+        if (!entry || entry.closed || !entry.open) continue;
+        if (offset === 0 && toMinutes(entry.open) <= currentMinutes) continue;
+        const labels: Record<string, string> = {
+          monday: 'lundi', tuesday: 'mardi', wednesday: 'mercredi', thursday: 'jeudi',
+          friday: 'vendredi', saturday: 'samedi', sunday: 'dimanche'
+        };
+        return offset === 0 ? `ouvre à ${entry.open}` : `ouvre ${labels[key]} à ${entry.open}`;
+      }
+      return '';
+    })();
+
+    return {
+      configured: true,
+      isOpen,
+      label: isOpen ? 'Ouvert maintenant' : 'Fermé actuellement',
+      detail: isOpen && closesAt ? `jusqu’à ${closesAt}` : nextOpening
+    };
+  });
 
   readonly today = computed(() => {
     const today = this.settings().today;
@@ -65,6 +152,9 @@ export class SiteSettingsService {
 
   constructor() {
     void this.reload();
+    if (isPlatformBrowser(this.platformId)) {
+      window.setInterval(() => this.now.set(new Date()), 60_000);
+    }
   }
 
   logo(): MediaReference {
