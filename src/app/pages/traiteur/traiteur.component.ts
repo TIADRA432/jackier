@@ -35,6 +35,6 @@ export class TraiteurComponent implements OnInit {
 
   ngOnInit() {
     this.title.setTitle('Service Traiteur à Conakry – Organisation Mariages & Événements');
-    this.meta.updateTag({ name: 'description', content: 'Service traiteur professionnel pour mariages, anniversaires, événements d\'entreprise et dîners VIP. Menus personnalisés, décoration et logistique complète.' });
+    this.meta.updateTag({ name: 'description', content: 'Service traiteur du Jacquier à Conakry : envoyez une demande pour un mariage, un anniversaire, un événement d’entreprise ou un dîner privé.' });
   }
 }
