@@ -70,3 +70,37 @@ test('admin settings acts as a control center with dirty state and previews', as
   assert.match(component, /Images de couverture/);
   assert.match(component, /brand: brand \?\? \{ siteMedia: \{\} \}/);
 });
+
+
+test('configured currency is reused across public pricing surfaces', async () => {
+  const menu = await source('src', 'app', 'pages', 'menu', 'menu.component.ts');
+  const card = await source('src', 'app', 'shared', 'components', 'dish-card', 'dish-card.component.ts');
+  const detail = await source('src', 'app', 'shared', 'components', 'dish-card', 'dish-detail.component.ts');
+  const daily = await source('src', 'app', 'shared', 'components', 'daily-special', 'daily-special.component.ts');
+  const home = await source('src', 'app', 'pages', 'home', 'home.component.ts');
+  const cateringForm = await source('src', 'app', 'shared', 'components', 'catering-form', 'catering-form.component.ts');
+
+  for (const component of [menu, card, detail, daily, home, cateringForm]) {
+    assert.match(component, /publicInfo\(\)\.currency/);
+  }
+  assert.doesNotMatch(menu, /> GNF</);
+  assert.doesNotMatch(card, /> GNF</);
+  assert.doesNotMatch(detail, /> GNF</);
+  assert.doesNotMatch(daily, /> FG</);
+});
+
+test('catering CTA uses configured restaurant identity and phone', async () => {
+  const catering = await source('src', 'app', 'pages', 'catering', 'catering.component.ts');
+
+  assert.match(catering, /publicInfo\(\)\.restaurantName/);
+  assert.match(catering, /publicInfo\(\)\.phone/);
+  assert.match(catering, /phoneHref\(\)/);
+  assert.doesNotMatch(catering, /tel:\+224625675363/);
+});
+
+test('optional global settings can be intentionally cleared', async () => {
+  const controller = await source('src', 'controllers', 'settings.controller.ts');
+
+  assert.match(controller, /optionalSettingsText/);
+  assert.match(controller, /return result;/);
+});
