@@ -7,17 +7,18 @@ import { DecimalPipe, NgOptimizedImage } from '@angular/common';
 import { RestaurantService } from '../../core/services/restaurant.service';
 import { DishCardComponent } from '../../shared/components/dish-card/dish-card.component';
 import { SiteSettingsService } from '../../core/services/site-settings.service';
+import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 
 @Component({
   selector: 'app-menu',
   standalone: true,
-  imports: [DishCardComponent, FormsModule, DecimalPipe, NgOptimizedImage, RouterLink],
+  imports: [DishCardComponent, FormsModule, DecimalPipe, NgOptimizedImage, RouterLink, RevealOnScrollDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <!-- Hero -->
     <div class="relative min-h-[360px] pt-28 pb-14 flex items-center justify-center text-center px-4 overflow-hidden bg-jacquier-dark">
       <img [ngSrc]="siteSettings.image('menuHero', 'https://picsum.photos/seed/menu_hero/1920/1080').url" fill priority class="object-cover opacity-40" [alt]="siteSettings.image('menuHero', '').altText || 'Notre Menu'" referrerPolicy="no-referrer">
-      <div class="relative z-10 max-w-4xl mx-auto text-white animate-fade-in-up">
+      <div appRevealOnScroll class="relative z-10 max-w-4xl mx-auto text-white">
         <span class="block text-jacquier-gold font-bold tracking-[0.2em] mb-4 uppercase text-sm md:text-base">Saveurs d'ici et d'ailleurs</span>
         <h1 class="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight">Notre Carte</h1>
         <a routerLink="/reservation" class="inline-block rounded-xl bg-jacquier-primary px-6 py-3 font-bold text-white">Réserver une table</a>
@@ -27,7 +28,7 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
     <section class="py-10 bg-jacquier-cream min-h-screen px-4">
       <div class="max-w-7xl mx-auto">
 
-        <nav class="sticky top-16 z-30 -mx-4 mb-8 flex gap-3 overflow-x-auto bg-jacquier-cream px-4 py-3 shadow-sm" aria-label="Catégories de la carte">
+        <nav appRevealOnScroll class="sticky top-16 z-30 -mx-4 mb-8 flex gap-3 overflow-x-auto bg-jacquier-cream/90 px-4 py-3 shadow-sm backdrop-blur-xl" aria-label="Catégories de la carte">
           @for (filter of filters(); track filter.id) {
             <button type="button" (click)="activeFilter.set(filter.id)" [attr.aria-pressed]="activeFilter() === filter.id"
               class="shrink-0 rounded-full border border-jacquier-primary px-5 py-3 text-sm font-bold"
@@ -35,7 +36,7 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
           }
         </nav>
         <!-- Controls Container -->
-        <div class="mb-16 space-y-10">
+        <div appRevealOnScroll revealVariant="fade-scale" class="mb-16 space-y-10">
 
           <!-- Search Bar -->
           <div class="max-w-2xl mx-auto relative">
@@ -156,7 +157,7 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
           <p role="status" aria-live="polite" class="mb-6 text-jacquier-primary">{{ filteredDishes().length }} plat(s) à découvrir</p>
 
           @if (featuredDishes().length) {
-            <section aria-labelledby="chef-title" class="mb-12">
+            <section appRevealOnScroll aria-labelledby="chef-title" class="mb-12">
               <div class="mb-6 flex items-end justify-between gap-4">
                 <div>
                   <p class="mb-1 text-xs font-bold uppercase tracking-[0.18em] text-jacquier-gold">Sélection maison</p>
@@ -173,7 +174,7 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
 
           @if (menuDishes().length) {
             <h2 class="mb-6 text-3xl font-serif text-jacquier-primary">La carte</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in-up">
+            <div appRevealOnScroll class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               @for (dish of menuDishes(); track dish.id) {
                 <app-dish-card [dish]="dish" />
               }

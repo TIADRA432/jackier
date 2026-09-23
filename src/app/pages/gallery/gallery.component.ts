@@ -3,6 +3,7 @@ import { NgOptimizedImage } from '@angular/common';
 import { RestaurantService } from '../../core/services/restaurant.service';
 import { SiteSettingsService } from '../../core/services/site-settings.service';
 import type { GalleryImage } from '../../core/models';
+import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 
 const LAYOUT_PATTERN = [
   'md:col-span-2 md:row-span-2',
@@ -25,12 +26,12 @@ const CATEGORY_LABELS: Record<string, string> = {
 @Component({
   selector: 'app-gallery',
   standalone: true,
-  imports: [NgOptimizedImage],
+  imports: [NgOptimizedImage, RevealOnScrollDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="relative h-[50vh] flex items-center justify-center text-center px-4 overflow-hidden bg-jacquier-dark">
       <img [ngSrc]="siteSettings.image('galleryHero', 'https://picsum.photos/seed/gallery_hero/1920/1080').url" fill priority class="object-cover opacity-40" [alt]="siteSettings.image('galleryHero', '').altText || 'Galerie'" referrerPolicy="no-referrer">
-      <div class="relative z-10 max-w-4xl mx-auto text-white animate-fade-in-up">
+      <div appRevealOnScroll revealVariant="fade-up" class="relative z-10 max-w-4xl mx-auto text-white">
         <span class="block text-jacquier-gold font-bold tracking-[0.2em] mb-4 uppercase text-sm md:text-base">Immersion visuelle</span>
         <h1 class="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight">Galerie</h1>
       </div>
@@ -55,7 +56,7 @@ const CATEGORY_LABELS: Record<string, string> = {
           </div>
         } @else {
           @if (categoryOptions().length > 1) {
-            <nav class="mb-10 flex gap-2 overflow-x-auto pb-3" aria-label="Filtrer la galerie">
+            <nav appRevealOnScroll class="mb-10 flex gap-2 overflow-x-auto pb-3" aria-label="Filtrer la galerie">
               <button type="button" (click)="selectCategory('all')" [attr.aria-pressed]="activeCategory() === 'all'"
                 [class]="activeCategory() === 'all'
                   ? 'shrink-0 rounded-full bg-jacquier-primary px-5 py-2.5 text-sm font-bold text-white'
@@ -76,10 +77,10 @@ const CATEGORY_LABELS: Record<string, string> = {
           @if (filteredImages().length) {
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[250px] md:auto-rows-[300px]">
               @for (image of filteredImages(); track image.id; let i = $index) {
-                <button type="button" (click)="openLightbox(image)"
+                <button type="button" (click)="openLightbox(image)" appRevealOnScroll revealVariant="fade-scale" [revealDelay]="i * 70"
                   [attr.aria-label]="'Agrandir ' + (image.title || 'cette photo')"
-                  [class]="'relative overflow-hidden rounded-3xl group cursor-zoom-in shadow-lg text-left ' + layoutFor(i)">
-                  <img [ngSrc]="image.imageUrl" fill class="object-cover transition-transform duration-1000 group-hover:scale-105" [alt]="image.title || 'Photo du restaurant Le Jacquier'" referrerPolicy="no-referrer">
+                  [class]="'relative overflow-hidden rounded-3xl group cursor-zoom-in shadow-lg text-left transition-shadow duration-700 hover:shadow-2xl ' + layoutFor(i)">
+                  <img [ngSrc]="image.imageUrl" fill class="object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.035]" [alt]="image.title || 'Photo du restaurant Le Jacquier'" referrerPolicy="no-referrer">
                   <div class="absolute inset-0 bg-gradient-to-t from-jacquier-dark/85 via-jacquier-dark/15 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
                     <div>
                       <span class="text-jacquier-gold text-xs font-bold tracking-widest uppercase mb-1 block">{{ categoryLabel(normalizedCategory(image.category)) }}</span>
@@ -118,7 +119,7 @@ const CATEGORY_LABELS: Record<string, string> = {
           }
 
           <img [src]="selected.imageUrl" [alt]="selected.title || 'Photo du restaurant Le Jacquier'"
-            class="max-h-[78vh] max-w-full rounded-2xl object-contain shadow-2xl" />
+            class="gallery-lightbox-image max-h-[78vh] max-w-full rounded-2xl object-contain shadow-2xl" />
 
           <div class="mt-4 max-w-3xl text-center text-white">
             <p class="text-xs font-bold uppercase tracking-[0.18em] text-jacquier-gold">{{ categoryLabel(normalizedCategory(selected.category)) }}</p>
@@ -128,7 +129,12 @@ const CATEGORY_LABELS: Record<string, string> = {
         </div>
       </div>
     }
-  `
+  `,
+  styles: [`
+    .gallery-lightbox-image { animation: galleryIn 520ms cubic-bezier(.22,.61,.36,1) both; }
+    @keyframes galleryIn { from { opacity: 0; transform: scale(.985); } to { opacity: 1; transform: scale(1); } }
+    @media (prefers-reduced-motion: reduce) { .gallery-lightbox-image { animation: none; } }
+  `]
 })
 export class GalleryComponent {
   private readonly restaurantService = inject(RestaurantService);

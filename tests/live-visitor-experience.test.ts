@@ -185,3 +185,54 @@ test('reservation clears a previously selected time when the chosen day invalida
   assert.match(reservation, /!slots\.includes\(selected\)/);
   assert.match(reservation, /controls\.time\.setValue\(''\)/);
 });
+
+
+test('premium motion primitives remain accessible and SSR-safe', async () => {
+  const reveal = await source('src', 'app', 'shared', 'directives', 'reveal-on-scroll.directive.ts');
+  const parallax = await source('src', 'app', 'shared', 'directives', 'parallax.directive.ts');
+
+  assert.match(reveal, /RevealVariant = 'fade-up' \| 'mask-left' \| 'fade-scale'/);
+  assert.match(reveal, /prefers-reduced-motion: reduce/);
+  assert.match(reveal, /isPlatformBrowser/);
+  assert.match(reveal, /clip-path/);
+  assert.match(parallax, /prefers-reduced-motion: reduce/);
+  assert.match(parallax, /isPlatformBrowser/);
+  assert.match(parallax, /requestAnimationFrame/);
+  assert.match(parallax, /parallaxLimit = 28/);
+});
+
+test('homepage uses cinematic stagger and subtle parallax without scroll hijacking', async () => {
+  const home = await source('src', 'app', 'pages', 'home', 'home.component.ts');
+
+  assert.match(home, /hero-kicker/);
+  assert.match(home, /hero-title/);
+  assert.match(home, /hero-tagline/);
+  assert.match(home, /hero-actions/);
+  assert.match(home, /appParallax/);
+  assert.match(home, /parallaxStrength/);
+  assert.match(home, /prefers-reduced-motion: reduce/);
+  assert.doesNotMatch(home, /preventDefault\(\).*scroll/);
+});
+
+test('gallery and menu use restrained premium transitions', async () => {
+  const gallery = await source('src', 'app', 'pages', 'gallery', 'gallery.component.ts');
+  const menu = await source('src', 'app', 'pages', 'menu', 'menu.component.ts');
+  const card = await source('src', 'app', 'shared', 'components', 'dish-card', 'dish-card.component.ts');
+
+  assert.match(gallery, /revealVariant="fade-scale"/);
+  assert.match(gallery, /group-hover:scale-\[1\.035\]/);
+  assert.match(gallery, /gallery-lightbox-image/);
+  assert.match(menu, /RevealOnScrollDirective/);
+  assert.match(menu, /backdrop-blur-xl/);
+  assert.match(card, /group-hover:scale-\[1\.045\]/);
+  assert.match(card, /dishCardIn/);
+});
+
+test('header becomes a blurred editorial navigation after scroll', async () => {
+  const header = await source('src', 'app', 'shared', 'components', 'header', 'header.component.ts');
+
+  assert.match(header, /bg-white\/90/);
+  assert.match(header, /backdrop-blur-xl/);
+  assert.match(header, /duration-700/);
+  assert.match(header, /w-full bg-jacquier-cream/);
+});
