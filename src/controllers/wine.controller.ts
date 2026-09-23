@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import { addDoc, deleteDoc, getCollection, updateDoc } from '../services/db.service';
 import { CatalogValidationError, catalogError, optionalImageUrl, optionalOrder, optionalPrice, optionalText, requireKnownFields, requiredText, validateUuid } from './catalog.validation';
 
-const WINE_FIELDS = new Set(['name', 'description', 'priceBottle', 'priceGlass', 'imageUrl', 'displayOrder']);
-type WinePayload = Record<string, string | number>;
+const WINE_FIELDS = new Set(['name', 'origin', 'grape', 'year', 'description', 'priceBottle', 'priceGlass', 'imageUrl', 'displayOrder', 'active']);
+type WinePayload = Record<string, string | number | boolean>;
 
 const validateWinePayload = (body: unknown, partial: boolean): WinePayload => {
   const source = requireKnownFields(body, WINE_FIELDS);
@@ -14,6 +14,23 @@ const validateWinePayload = (body: unknown, partial: boolean): WinePayload => {
 
   const payload: WinePayload = {};
   if (name !== undefined) payload.name = name;
+
+  const origin = optionalText(source.origin, 'origin', 120);
+  const grape = optionalText(source.grape, 'grape', 120);
+  if (origin !== undefined) payload.origin = origin;
+  if (grape !== undefined) payload.grape = grape;
+
+  if (source.year !== undefined) {
+    if (typeof source.year !== 'number' || !Number.isInteger(source.year) || source.year < 1900 || source.year > 2100) {
+      throw new CatalogValidationError('Invalid year');
+    }
+    payload.year = source.year;
+  }
+
+  if (source.active !== undefined) {
+    if (typeof source.active !== 'boolean') throw new CatalogValidationError('Invalid active');
+    payload.active = source.active;
+  }
   if (priceBottle !== undefined) payload.priceBottle = priceBottle;
   if (priceGlass !== undefined) payload.priceGlass = priceGlass;
 
@@ -26,10 +43,21 @@ const validateWinePayload = (body: unknown, partial: boolean): WinePayload => {
   return payload;
 };
 
-export const getWines = async (_req: Request, res: Response, next: NextFunction) => {
+const sortWines = (items: any[]) =>
+  items.sort((a: any, b: any) => Number(a.displayOrder ?? 0) - Number(b.displayOrder ?? 0));
+
+export const getPublicWines = async (_req: Request, res: Response, next: NextFunction) => {
   try {
     const data = await getCollection('wineItems');
-    res.json(data.sort((a: any, b: any) => Number(a.displayOrder ?? 0) - Number(b.displayOrder ?? 0)));
+    res.json(sortWines(data.filter((wine: any) => wine.active !== false)));
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getWines = async (_req: Request, res: Response, next: NextFunction) => {
+  try {
+    res.json(sortWines(await getCollection('wineItems')));
   } catch (error) {
     next(error);
   }
@@ -37,7 +65,8 @@ export const getWines = async (_req: Request, res: Response, next: NextFunction)
 
 export const createWine = async (req: Request, res: Response) => {
   try {
-    res.status(201).json(await addDoc('wineItems', validateWinePayload(req.body, false)));
+    const payload = validateWinePayload(req.body, false);
+    res.status(201).json(await addDoc('wineItems', { ...payload, active: payload.active ?? true }));
   } catch (error) {
     return catalogError(error, res, 'Failed to create wine');
   }
