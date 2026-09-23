@@ -2,7 +2,7 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { Dish, Review, TeamMember, CateringService, SchoolProgram, Wine, GalleryImage } from '../models';
+import { Dish, TeamMember, CateringService, SchoolProgram, Wine, GalleryImage } from '../models';
 import { environment } from '../../../environments/environment';
 import { MenuCategory } from '../models/menu-catalog';
 
@@ -40,12 +40,6 @@ export class RestaurantService {
   private errorSchool = signal<string | null>(null);
   private errorTeam = signal<string | null>(null);
 
-  // Les avis restent éditoriaux pour le moment. L’équipe publique est chargée depuis l’API administrée.
-  private reviews = signal<Review[]>([
-    { author: 'Mariam C.', rating: 5, comment: 'Une expérience incroyable ! Le cadre est magnifique et les plats sont délicieux.', date: '2023-10-15' },
-    { author: 'Jean-Pierre L.', rating: 4, comment: 'Très bonne cuisine fusion. Le service est impeccable.', date: '2023-11-02' },
-    { author: 'Fatim D.', rating: 5, comment: 'Le meilleur restaurant de Kipé. Je recommande le Yassa revisité.', date: '2023-12-10' }
-  ]);
 
   // Cartes marketing statiques présentées sur la page traiteur (distinctes des demandes de devis, qui elles sont envoyées via /api/catering).
   private cateringServices = signal<CateringService[]>([
@@ -184,7 +178,6 @@ export class RestaurantService {
   getDishes() { return this.dishes.asReadonly(); }
   getWines() { return this.wines.asReadonly(); }
   getGalleryImages() { return this.galleryImages.asReadonly(); }
-  getReviews() { return this.reviews.asReadonly(); }
   getTeam() { return this.team.asReadonly(); }
   getCateringServices() { return this.cateringServices.asReadonly(); }
   getSchoolPrograms() { return this.schoolPrograms.asReadonly(); }
@@ -208,8 +201,7 @@ export class RestaurantService {
   retryLoadTeam() { return this.loadTeam(); }
 
   getDailySpecial() {
-    const list = this.dishes();
-    return list.length ? list[Math.min(2, list.length - 1)] : undefined;
+    return this.dishes().find(dish => dish.isFeatured === true);
   }
 
   /** Soumet une demande de devis traiteur/événement vers /api/catering (endpoint public). */
