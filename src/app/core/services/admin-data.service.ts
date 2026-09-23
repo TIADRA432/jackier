@@ -60,6 +60,8 @@ export interface SchoolProgram {
   description?: string;
   duration?: string;
   level?: string;
+  active?: boolean;
+  displayOrder?: number;
 }
 
 // Catégories historiques ; les filtres publics utilisent les catégories du catalogue.
@@ -267,7 +269,19 @@ export class AdminDataService {
   }
 
   async getSchoolPrograms(): Promise<SchoolProgram[]> {
-    return firstValueFrom(this.http.get<SchoolProgram[]>(`${this.apiUrl}/school`));
+    return firstValueFrom(this.http.get<SchoolProgram[]>(`${this.apiUrl}/admin/school`));
+  }
+
+  async createSchoolProgram(payload: Omit<SchoolProgram, 'id'>): Promise<SchoolProgram> {
+    return firstValueFrom(this.http.post<SchoolProgram>(`${this.apiUrl}/school`, payload));
+  }
+
+  async updateSchoolProgram(id: string, payload: Partial<Omit<SchoolProgram, 'id'>>): Promise<SchoolProgram> {
+    return firstValueFrom(this.http.put<SchoolProgram>(`${this.apiUrl}/school/${id}`, payload));
+  }
+
+  async deleteSchoolProgram(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`${this.apiUrl}/school/${id}`));
   }
 
   async getMenuItems(): Promise<MenuItem[]> {
