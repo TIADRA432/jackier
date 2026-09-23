@@ -8,8 +8,9 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
     <section id="prestations" class="py-24 lg:py-32 bg-jacquier-cream px-4">
       <div class="max-w-7xl mx-auto">
         <div class="text-center mb-20 lg:mb-24">
-          <span class="text-jacquier-gold font-bold tracking-[0.2em] uppercase text-sm block mb-4">Nos Prestations</span>
-          <h2 class="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-jacquier-primary">Services Sur-Mesure</h2>
+          <span class="text-jacquier-gold font-bold tracking-[0.2em] uppercase text-sm block mb-4">Types de demandes</span>
+          <h2 class="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-jacquier-primary">Votre événement, votre besoin</h2>
+          <p class="mx-auto mt-5 max-w-2xl text-jacquier-text/70">Ces catégories correspondent aux demandes que vous pouvez soumettre dans le formulaire de devis. Le contenu précis de la prestation est défini après étude de votre demande.</p>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 lg:gap-10">
@@ -29,13 +30,9 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 })
 export class CateringServicesComponent {
   services = [
-    { title: 'Traiteur Mariage', description: 'Un menu d’exception pour le plus beau jour de votre vie, avec service à table ou buffet.', icon: '💍' },
-    { title: 'Baptême & Anniversaire', description: 'Des moments conviviaux autour de plats savoureux, adaptés à toutes les générations.', icon: '🎂' },
-    { title: 'Événements d’Entreprise', description: 'Cocktails dînatoires, séminaires et repas d’affaires pour impressionner vos collaborateurs.', icon: '🏢' },
-    { title: 'Soirées Privées & VIP', description: 'L’expérience gastronomique du Jacquier directement chez vous, avec chef à domicile.', icon: '🥂' },
-    { title: 'Menus Personnalisés', description: 'Cuisine locale, internationale ou fusion, adaptée à votre budget et vos exigences.', icon: '🍽️' },
-    { title: 'Décoration & Service', description: 'Mise en place élégante et service professionnel par notre équipe expérimentée.', icon: '✨' },
-    { title: 'Location de Matériel', description: 'Tables, chaises, tentes, vaisselle premium et décoration florale sur demande.', icon: '🎪' },
-    { title: 'Livraison & Installation', description: 'Logistique complète et installation sur le lieu de votre événement à Conakry et environs.', icon: '🚚' }
+    { title: 'Mariage', description: 'Présentez la date, le nombre d’invités, votre budget indicatif et les attentes particulières de votre réception.', icon: '💍' },
+    { title: 'Anniversaire & Baptême', description: 'Décrivez le format souhaité, le nombre de convives et les besoins spécifiques de votre célébration.', icon: '🎂' },
+    { title: 'Événement d’Entreprise', description: 'Indiquez le contexte professionnel, les effectifs, la date et les contraintes importantes de l’événement.', icon: '🏢' },
+    { title: 'Dîner Privé', description: 'Précisez le nombre d’invités, la date et l’expérience recherchée afin que l’équipe puisse étudier la demande.', icon: '🥂' }
   ];
 }
