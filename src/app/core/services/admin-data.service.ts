@@ -15,6 +15,13 @@ export interface AdminReservation {
   status: ReservationStatus;
 }
 
+export interface DashboardReadinessCheck {
+  key: 'settings' | 'menu' | 'wines' | 'team' | 'gallery' | 'school' | 'hours' | 'social' | 'legal';
+  label: string;
+  complete: boolean;
+  detail: string;
+}
+
 export interface DashboardOverview {
   stats: {
     todayReservations: number;
@@ -26,6 +33,12 @@ export interface DashboardOverview {
   };
   revenueChart: Array<{ month: string; total: number }>;
   recentActivities: Array<{ id: string; type: string; message: string; date: string }>;
+  readiness: {
+    completed: number;
+    total: number;
+    percent: number;
+    checks: DashboardReadinessCheck[];
+  };
 }
 
 export interface CateringEvent {
