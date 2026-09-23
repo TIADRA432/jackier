@@ -44,6 +44,8 @@ export class SiteSettingsService {
       openingHours: current.openingHours?.trim() || DEFAULT_SETTINGS.openingHours,
       currency: current.currency?.trim() || DEFAULT_SETTINGS.currency,
       mapQuery: current.mapQuery?.trim() || current.address?.trim() || DEFAULT_SETTINGS.mapQuery,
+      legalNoticeUrl: current.legalNoticeUrl?.trim() || '',
+      privacyPolicyUrl: current.privacyPolicyUrl?.trim() || '',
       socialMedia: current.socialMedia ?? {},
     };
   });
