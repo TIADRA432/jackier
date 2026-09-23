@@ -6,11 +6,12 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
 import { DailySpecialComponent } from '../../shared/components/daily-special/daily-special.component';
 import { NgOptimizedImage, DecimalPipe, isPlatformBrowser } from '@angular/common';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
+import { ParallaxDirective } from '../../shared/directives/parallax.directive';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, DailySpecialComponent, NgOptimizedImage, DecimalPipe, RevealOnScrollDirective],
+  imports: [RouterLink, DailySpecialComponent, NgOptimizedImage, DecimalPipe, RevealOnScrollDirective, ParallaxDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <!-- Hero Section -->
@@ -30,9 +31,9 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
         <div class="absolute inset-0 bg-gradient-to-b from-jacquier-dark/45 via-jacquier-dark/55 to-jacquier-dark/75"></div>
       </div>
       
-      <div class="relative z-10 max-w-5xl mx-auto text-white animate-fade-in-up">
+      <div class="relative z-10 max-w-5xl mx-auto text-white">
         <div class="mb-4 flex flex-wrap items-center justify-center gap-2">
-          <span class="block text-jacquier-gold font-bold tracking-[0.2em] uppercase text-sm md:text-base">Bienvenue à {{ siteSettings.publicInfo().neighborhood }}</span>
+          <span class="hero-kicker block text-jacquier-gold font-bold tracking-[0.2em] uppercase text-sm md:text-base">Bienvenue à {{ siteSettings.publicInfo().neighborhood }}</span>
           @if (siteSettings.openStatus().configured) {
             <span [class]="siteSettings.openStatus().isOpen
               ? 'inline-flex items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-500/15 px-3 py-1 text-xs font-bold text-emerald-100'
@@ -43,13 +44,13 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
             </span>
           }
         </div>
-        <h1 class="text-6xl md:text-8xl font-serif font-bold mb-6 leading-tight">
+        <h1 class="hero-title text-6xl md:text-8xl font-serif font-bold mb-6 leading-tight">
           {{ siteSettings.publicInfo().restaurantName }}
         </h1>
-        <p class="text-lg md:text-2xl text-jacquier-light mb-10 font-light max-w-2xl mx-auto leading-relaxed">
+        <p class="hero-tagline text-lg md:text-2xl text-jacquier-light mb-10 font-light max-w-2xl mx-auto leading-relaxed">
           {{ siteSettings.publicInfo().tagline }}
         </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        <div class="hero-actions flex flex-col sm:flex-row gap-4 justify-center items-center">
           <a routerLink="/reservation" class="w-full sm:w-auto px-8 py-4 bg-jacquier-gold text-jacquier-dark rounded-xl font-bold uppercase tracking-wide hover:bg-yellow-500 transition-all shadow-lg hover:shadow-jacquier-gold/30 min-h-[44px] flex items-center justify-center">
             Réserver une table
           </a>
@@ -169,7 +170,7 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
         <div class="flex flex-col lg:flex-row items-center gap-16">
           <div class="lg:w-1/2">
             <div class="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-              <img [src]="cuisineVisual()" class="h-full w-full object-cover" alt="Cuisine du Jacquier" referrerPolicy="no-referrer">
+              <img appParallax [parallaxStrength]="0.04" [parallaxLimit]="22" [src]="cuisineVisual()" class="h-full w-full scale-[1.04] object-cover" alt="Cuisine du Jacquier" referrerPolicy="no-referrer">
             </div>
           </div>
           <div class="lg:w-1/2">
@@ -260,7 +261,7 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
             </a>
           </div>
           <div class="order-1 md:order-2 relative h-[500px] rounded-2xl overflow-hidden shadow-xl">
-            <img [src]="ambianceVisual()" class="h-full w-full object-cover" alt="Ambiance du Jacquier" referrerPolicy="no-referrer">
+            <img appParallax [parallaxStrength]="0.035" [parallaxLimit]="20" [src]="ambianceVisual()" class="h-full w-full scale-[1.04] object-cover" alt="Ambiance du Jacquier" referrerPolicy="no-referrer">
           </div>
         </div>
       </div>
@@ -391,7 +392,21 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
         </div>
       </section>
     }
-  `
+  `,
+  styles: [`
+    .hero-kicker, .hero-title, .hero-tagline, .hero-actions { opacity: 0; animation: heroRise 900ms cubic-bezier(.22,.61,.36,1) forwards; }
+    .hero-kicker { animation-delay: 140ms; }
+    .hero-title { animation-delay: 280ms; }
+    .hero-tagline { animation-delay: 430ms; }
+    .hero-actions { animation-delay: 580ms; }
+    @keyframes heroRise {
+      from { opacity: 0; transform: translateY(22px); filter: blur(4px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-kicker, .hero-title, .hero-tagline, .hero-actions { opacity: 1; animation: none; }
+    }
+  `]
 })
 export class HomeComponent implements OnDestroy {
   restaurantService = inject(RestaurantService);
