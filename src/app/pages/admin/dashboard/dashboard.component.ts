@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { AdminDataService, DashboardOverview } from '../../../core/services/admin-data.service';
 
 const EMPTY_OVERVIEW: DashboardOverview = {
@@ -12,7 +13,7 @@ const EMPTY_OVERVIEW: DashboardOverview = {
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="space-y-8 animate-fade-in pb-12">
@@ -76,6 +77,11 @@ const EMPTY_OVERVIEW: DashboardOverview = {
                   <div>
                     <p class="text-sm font-bold text-white">{{ check.label }}</p>
                     <p class="mt-1 text-xs text-gray-400">{{ check.detail }}</p>
+                    @if (!check.complete) {
+                      <a [routerLink]="readinessPath(check.key)" class="mt-3 inline-flex text-xs font-bold text-jacquier-gold hover:text-white">
+                        Corriger maintenant →
+                      </a>
+                    }
                   </div>
                 </div>
               </article>
@@ -149,6 +155,21 @@ export class DashboardComponent {
     try { this.overview.set(await this.adminData.getDashboardOverview()); }
     catch { this.errorMessage.set('Impossible de charger le tableau de bord. Vérifiez votre session administrateur puis réessayez.'); }
     finally { this.loading.set(false); }
+  }
+
+  readinessPath(key: DashboardOverview['readiness']['checks'][number]['key']): string {
+    const paths = {
+      settings: '/admin/settings',
+      menu: '/admin/restaurant',
+      wines: '/admin/vins',
+      team: '/admin/equipe',
+      gallery: '/admin/galerie',
+      school: '/admin/ecole',
+      hours: '/admin/settings',
+      social: '/admin/settings',
+      legal: '/admin/settings'
+    } as const;
+    return paths[key];
   }
 
   chartHeight(total: number): number { return Math.max(4, Math.round((total / this.maximumRevenue()) * 100)); }
