@@ -56,6 +56,13 @@ test('the dashboard reads its operational metrics from the protected overview en
   assert.match(component, /overview\(\)\.readiness\.percent/);
   assert.match(component, /readinessPath/);
   assert.match(component, /Corriger maintenant/);
+  assert.match(controller, /owner: 'client'/);
+  assert.match(controller, /owner: 'admin'/);
+  assert.match(controller, /nextAction/);
+  assert.match(component, /Information client/);
+  assert.match(component, /Action admin/);
+  assert.match(component, /adminPending/);
+  assert.match(component, /clientPending/);
 });
 
 test('the catering screen reads and updates only the protected catering API', async () => {
