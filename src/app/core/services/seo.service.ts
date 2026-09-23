@@ -17,12 +17,14 @@ export class SeoService {
   private readonly document = inject(DOCUMENT);
   private readonly siteSettings = inject(SiteSettingsService);
   private readonly currentUrl = signal('/');
+  private readonly noindex = signal(false);
 
   constructor() {
     effect(() => {
       this.siteSettings.publicInfo();
       this.siteSettings.settings();
       this.currentUrl();
+      this.noindex();
       this.updateRestaurantStructuredData();
     });
   }
@@ -34,6 +36,7 @@ export class SeoService {
     if (routeTitle?.trim()) this.title.setTitle(routeTitle);
 
     this.currentUrl.set(cleanPath);
+    this.noindex.set(Boolean(config.noindex));
     this.meta.updateTag({ name: 'description', content: config.description });
     this.meta.updateTag({ name: 'robots', content: config.noindex ? 'noindex, nofollow' : 'index, follow' });
     this.meta.updateTag({ property: 'og:type', content: 'website' });
@@ -72,6 +75,12 @@ export class SeoService {
   }
 
   private updateRestaurantStructuredData(): void {
+    const existing = this.document.querySelector<HTMLScriptElement>('#restaurant-jsonld');
+    if (this.noindex()) {
+      existing?.remove();
+      return;
+    }
+
     const info = this.siteSettings.publicInfo();
     const settings = this.siteSettings.settings();
 
@@ -118,7 +127,7 @@ export class SeoService {
       ...(openingHoursSpecification?.length ? { openingHoursSpecification } : {}),
     };
 
-    let script = this.document.querySelector<HTMLScriptElement>('#restaurant-jsonld');
+    let script = existing;
     if (!script) {
       script = this.document.createElement('script');
       script.id = 'restaurant-jsonld';
