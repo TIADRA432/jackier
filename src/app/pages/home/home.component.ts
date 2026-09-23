@@ -1,10 +1,10 @@
 
-import { Component, inject, computed, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, computed, ChangeDetectionStrategy, OnDestroy, PLATFORM_ID, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { RestaurantService } from '../../core/services/restaurant.service';
 import { SiteSettingsService } from '../../core/services/site-settings.service';
 import { DailySpecialComponent } from '../../shared/components/daily-special/daily-special.component';
-import { NgOptimizedImage, DecimalPipe } from '@angular/common';
+import { NgOptimizedImage, DecimalPipe, isPlatformBrowser } from '@angular/common';
 import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 
 @Component({
@@ -15,11 +15,19 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
   template: `
     <!-- Hero Section -->
     <section class="relative h-screen flex items-center justify-center text-center px-4 overflow-hidden">
-      <div class="absolute inset-0 z-0">
-        <img [ngSrc]="siteSettings.image('homeHero', 'https://picsum.photos/seed/jacquier_interior/1920/1080').url" priority fill
-             class="object-cover w-full h-full" [alt]="siteSettings.image('homeHero', '').altText || 'Intérieur du restaurant Le Jacquier'"
-             referrerPolicy="no-referrer">
-        <div class="absolute inset-0 bg-jacquier-dark/60"></div>
+      <div class="absolute inset-0 z-0 overflow-hidden bg-jacquier-dark">
+        @for (slide of heroSlides(); track slide.url; let i = $index) {
+          @if (i === 0) {
+            <img [ngSrc]="slide.url" priority fill
+              [class]="i === activeHeroIndex() ? 'object-cover w-full h-full absolute inset-0 opacity-100 scale-100 transition-all duration-[1400ms]' : 'object-cover w-full h-full absolute inset-0 opacity-0 scale-[1.03] transition-all duration-[1400ms]'"
+              [alt]="slide.alt" referrerPolicy="no-referrer">
+          } @else {
+            <img [src]="slide.url"
+              [class]="i === activeHeroIndex() ? 'object-cover w-full h-full absolute inset-0 opacity-100 scale-100 transition-all duration-[1400ms]' : 'object-cover w-full h-full absolute inset-0 opacity-0 scale-[1.03] transition-all duration-[1400ms]'"
+              [alt]="slide.alt" referrerPolicy="no-referrer">
+          }
+        }
+        <div class="absolute inset-0 bg-gradient-to-b from-jacquier-dark/45 via-jacquier-dark/55 to-jacquier-dark/75"></div>
       </div>
       
       <div class="relative z-10 max-w-5xl mx-auto text-white animate-fade-in-up">
@@ -49,6 +57,20 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
             Découvrir le menu
           </a>
         </div>
+
+        @if (heroSlides().length > 1) {
+          <div class="mt-10 flex items-center justify-center gap-2" aria-label="Changer l’image d’ambiance">
+            @for (slide of heroSlides(); track slide.url; let i = $index) {
+              <button type="button" (click)="selectHero(i)"
+                [attr.aria-label]="'Afficher l’image ' + (i + 1)"
+                [attr.aria-pressed]="i === activeHeroIndex()"
+                [class]="i === activeHeroIndex()
+                  ? 'h-2.5 w-8 rounded-full bg-jacquier-gold transition-all'
+                  : 'h-2.5 w-2.5 rounded-full bg-white/45 transition-all hover:bg-white/80'">
+              </button>
+            }
+          </div>
+        }
       </div>
     </section>
 
@@ -371,9 +393,12 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
     }
   `
 })
-export class HomeComponent {
+export class HomeComponent implements OnDestroy {
   restaurantService = inject(RestaurantService);
   readonly siteSettings = inject(SiteSettingsService);
+  private readonly platformId = inject(PLATFORM_ID);
+  readonly activeHeroIndex = signal(0);
+  private heroRotation?: number;
   isMenuLoading = this.restaurantService.isLoadingMenu();
   isGalleryLoading = this.restaurantService.isLoadingGallery();
   isSchoolLoading = this.restaurantService.isLoadingSchool();
@@ -383,6 +408,42 @@ export class HomeComponent {
   // asynchrone côté service, il doit donc se recalculer automatiquement une fois les
   // données arrivées, plutôt que de rester bloqué sur la valeur (souvent undefined) prise
   // au moment de la construction du composant.
+  heroSlides = computed(() => {
+    const primary = this.siteSettings.image(
+      'homeHero',
+      'https://picsum.photos/seed/jacquier_interior/1920/1080'
+    );
+    const candidates = this.restaurantService.getGalleryImages()()
+      .filter(image => ['restaurant', 'ambiance', 'cuisine'].includes(image.category))
+      .slice(0, 4)
+      .map(image => ({
+        url: image.imageUrl,
+        alt: image.title || 'Ambiance au Jacquier'
+      }));
+
+    const unique = [{ url: primary.url, alt: primary.altText || 'Ambiance du restaurant Le Jacquier' }, ...candidates]
+      .filter((slide, index, all) => all.findIndex(candidate => candidate.url === slide.url) === index);
+
+    return unique.slice(0, 4);
+  });
+
+  constructor() {
+    if (isPlatformBrowser(this.platformId) && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      this.heroRotation = window.setInterval(() => {
+        const count = this.heroSlides().length;
+        if (count > 1) this.activeHeroIndex.update(index => (index + 1) % count);
+      }, 7000);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.heroRotation) clearInterval(this.heroRotation);
+  }
+
+  selectHero(index: number): void {
+    if (index >= 0 && index < this.heroSlides().length) this.activeHeroIndex.set(index);
+  }
+
   todayDish = computed(() => {
     const id = this.siteSettings.today().featuredDishId;
     return id ? this.restaurantService.getDishes()().find(dish => dish.id === id) : undefined;
