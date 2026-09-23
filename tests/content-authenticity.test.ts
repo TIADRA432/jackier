@@ -56,3 +56,28 @@ test('public catering has no fictitious testimonials or guaranteed response dela
   assert.doesNotMatch(cta, /sous 24h/);
   assert.match(form, /requestReference/);
 });
+
+
+test('restaurant public identity and catering content have no duplicate static source', async () => {
+  const service = await source('src', 'app', 'core', 'services', 'restaurant.service.ts');
+
+  assert.doesNotMatch(service, /readonly info =/);
+  assert.doesNotMatch(service, /getCateringServices/);
+  assert.doesNotMatch(service, /CateringService/);
+  assert.doesNotMatch(service, /Face au Lycée Kipé/);
+});
+
+test('active catering copy avoids unsupported operational promises', async () => {
+  const hero = await source('src', 'app', 'shared', 'components', 'catering-hero', 'catering-hero.component.ts');
+  const services = await source('src', 'app', 'shared', 'components', 'catering-services', 'catering-services.component.ts');
+  const process = await source('src', 'app', 'shared', 'components', 'catering-process', 'catering-process.component.ts');
+
+  for (const component of [hero, services, process]) {
+    assert.doesNotMatch(component, /organisation complète/i);
+    assert.doesNotMatch(component, /chef à domicile/i);
+    assert.doesNotMatch(component, /camion réfrigéré/i);
+    assert.doesNotMatch(component, /décoration florale/i);
+  }
+  assert.doesNotMatch(process, /dégustation avec notre Chef/i);
+  assert.match(services, /Le contenu précis de la prestation est défini après étude de votre demande/);
+});
