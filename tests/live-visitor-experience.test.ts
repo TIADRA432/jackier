@@ -99,3 +99,51 @@ test('homepage live visuals degrade gracefully when media is missing', async () 
   assert.match(home, /À découvrir au Jacquier/);
   assert.match(home, /@if \(dish\.image\)/);
 });
+
+
+test('weekly opening hours are modeled and validated with Conakry timezone', async () => {
+  const model = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+  const controller = await source('src', 'controllers', 'settings.controller.ts');
+
+  assert.match(model, /export interface WeeklyHours/);
+  assert.match(model, /timezone: 'Africa\/Conakry'/);
+  assert.match(model, /Record<WeekdayKey, OpeningDay>/);
+  assert.match(controller, /WEEKDAY_KEYS/);
+  assert.match(controller, /TIME_PATTERN/);
+  assert.match(controller, /validateWeeklyHours/);
+  assert.match(controller, /weeklyHours\.timezone/);
+});
+
+test('site settings computes live status and supports overnight closing', async () => {
+  const service = await source('src', 'app', 'core', 'services', 'site-settings.service.ts');
+
+  assert.match(service, /readonly openStatus = computed/);
+  assert.match(service, /Africa\/Conakry/);
+  assert.match(service, /prevOpen > prevClose/);
+  assert.match(service, /currentMinutes < prevClose/);
+  assert.match(service, /window\.setInterval/);
+  assert.match(service, /60_000/);
+});
+
+test('admin exposes structured weekly hours without enabling them by default', async () => {
+  const settings = await source('src', 'app', 'pages', 'admin', 'settings', 'settings.component.ts');
+
+  assert.match(settings, /Horaires détaillés/);
+  assert.match(settings, /patchWeeklyEnabled/);
+  assert.match(settings, /patchDay/);
+  assert.match(settings, /Africa\/Conakry/);
+  assert.match(settings, /Statut automatique désactivé/);
+  assert.match(settings, /enabled: false/);
+});
+
+test('live open status is surfaced across key visitor touchpoints', async () => {
+  const home = await source('src', 'app', 'pages', 'home', 'home.component.ts');
+  const footer = await source('src', 'app', 'shared', 'components', 'footer', 'footer.component.ts');
+  const contact = await source('src', 'app', 'pages', 'contact', 'contact.component.ts');
+  const actionBar = await source('src', 'app', 'shared', 'components', 'visitor-action-bar', 'visitor-action-bar.component.ts');
+
+  for (const component of [home, footer, contact, actionBar]) {
+    assert.match(component, /openStatus\(\)/);
+    assert.match(component, /openStatus\(\)\.configured/);
+  }
+});
