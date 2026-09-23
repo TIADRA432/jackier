@@ -9,7 +9,7 @@ import { getGalleryImages, createGalleryImage, updateGalleryImage, deleteGallery
 import { getDashboardOverview } from '../controllers/dashboard.controller';
 import { getReservations, createReservation, updateReservationStatus, deleteReservation } from '../controllers/reservation.controller';
 import { getCateringEvents, createCateringEvent, updateCateringEvent, deleteCateringEvent } from '../controllers/catering.controller';
-import { getSchoolPrograms, createSchoolProgram, updateSchoolProgram, deleteSchoolProgram } from '../controllers/school.controller';
+import { getSchoolPrograms, getPublicSchoolPrograms, createSchoolProgram, updateSchoolProgram, deleteSchoolProgram } from '../controllers/school.controller';
 import { getExpenses, getReports, addExpense, dailyClose } from '../controllers/finance.controller';
 import { getSettings, updateSettings, getLogs } from '../controllers/settings.controller';
 import { createInventoryItem, deleteInventoryItem, getInventoryItems, updateInventoryItem } from '../controllers/inventory.controller';
@@ -49,8 +49,9 @@ router.post('/catering', publicWriteRateLimiter, createCateringEvent); // Public
 router.put('/catering/:id', verifyToken, requireRole(['ADMIN']), updateCateringEvent);
 router.delete('/catering/:id', verifyToken, requireRole(['ADMIN']), deleteCateringEvent);
 
-// School
-router.get('/school', getSchoolPrograms); // Public
+// School. Public catalogue exposes only active programs; admin keeps drafts editable.
+router.get('/school', getPublicSchoolPrograms);
+router.get('/admin/school', verifyToken, requireRole(['ADMIN']), getSchoolPrograms);
 router.post('/school', verifyToken, requireRole(['ADMIN']), createSchoolProgram);
 router.put('/school/:id', verifyToken, requireRole(['ADMIN']), updateSchoolProgram);
 router.delete('/school/:id', verifyToken, requireRole(['ADMIN']), deleteSchoolProgram);
