@@ -6,7 +6,7 @@ const EMPTY_OVERVIEW: DashboardOverview = {
   stats: { todayReservations: 0, pendingReservations: 0, todayRevenue: 0, monthlyRevenue: 0, activeMenuItems: 0, activeCatering: 0 },
   revenueChart: [],
   recentActivities: [],
-  readiness: { completed: 0, total: 9, percent: 0, checks: [] }
+  readiness: { completed: 0, total: 9, percent: 0, adminPending: 0, clientPending: 0, checks: [] }
 };
 
 @Component({
