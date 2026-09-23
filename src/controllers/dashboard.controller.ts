@@ -17,7 +17,7 @@ export const getDashboardOverview = async (req: Request, res: Response) => {
       supabase.from('wine_items').select('id', { count: 'exact', head: true }).eq('active', true),
       supabase.from('team_members').select('id', { count: 'exact', head: true }).eq('active', true).eq('public_visible', true),
       supabase.from('gallery_images').select('id', { count: 'exact', head: true }),
-      supabase.from('school_programs').select('id', { count: 'exact', head: true }),
+      supabase.from('school_programs').select('id,data'),
       supabase.from('settings').select('data').eq('id', 'global').maybeSingle()
     ]);
 
@@ -48,6 +48,7 @@ export const getDashboardOverview = async (req: Request, res: Response) => {
     }));
 
     const settingsData = (settings.data?.data || {}) as Record<string, any>;
+    const activeSchoolPrograms = (school.data || []).filter((row: any) => row.data?.active !== false).length;
     const socialMedia = settingsData.socialMedia && typeof settingsData.socialMedia === 'object' ? settingsData.socialMedia : {};
     const readinessChecks = [
       { key: 'settings', label: 'Paramètres établissement', complete: Boolean(settings.data), detail: settings.data ? 'Configuration enregistrée' : 'Configuration globale absente' },
@@ -55,7 +56,7 @@ export const getDashboardOverview = async (req: Request, res: Response) => {
       { key: 'wines', label: 'Carte des vins', complete: (activeWines.count || 0) > 0, detail: `${activeWines.count || 0} vin(s) actif(s)` },
       { key: 'team', label: 'Équipe publique', complete: (publicTeam.count || 0) > 0, detail: `${publicTeam.count || 0} profil(s) public(s)` },
       { key: 'gallery', label: 'Galerie', complete: (gallery.count || 0) > 0, detail: `${gallery.count || 0} image(s)` },
-      { key: 'school', label: 'École gastronomique', complete: (school.count || 0) > 0, detail: `${school.count || 0} programme(s)` },
+      { key: 'school', label: 'École gastronomique', complete: activeSchoolPrograms > 0, detail: `${activeSchoolPrograms} programme(s) public(s)` },
       { key: 'hours', label: 'Horaires temps réel', complete: settingsData.weeklyHours?.enabled === true, detail: settingsData.weeklyHours?.enabled === true ? 'Statut ouvert/fermé actif' : 'Horaires détaillés non activés' },
       { key: 'social', label: 'Réseaux sociaux', complete: Object.values(socialMedia).some(value => typeof value === 'string' && value.trim()), detail: Object.values(socialMedia).some(value => typeof value === 'string' && value.trim()) ? 'Au moins un réseau configuré' : 'Aucun réseau configuré' },
       { key: 'legal', label: 'Liens légaux', complete: Boolean(settingsData.legalNoticeUrl && settingsData.privacyPolicyUrl), detail: settingsData.legalNoticeUrl && settingsData.privacyPolicyUrl ? 'Mentions légales et confidentialité configurées' : 'Liens légaux incomplets' }
