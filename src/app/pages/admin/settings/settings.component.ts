@@ -518,7 +518,7 @@ export class AdminSettingsComponent {
       currency: this.settings.currency?.trim() || 'FG',
       mapQuery: this.settings.mapQuery?.trim(),
       socialMedia,
-      ...(brand ? { brand } : {})
+      brand: brand ?? { siteMedia: {} }
     };
   }
 
