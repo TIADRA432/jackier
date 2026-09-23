@@ -54,6 +54,8 @@ test('the dashboard reads its operational metrics from the protected overview en
   assert.match(controller, /weeklyHours\?\.enabled === true/);
   assert.match(component, /Préparation à la livraison/);
   assert.match(component, /overview\(\)\.readiness\.percent/);
+  assert.match(component, /readinessPath/);
+  assert.match(component, /Corriger maintenant/);
 });
 
 test('the catering screen reads and updates only the protected catering API', async () => {
@@ -70,9 +72,12 @@ test('the school screen displays real programs instead of fictitious students', 
   const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
   const component = await source('src', 'app', 'pages', 'admin', 'school', 'school.component.ts');
 
-  assert.match(service, /get<SchoolProgram\[\]>\(`\$\{this\.apiUrl\}\/school`\)/);
+  assert.match(service, /get<SchoolProgram\[\]>\(`\$\{this\.apiUrl\}\/admin\/school`\)/);
   assert.match(component, /this\.adminData\.getSchoolPrograms\(\)/);
-  assert.match(component, /gestion des étudiants n’est pas encore modélisée/);
+  assert.match(component, /this\.adminData\.createSchoolProgram/);
+  assert.match(component, /this\.adminData\.updateSchoolProgram/);
+  assert.match(component, /this\.adminData\.deleteSchoolProgram/);
+  assert.match(component, /Les étudiants, inscriptions et paiements ne sont pas encore modélisés/);
 });
 
 test('the restaurant screen creates dishes and persists editorial changes', async () => {
