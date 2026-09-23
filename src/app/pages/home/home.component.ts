@@ -103,30 +103,32 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
       </section>
     }
 
-    <!-- Daily Special Section -->
-    <section appRevealOnScroll class="py-16 bg-jacquier-cream relative z-20 px-4">
-      <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-12">
-          <span class="text-jacquier-gold font-bold tracking-widest uppercase text-sm">Notre Suggestion</span>
-          <h2 class="text-4xl md:text-5xl font-serif font-bold text-jacquier-primary mt-2">Le Plat du Jour</h2>
-        </div>
-        @if (dailyDish(); as dish) {
-          <app-daily-special [dish]="dish" />
-        } @else if (isMenuLoading()) {
-          <div class="bg-jacquier-dark rounded-3xl overflow-hidden shadow-2xl animate-pulse" role="status" aria-live="polite" aria-label="Chargement de la suggestion du jour">
-            <div class="grid md:grid-cols-2">
-              <div class="p-10 md:p-16 space-y-6">
-                <div class="h-6 bg-gray-700 rounded w-40"></div>
-                <div class="h-10 bg-gray-700 rounded w-2/3"></div>
-                <div class="h-4 bg-gray-700 rounded w-full"></div>
-                <div class="h-4 bg-gray-700 rounded w-1/2"></div>
-              </div>
-              <div class="h-80 md:h-auto bg-gray-700"></div>
-            </div>
+    <!-- Curated suggestion -->
+    @if (dailyDish() || isMenuLoading()) {
+      <section appRevealOnScroll class="py-16 bg-jacquier-cream relative z-20 px-4">
+        <div class="max-w-7xl mx-auto">
+          <div class="text-center mb-12">
+            <span class="text-jacquier-gold font-bold tracking-widest uppercase text-sm">Sélection de la maison</span>
+            <h2 class="text-4xl md:text-5xl font-serif font-bold text-jacquier-primary mt-2">Suggestion de la Cheffe</h2>
           </div>
-        }
-      </div>
-    </section>
+          @if (dailyDish(); as dish) {
+            <app-daily-special [dish]="dish" />
+          } @else {
+            <div class="bg-jacquier-dark rounded-3xl overflow-hidden shadow-2xl animate-pulse" role="status" aria-live="polite" aria-label="Chargement de la suggestion de la Cheffe">
+              <div class="grid md:grid-cols-2">
+                <div class="p-10 md:p-16 space-y-6">
+                  <div class="h-6 bg-gray-700 rounded w-40"></div>
+                  <div class="h-10 bg-gray-700 rounded w-2/3"></div>
+                  <div class="h-4 bg-gray-700 rounded w-full"></div>
+                  <div class="h-4 bg-gray-700 rounded w-1/2"></div>
+                </div>
+                <div class="h-80 md:h-auto bg-gray-700"></div>
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+    }
 
     <!-- Patrimoine Culinaire (Local Dishes) -->
     <section appRevealOnScroll class="py-24 bg-white px-4">
@@ -241,115 +243,126 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
       </div>
     </section>
 
-    <!-- Team Section -->
-    <section appRevealOnScroll class="py-24 bg-white px-4">
-      <div class="max-w-7xl mx-auto">
-        <div class="text-center mb-16">
-          <span class="text-jacquier-gold font-bold tracking-widest uppercase text-sm">Les Artisans du Goût</span>
-          <h2 class="text-4xl md:text-5xl font-serif font-bold text-jacquier-primary mt-2">Notre Équipe</h2>
-        </div>
-        
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          @for (member of team(); track member.id) {
-            <div class="text-center group">
-              <div class="relative w-48 h-48 mx-auto rounded-full overflow-hidden mb-6 shadow-lg group-hover:shadow-xl transition-shadow">
-                <img [ngSrc]="member.image" fill class="object-cover transform group-hover:scale-110 transition-transform duration-500" [alt]="member.name" referrerPolicy="no-referrer">
-              </div>
-              <h3 class="text-xl font-serif font-bold text-jacquier-dark">{{ member.name }}</h3>
-              <p class="text-jacquier-gold font-medium mb-3">{{ member.role }}</p>
-              <p class="text-sm text-gray-500 font-light px-4">{{ member.bio }}</p>
+    @if (teamHighlights().length || isTeamLoading()) {
+      <section appRevealOnScroll class="py-24 bg-white px-4">
+        <div class="max-w-7xl mx-auto">
+          <div class="mb-12 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+            <div>
+              <span class="text-jacquier-gold font-bold tracking-widest uppercase text-sm">Les Artisans du Goût</span>
+              <h2 class="text-4xl md:text-5xl font-serif font-bold text-jacquier-primary mt-2">Rencontrez notre équipe</h2>
+            </div>
+            <a routerLink="/about" class="text-sm font-bold text-jacquier-primary hover:text-jacquier-gold">Découvrir toute l’équipe →</a>
+          </div>
+
+          @if (teamHighlights().length) {
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 md:gap-8">
+              @for (member of teamHighlights(); track member.id) {
+                <article class="text-center group">
+                  <div class="relative mx-auto mb-5 aspect-square w-full max-w-56 overflow-hidden rounded-3xl bg-jacquier-cream shadow-lg">
+                    @if (member.image) {
+                      <img [src]="member.image" class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" [alt]="member.name" referrerPolicy="no-referrer">
+                    } @else {
+                      <div class="flex h-full items-center justify-center font-serif text-4xl font-bold text-jacquier-gold/70">{{ initials(member.name) }}</div>
+                    }
+                  </div>
+                  <h3 class="text-lg md:text-xl font-serif font-bold text-jacquier-dark">{{ member.name }}</h3>
+                  <p class="mt-1 text-xs md:text-sm font-bold uppercase tracking-wider text-jacquier-gold">{{ member.role }}</p>
+                </article>
+              }
+            </div>
+          } @else {
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
+              @for (i of [0,1,2,3]; track i) {
+                <div class="aspect-[4/5] rounded-3xl bg-gray-100 animate-pulse"></div>
+              }
             </div>
           }
         </div>
-      </div>
-    </section>
-    <!-- Distinctions -->
-    <section class="py-16 bg-jacquier-cream border-t border-b border-jacquier-gold/20 px-4">
-      <div class="max-w-7xl mx-auto text-center">
-        <span class="text-jacquier-gold font-bold tracking-widest uppercase text-sm mb-8 block">Nos Distinctions</span>
-        <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-70 grayscale hover:grayscale-0 transition-all duration-500">
-          <div class="flex flex-col items-center">
-            <svg class="w-12 h-12 mb-2 text-jacquier-primary" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <span class="font-serif font-bold text-sm">Guide Gastronomique 2023</span>
-          </div>
-          <div class="flex flex-col items-center">
-            <svg class="w-12 h-12 mb-2 text-jacquier-primary" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <span class="font-serif font-bold text-sm">Meilleur Restaurant Conakry</span>
-          </div>
-          <div class="flex flex-col items-center">
-            <svg class="w-12 h-12 mb-2 text-jacquier-primary" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-            <span class="font-serif font-bold text-sm">Prix d'Excellence Culinaire</span>
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
+    }
 
-    <!-- Histoire & Mémoire -->
-    <section class="py-24 bg-white relative overflow-hidden px-4">
-      <div class="max-w-4xl mx-auto text-center relative z-10">
-        <span class="text-jacquier-gold font-bold tracking-widest uppercase text-sm">Histoire & Mémoire</span>
-        <h2 class="text-4xl md:text-5xl font-serif font-bold text-jacquier-primary mt-2 mb-12">L'Héritage du Jacquier</h2>
-        
-        <div class="relative border-l-2 border-jacquier-gold/30 ml-4 md:ml-0 md:border-none space-y-12">
-          <!-- Timeline Item 1 -->
-          <div class="relative pl-8 md:pl-0 md:flex items-center justify-between group">
-            <div class="hidden md:block w-5/12 text-right pr-8">
-              <h3 class="text-2xl font-serif font-bold text-jacquier-dark">La Fondation</h3>
-              <p class="text-gray-500 font-light mt-2">Ouverture des portes avec une vision : marier la France et la Guinée.</p>
+    @if (galleryHighlights().length || isGalleryLoading()) {
+      <section appRevealOnScroll class="bg-jacquier-dark px-4 py-24 text-white">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-10 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+            <div>
+              <span class="text-jacquier-gold font-bold tracking-widest uppercase text-sm">Instants du Jacquier</span>
+              <h2 class="mt-2 font-serif text-4xl font-bold md:text-5xl">Le restaurant en images</h2>
+              <p class="mt-3 max-w-2xl text-sm leading-relaxed text-gray-400">Cuisine, ambiance, équipe et événements : un aperçu alimenté directement par la galerie publique.</p>
             </div>
-            <div class="absolute left-[-9px] md:left-1/2 md:-ml-[9px] w-4 h-4 rounded-full bg-jacquier-gold border-4 border-white shadow" aria-hidden="true"></div>
-            <div class="md:w-5/12 md:pl-8 text-left">
-              <span class="text-jacquier-orange font-bold text-xl">2010</span>
-              <div class="md:hidden mt-2">
-                <h3 class="text-xl font-serif font-bold text-jacquier-dark">La Fondation</h3>
-                <p class="text-gray-500 font-light mt-1 text-sm">Ouverture des portes avec une vision : marier la France et la Guinée.</p>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Timeline Item 2 -->
-          <div class="relative pl-8 md:pl-0 md:flex items-center justify-between group md:flex-row-reverse">
-            <div class="hidden md:block w-5/12 text-left pl-8">
-              <h3 class="text-2xl font-serif font-bold text-jacquier-dark">L'École de Gastronomie</h3>
-              <p class="text-gray-500 font-light mt-2">Transmission du savoir-faire aux nouvelles générations de chefs.</p>
-            </div>
-            <div class="absolute left-[-9px] md:left-1/2 md:-ml-[9px] w-4 h-4 rounded-full bg-jacquier-gold border-4 border-white shadow" aria-hidden="true"></div>
-            <div class="md:w-5/12 md:pr-8 text-left md:text-right">
-              <span class="text-jacquier-orange font-bold text-xl">2015</span>
-              <div class="md:hidden mt-2">
-                <h3 class="text-xl font-serif font-bold text-jacquier-dark">L'École de Gastronomie</h3>
-                <p class="text-gray-500 font-light mt-1 text-sm">Transmission du savoir-faire aux nouvelles générations de chefs.</p>
-              </div>
-            </div>
+            <a routerLink="/gallery" class="text-sm font-bold text-jacquier-gold hover:text-white">Explorer toute la galerie →</a>
           </div>
 
-          <!-- Timeline Item 3 -->
-          <div class="relative pl-8 md:pl-0 md:flex items-center justify-between group">
-            <div class="hidden md:block w-5/12 text-right pr-8">
-              <h3 class="text-2xl font-serif font-bold text-jacquier-dark">L'Excellence Reconnue</h3>
-              <p class="text-gray-500 font-light mt-2">Devenu une institution incontournable de la capitale guinéenne.</p>
+          @if (galleryHighlights().length) {
+            <div class="grid auto-rows-[180px] grid-cols-2 gap-3 md:auto-rows-[240px] md:grid-cols-4">
+              @for (image of galleryHighlights(); track image.id; let i = $index) {
+                <a routerLink="/gallery"
+                  [class]="i === 0 ? 'group relative col-span-2 row-span-2 overflow-hidden rounded-3xl' : 'group relative overflow-hidden rounded-3xl'">
+                  <img [src]="image.imageUrl" [alt]="image.title || 'Photo du Jacquier'"
+                    class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                  <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
+                  @if (image.title) {
+                    <p class="absolute bottom-4 left-4 right-4 font-serif text-sm font-bold text-white md:text-lg">{{ image.title }}</p>
+                  }
+                </a>
+              }
             </div>
-            <div class="absolute left-[-9px] md:left-1/2 md:-ml-[9px] w-4 h-4 rounded-full bg-jacquier-gold border-4 border-white shadow" aria-hidden="true"></div>
-            <div class="md:w-5/12 md:pl-8 text-left">
-              <span class="text-jacquier-orange font-bold text-xl">Aujourd'hui</span>
-              <div class="md:hidden mt-2">
-                <h3 class="text-xl font-serif font-bold text-jacquier-dark">L'Excellence Reconnue</h3>
-                <p class="text-gray-500 font-light mt-1 text-sm">Devenu une institution incontournable de la capitale guinéenne.</p>
-              </div>
+          } @else {
+            <div class="grid auto-rows-[180px] grid-cols-2 gap-3 md:auto-rows-[240px] md:grid-cols-4">
+              @for (i of [0,1,2,3,4]; track i) {
+                <div [class]="i === 0 ? 'col-span-2 row-span-2 rounded-3xl bg-white/10 animate-pulse' : 'rounded-3xl bg-white/10 animate-pulse'"></div>
+              }
             </div>
-          </div>
-          
-          <!-- Desktop Center Line -->
-          <div class="hidden md:block absolute top-0 bottom-0 left-1/2 w-0.5 bg-jacquier-gold/30 -translate-x-1/2 -z-10" aria-hidden="true"></div>
+          }
         </div>
-      </div>
-    </section>
+      </section>
+    }
+
+    @if (schoolHighlights().length || isSchoolLoading()) {
+      <section appRevealOnScroll class="bg-jacquier-cream px-4 py-24">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-12 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+            <div>
+              <span class="text-jacquier-gold font-bold tracking-widest uppercase text-sm">Transmission & savoir-faire</span>
+              <h2 class="mt-2 font-serif text-4xl font-bold text-jacquier-primary md:text-5xl">École de Gastronomie</h2>
+              <p class="mt-3 max-w-2xl text-sm leading-relaxed text-jacquier-text/70">Les programmes affichés ici proviennent directement de l’administration de l’École.</p>
+            </div>
+            <a routerLink="/ecole-gastronomie" class="text-sm font-bold text-jacquier-primary hover:text-jacquier-gold">Voir tous les programmes →</a>
+          </div>
+
+          @if (schoolHighlights().length) {
+            <div class="grid gap-5 md:grid-cols-3">
+              @for (program of schoolHighlights(); track program.id) {
+                <article class="rounded-3xl border border-gray-100 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+                  <div class="flex flex-wrap gap-2 text-[11px] font-bold uppercase tracking-wider">
+                    @if (program.level) { <span class="rounded-full bg-jacquier-primary/10 px-3 py-1.5 text-jacquier-primary">{{ program.level }}</span> }
+                    @if (program.duration) { <span class="rounded-full bg-jacquier-gold/15 px-3 py-1.5 text-jacquier-dark">{{ program.duration }}</span> }
+                  </div>
+                  <h3 class="mt-5 font-serif text-2xl font-bold text-jacquier-dark">{{ program.title }}</h3>
+                  <p class="mt-3 line-clamp-3 text-sm leading-relaxed text-gray-500">{{ program.description }}</p>
+                  <a routerLink="/ecole-gastronomie" class="mt-6 inline-flex text-sm font-bold text-jacquier-primary hover:text-jacquier-gold">Découvrir le programme →</a>
+                </article>
+              }
+            </div>
+          } @else {
+            <div class="grid gap-5 md:grid-cols-3">
+              @for (i of [0,1,2]; track i) {
+                <div class="h-64 rounded-3xl bg-white animate-pulse"></div>
+              }
+            </div>
+          }
+        </div>
+      </section>
+    }
   `
 })
 export class HomeComponent {
   restaurantService = inject(RestaurantService);
   readonly siteSettings = inject(SiteSettingsService);
   isMenuLoading = this.restaurantService.isLoadingMenu();
+  isGalleryLoading = this.restaurantService.isLoadingGallery();
+  isSchoolLoading = this.restaurantService.isLoadingSchool();
+  isTeamLoading = this.restaurantService.isLoadingTeam();
 
   // computed() (et non signal() figé) : le plat du jour dépend du menu chargé de manière
   // asynchrone côté service, il doit donc se recalculer automatiquement une fois les
@@ -361,11 +374,19 @@ export class HomeComponent {
   });
 
   dailyDish = computed(() => {
-    const dishes = this.restaurantService.getDishes()();
-    return dishes.length ? this.restaurantService.getDailySpecial() : undefined;
+    const todayId = this.siteSettings.today().featuredDishId;
+    return this.restaurantService.getDishes()()
+      .find(dish => dish.isFeatured === true && dish.id !== todayId);
   });
 
   team = this.restaurantService.getTeam();
+  teamHighlights = computed(() => this.team().slice(0, 4));
+  galleryHighlights = computed(() => this.restaurantService.getGalleryImages()().slice(0, 5));
+  schoolHighlights = computed(() => this.restaurantService.getSchoolPrograms()().slice(0, 3));
+
+  initials(name: string): string {
+    return name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join('').toUpperCase();
+  }
 
   seafoodDishes = computed(() => {
     return this.restaurantService.getDishes()().filter(d => d.category === 'fruits_de_mer').slice(0, 3);
