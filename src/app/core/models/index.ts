@@ -61,12 +61,6 @@ export interface TeamMember {
   displayOrder?: number;
 }
 
-export interface CateringService {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-}
 
 export interface SchoolProgram {
   id: string;
