@@ -103,6 +103,9 @@ export class RestaurantService {
       this.wines.set((raw || []).map(item => ({
         id: item.id,
         name: item.name,
+        origin: item.origin ?? '',
+        grape: item.grape ?? '',
+        year: item.year,
         description: item.description ?? '',
         priceBottle: item.priceBottle,
         priceGlass: item.priceGlass,
@@ -196,6 +199,7 @@ export class RestaurantService {
 
   /** Relance le chargement du menu après une erreur (bouton "Réessayer"). */
   retryLoadDishes() { return this.loadDishes(); }
+  retryLoadWines() { return this.loadWines(); }
   retryLoadGallery() { return this.loadGallery(); }
   retryLoadSchoolPrograms() { return this.loadSchoolPrograms(); }
   retryLoadTeam() { return this.loadTeam(); }
