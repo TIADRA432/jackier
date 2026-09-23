@@ -162,3 +162,26 @@ test('homepage hero rotates through real gallery imagery accessibly', async () =
   assert.match(home, /ngOnDestroy/);
   assert.match(home, /clearInterval/);
 });
+
+
+test('reservation page filters backend slots using configured weekly hours', async () => {
+  const reservation = await source('src', 'app', 'pages', 'reservation', 'reservation.component.ts');
+
+  assert.match(reservation, /availableTimeSlots = computed/);
+  assert.match(reservation, /weeklyHours\?\.enabled/);
+  assert.match(reservation, /day\.closed/);
+  assert.match(reservation, /open < close \? value >= open && value < close : value >= open \|\| value < close/);
+  assert.match(reservation, /\[min\]="todayDate"/);
+  assert.match(reservation, /Africa\/Conakry/);
+  assert.match(reservation, /Le restaurant est fermé ce jour-là/);
+  assert.match(reservation, /siteSettings\.openStatus\(\)/);
+  assert.doesNotMatch(reservation, /picsum\.photos\/seed\/table/);
+});
+
+test('reservation clears a previously selected time when the chosen day invalidates it', async () => {
+  const reservation = await source('src', 'app', 'pages', 'reservation', 'reservation.component.ts');
+
+  assert.match(reservation, /effect\(\(\) =>/);
+  assert.match(reservation, /!slots\.includes\(selected\)/);
+  assert.match(reservation, /controls\.time\.setValue\(''\)/);
+});
