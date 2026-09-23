@@ -109,7 +109,7 @@ const TODAY_CTA_OPTIONS: Array<{ path: TodaySettings['ctaPath']; label: string }
           </p>
         </div>
         <div class="flex flex-wrap gap-2">
-          <button type="button" (click)="load()" [disabled]="loading() || saving()"
+          <button type="button" (click)="load()" [disabled]="loading() || saving() || dirty()"
             class="rounded-xl border border-gray-700 px-4 py-3 text-sm font-bold text-gray-200 hover:border-jacquier-gold hover:text-jacquier-gold disabled:opacity-50">
             Recharger
           </button>
@@ -129,6 +129,22 @@ const TODAY_CTA_OPTIONS: Array<{ path: TodaySettings['ctaPath']; label: string }
       }
       @if (successMessage()) {
         <p class="rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200" role="status">{{ successMessage() }}</p>
+      }
+
+      @if (!loading() && settingsIssues().length) {
+        <div class="rounded-2xl border border-amber-500/40 bg-amber-500/10 p-5" role="alert">
+          <div class="flex items-start gap-3">
+            <div class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-amber-400/15 font-bold text-amber-300">!</div>
+            <div>
+              <p class="font-bold text-amber-100">Corrigez {{ settingsIssues().length }} point{{ settingsIssues().length > 1 ? 's' : '' }} avant la sauvegarde</p>
+              <ul class="mt-2 space-y-1 text-sm text-amber-100/80">
+                @for (issue of settingsIssues(); track issue) {
+                  <li>• {{ issue }}</li>
+                }
+              </ul>
+            </div>
+          </div>
+        </div>
       }
 
       <section class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -346,11 +362,17 @@ const TODAY_CTA_OPTIONS: Array<{ path: TodaySettings['ctaPath']; label: string }
               <h2 class="mt-1 text-xl font-serif font-bold text-white">Horaires détaillés</h2>
               <p class="mt-1 text-sm text-gray-400">Activez-les pour afficher automatiquement “Ouvert maintenant” ou “Fermé actuellement” sur le site.</p>
             </div>
-            <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-gray-700 bg-black/20 px-4 py-3 text-sm text-gray-300">
-              <input type="checkbox" [ngModel]="settings.weeklyHours?.enabled" (ngModelChange)="patchWeeklyEnabled($event)"
-                name="weekly-hours-enabled" class="h-4 w-4 accent-yellow-500" />
-              <span><strong class="block text-white">Activer</strong><span class="text-xs text-gray-500">Fuseau : Africa/Conakry</span></span>
-            </label>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" (click)="copyMondayToAll()"
+                class="rounded-xl border border-gray-700 px-4 py-3 text-xs font-bold text-gray-300 hover:border-jacquier-gold hover:text-jacquier-gold">
+                Copier lundi sur toute la semaine
+              </button>
+              <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-gray-700 bg-black/20 px-4 py-3 text-sm text-gray-300">
+                <input type="checkbox" [ngModel]="settings.weeklyHours?.enabled" (ngModelChange)="patchWeeklyEnabled($event)"
+                  name="weekly-hours-enabled" class="h-4 w-4 accent-yellow-500" />
+                <span><strong class="block text-white">Activer</strong><span class="text-xs text-gray-500">Fuseau : Africa/Conakry</span></span>
+              </label>
+            </div>
           </div>
 
           <div class="mt-6 space-y-3">
@@ -651,14 +673,64 @@ export class AdminSettingsComponent {
     );
   }
 
+  settingsIssues(): string[] {
+    const issues: string[] = [];
+    const required: Array<[string | undefined, string]> = [
+      [this.settings.restaurantName, 'Le nom de l’enseigne est obligatoire.'],
+      [this.settings.address, 'L’adresse est obligatoire.'],
+      [this.settings.phone, 'Le téléphone est obligatoire.'],
+      [this.settings.email, 'L’e-mail est obligatoire.'],
+      [this.settings.openingHours, 'Le résumé des horaires est obligatoire.'],
+    ];
+
+    for (const [value, message] of required) {
+      if (!value?.trim()) issues.push(message);
+    }
+
+    const email = this.settings.email?.trim();
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      issues.push('L’adresse e-mail n’est pas valide.');
+    }
+
+    for (const [label, value] of [
+      ['Mentions légales', this.settings.legalNoticeUrl],
+      ['Politique de confidentialité', this.settings.privacyPolicyUrl],
+    ] as const) {
+      if (value?.trim() && !this.isHttpUrl(value)) issues.push(`${label} : utilisez une URL complète https://…`);
+    }
+
+    for (const social of SOCIAL_FIELDS) {
+      const value = this.socialValue(social.key);
+      if (value.trim() && !this.isHttpUrl(value)) {
+        issues.push(`${social.label} : utilisez une URL complète https://…`);
+      }
+    }
+
+    const weekly = this.settings.weeklyHours;
+    if (weekly?.enabled) {
+      const pattern = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
+      for (const weekday of WEEKDAYS) {
+        const day = weekly.days[weekday.key];
+        if (!day.closed && (!pattern.test(day.open) || !pattern.test(day.close) || day.open === day.close)) {
+          issues.push(`${weekday.label} : renseignez deux heures valides et différentes.`);
+        }
+      }
+    }
+
+    if (this.settings.today?.enabled) {
+      if (!this.settings.today.title?.trim()) issues.push('“Aujourd’hui au Jacquier” : ajoutez un titre avant publication.');
+      if (!this.settings.today.ctaLabel?.trim()) issues.push('“Aujourd’hui au Jacquier” : ajoutez le libellé du bouton.');
+      const featuredId = this.settings.today.featuredDishId?.trim();
+      if (featuredId && !this.menuItems().some(item => item.id === featuredId && item.active !== false)) {
+        issues.push('Le plat sélectionné pour “Aujourd’hui au Jacquier” n’est plus disponible dans le menu actif.');
+      }
+    }
+
+    return [...new Set(issues)];
+  }
+
   canSave(): boolean {
-    return Boolean(
-      this.settings.restaurantName?.trim() &&
-      this.settings.address?.trim() &&
-      this.settings.phone?.trim() &&
-      this.settings.email?.trim() &&
-      this.settings.openingHours?.trim()
-    );
+    return this.settingsIssues().length === 0;
   }
 
   patch(key: keyof PublicSettings, value: string): void {
@@ -669,6 +741,19 @@ export class AdminSettingsComponent {
   patchWeeklyEnabled(enabled: boolean): void {
     const current = this.ensureWeeklyHours();
     this.settings = { ...this.settings, weeklyHours: { ...current, enabled } };
+    this.markDirty();
+  }
+
+  copyMondayToAll(): void {
+    const current = this.ensureWeeklyHours();
+    const monday = { ...current.days.monday };
+    this.settings = {
+      ...this.settings,
+      weeklyHours: {
+        ...current,
+        days: Object.fromEntries(WEEKDAYS.map(day => [day.key, { ...monday }])) as WeeklyHours['days']
+      }
+    };
     this.markDirty();
   }
 
@@ -784,7 +869,12 @@ export class AdminSettingsComponent {
   }
 
   async save(): Promise<void> {
-    if (this.loading() || this.saving() || !this.canSave()) return;
+    if (this.loading() || this.saving()) return;
+    const issues = this.settingsIssues();
+    if (issues.length) {
+      this.errorMessage.set(issues[0]);
+      return;
+    }
 
     this.saving.set(true);
     this.errorMessage.set('');
@@ -798,7 +888,7 @@ export class AdminSettingsComponent {
       await this.siteSettings.reload();
       this.successMessage.set('Configuration publiée. Le site visiteur utilise maintenant ces valeurs.');
     } catch {
-      this.errorMessage.set('Impossible d’enregistrer les paramètres. Vérifiez les champs et les URLs des réseaux sociaux.');
+      this.errorMessage.set('Impossible d’enregistrer les paramètres. Les données ont été conservées à l’écran : vérifiez les champs signalés puis réessayez.');
     } finally {
       this.saving.set(false);
     }
@@ -904,7 +994,17 @@ export class AdminSettingsComponent {
   }
 
   private toReference(asset: MediaAsset): MediaReference {
-    return { id: asset.id, url: asset.publicUrl, altText: asset.altText };
+    const fallbackAlt = asset.title?.trim() || asset.originalName?.trim() || 'Image Le Jacquier';
+    return { id: asset.id, url: asset.publicUrl, altText: asset.altText?.trim() || fallbackAlt };
+  }
+
+  private isHttpUrl(value: string): boolean {
+    try {
+      const url = new URL(value.trim());
+      return url.protocol === 'http:' || url.protocol === 'https:';
+    } catch {
+      return false;
+    }
   }
 
   private cleanBrand(brand: BrandSettings | undefined): BrandSettings | undefined {

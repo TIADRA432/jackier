@@ -133,3 +133,38 @@ test('admin settings provides a live map preview and test link', async () => {
   assert.match(settings, /DomSanitizer/);
   assert.match(settings, /maps\.google\.com\/maps\?q=/);
 });
+
+
+test('admin settings validates data before save and explains issues', async () => {
+  const settings = await source('src', 'app', 'pages', 'admin', 'settings', 'settings.component.ts');
+
+  assert.match(settings, /settingsIssues\(\): string\[\]/);
+  assert.match(settings, /L’adresse e-mail n’est pas valide/);
+  assert.match(settings, /utilisez une URL complète https:\/\//);
+  assert.match(settings, /renseignez deux heures valides et différentes/);
+  assert.match(settings, /Le plat sélectionné pour “Aujourd’hui au Jacquier” n’est plus disponible/);
+  assert.match(settings, /canSave\(\): boolean/);
+  assert.match(settings, /return this\.settingsIssues\(\)\.length === 0/);
+});
+
+test('admin settings supports copying Monday schedule across the week', async () => {
+  const settings = await source('src', 'app', 'pages', 'admin', 'settings', 'settings.component.ts');
+
+  assert.match(settings, /Copier lundi sur toute la semaine/);
+  assert.match(settings, /copyMondayToAll\(\)/);
+  assert.match(settings, /WEEKDAYS\.map\(day => \[day\.key, \{ \.\.\.monday \}\]\)/);
+});
+
+test('media references get an alt fallback before settings are saved', async () => {
+  const settings = await source('src', 'app', 'pages', 'admin', 'settings', 'settings.component.ts');
+
+  assert.match(settings, /fallbackAlt/);
+  assert.match(settings, /asset\.altText\?\.trim\(\) \|\| fallbackAlt/);
+  assert.match(settings, /Image Le Jacquier/);
+});
+
+test('reloading is blocked while settings have unsaved changes', async () => {
+  const settings = await source('src', 'app', 'pages', 'admin', 'settings', 'settings.component.ts');
+
+  assert.match(settings, /\[disabled\]="loading\(\) \|\| saving\(\) \|\| dirty\(\)"/);
+});
