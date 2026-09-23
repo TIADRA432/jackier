@@ -13,6 +13,8 @@ const PUBLIC_SETTINGS_KEYS = [
   'openingHours',
   'currency',
   'mapQuery',
+  'legalNoticeUrl',
+  'privacyPolicyUrl',
   'socialMedia',
   'brand',
 ] as const;
@@ -99,6 +101,8 @@ const validateSettingsPayload = (body: unknown): Record<string, unknown> => {
     ['openingHours', 'openingHours', 300],
     ['currency', 'currency', 16],
     ['mapQuery', 'mapQuery', 300],
+    ['legalNoticeUrl', 'legalNoticeUrl', 2_000],
+    ['privacyPolicyUrl', 'privacyPolicyUrl', 2_000],
   ];
 
   for (const [key, label, maxLength] of textFields) {
@@ -109,6 +113,18 @@ const validateSettingsPayload = (body: unknown): Record<string, unknown> => {
   if (settings.email !== undefined && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(settings.email as string)) {
     throw new CatalogValidationError('Invalid email');
   }
+
+  for (const field of ['legalNoticeUrl', 'privacyPolicyUrl'] as const) {
+    const value = settings[field];
+    if (typeof value === 'string' && value) {
+      let parsed: URL;
+      try { parsed = new URL(value); }
+      catch { throw new CatalogValidationError(`Invalid ${field}`); }
+      if (!['http:', 'https:'].includes(parsed.protocol)) throw new CatalogValidationError(`Invalid ${field}`);
+      settings[field] = parsed.toString();
+    }
+  }
+
   if (source.socialMedia !== undefined) settings.socialMedia = validateSocialMedia(source.socialMedia);
   if (source.brand !== undefined) settings.brand = validateBrand(source.brand);
   if (!Object.keys(settings).length) throw new CatalogValidationError('Invalid settings payload');
