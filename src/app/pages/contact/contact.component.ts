@@ -37,6 +37,15 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
             <div class="bg-white p-10 rounded-3xl shadow-lg border border-gray-100">
               <h3 class="text-2xl font-serif font-bold text-jacquier-dark mb-4">Horaires</h3>
               <p class="text-jacquier-text font-light leading-relaxed">{{ info().openingHours }}</p>
+              @if (siteSettings.openStatus().configured) {
+                <div class="mt-5 flex items-center gap-2 rounded-xl bg-jacquier-cream px-4 py-3 text-sm">
+                  <span [class]="siteSettings.openStatus().isOpen ? 'h-2.5 w-2.5 rounded-full bg-emerald-500' : 'h-2.5 w-2.5 rounded-full bg-gray-400'"></span>
+                  <strong [class.text-emerald-700]="siteSettings.openStatus().isOpen" [class.text-gray-600]="!siteSettings.openStatus().isOpen">
+                    {{ siteSettings.openStatus().label }}
+                  </strong>
+                  @if (siteSettings.openStatus().detail) { <span class="text-gray-500">· {{ siteSettings.openStatus().detail }}</span> }
+                </div>
+              }
             </div>
           </div>
 
