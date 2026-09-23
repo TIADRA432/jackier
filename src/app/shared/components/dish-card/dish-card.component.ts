@@ -11,10 +11,10 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
   imports: [DecimalPipe, NgOptimizedImage, DishDetailComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-500 group h-full flex flex-col border border-gray-100 transform hover:-translate-y-1">
+    <div class="dish-card bg-white rounded-3xl shadow-lg overflow-hidden hover:shadow-2xl transition-all duration-700 group h-full flex flex-col border border-gray-100 transform hover:-translate-y-1">
       <div class="relative h-64 overflow-hidden bg-gray-100">
         @if (dish().image) { <img [ngSrc]="dish().image" width="400" height="300"
-             class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-1000"
+             class="w-full h-full object-cover transform group-hover:scale-[1.045] transition-transform duration-[1400ms] ease-out"
              [alt]="dish().name" referrerPolicy="no-referrer"> }
         @else { <div class="flex h-full items-center justify-center text-jacquier-primary">Le Jacquier · À découvrir</div> }
         <div class="absolute inset-0 bg-gradient-to-t from-jacquier-dark/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -49,13 +49,19 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
             {{ dish().description }}
           </p>
         </div>
-        <button type="button" (click)="detail.open()" [attr.aria-label]="'Voir les détails de ' + dish().name" class="w-full mt-auto py-3 border-2 border-jacquier-primary text-jacquier-primary rounded-xl hover:bg-jacquier-primary hover:text-white transition-all duration-300 text-xs font-bold uppercase tracking-widest">
-          Voir le plat
+        <button type="button" (click)="detail.open()" [attr.aria-label]="'Voir les détails de ' + dish().name"
+          class="group/action w-full mt-auto py-3 border-2 border-jacquier-primary text-jacquier-primary rounded-xl hover:bg-jacquier-primary hover:text-white transition-all duration-500 text-xs font-bold uppercase tracking-widest">
+          <span class="inline-flex items-center gap-2">Voir le plat <span class="transition-transform duration-500 group-hover/action:translate-x-1">→</span></span>
         </button>
       </div>
     </div>
     <app-dish-detail #detail [dish]="dish()" />
-  `
+  `,
+  styles: [`
+    .dish-card { animation: dishCardIn 600ms cubic-bezier(.22,.61,.36,1) both; }
+    @keyframes dishCardIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    @media (prefers-reduced-motion: reduce) { .dish-card { animation: none; } }
+  `]
 })
 export class DishCardComponent {
   readonly dish = input.required<Dish>();
