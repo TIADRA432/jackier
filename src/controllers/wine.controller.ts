@@ -3,7 +3,19 @@ import { addDoc, deleteDoc, getCollection, updateDoc } from '../services/db.serv
 import { CatalogValidationError, catalogError, optionalImageUrl, optionalOrder, optionalPrice, optionalText, requireKnownFields, requiredText, validateUuid } from './catalog.validation';
 
 const WINE_FIELDS = new Set(['name', 'origin', 'grape', 'year', 'description', 'priceBottle', 'priceGlass', 'imageUrl', 'displayOrder', 'active']);
-type WinePayload = Record<string, string | number | boolean>;
+type WinePayload = Record<string, string | number | boolean | null>;
+
+const optionalNullableText = (value: unknown, field: string, maxLength: number): string | null | undefined => {
+  if (value === undefined) return undefined;
+  if (value === null || value === '') return null;
+  return requiredText(value, field, maxLength);
+};
+
+const optionalNullableImageUrl = (value: unknown): string | null | undefined => {
+  if (value === undefined) return undefined;
+  if (value === null || value === '') return null;
+  return optionalImageUrl(value);
+};
 
 const validateWinePayload = (body: unknown, partial: boolean): WinePayload => {
   const source = requireKnownFields(body, WINE_FIELDS);
@@ -15,8 +27,8 @@ const validateWinePayload = (body: unknown, partial: boolean): WinePayload => {
   const payload: WinePayload = {};
   if (name !== undefined) payload.name = name;
 
-  const origin = optionalText(source.origin, 'origin', 120);
-  const grape = optionalText(source.grape, 'grape', 120);
+  const origin = optionalNullableText(source.origin, 'origin', 120);
+  const grape = optionalNullableText(source.grape, 'grape', 120);
   if (origin !== undefined) payload.origin = origin;
   if (grape !== undefined) payload.grape = grape;
 
@@ -34,8 +46,8 @@ const validateWinePayload = (body: unknown, partial: boolean): WinePayload => {
   if (priceBottle !== undefined) payload.priceBottle = priceBottle;
   if (priceGlass !== undefined) payload.priceGlass = priceGlass;
 
-  const description = optionalText(source.description, 'description', 1_000);
-  const imageUrl = optionalImageUrl(source.imageUrl);
+  const description = optionalNullableText(source.description, 'description', 1_000);
+  const imageUrl = optionalNullableImageUrl(source.imageUrl);
   const displayOrder = optionalOrder(source.displayOrder);
   if (description !== undefined) payload.description = description;
   if (imageUrl !== undefined) payload.imageUrl = imageUrl;
