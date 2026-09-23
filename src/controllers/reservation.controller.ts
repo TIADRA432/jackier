@@ -11,6 +11,72 @@ const ALLOWED_TIMES = new Set([
 ]);
 const ALLOWED_STATUSES = new Set(['pending', 'confirmed', 'cancelled', 'completed', 'approved', 'rejected']);
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const WEEKDAY_KEYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const;
+
+const toMinutes = (value: string): number => {
+  const [hours, minutes] = value.split(':').map(Number);
+  return (hours || 0) * 60 + (minutes || 0);
+};
+
+const conakryNow = () => {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Africa/Conakry',
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hourCycle: 'h23'
+  }).formatToParts(new Date());
+  const part = (type: string) => parts.find(entry => entry.type === type)?.value ?? '';
+  return {
+    date: `${part('year')}-${part('month')}-${part('day')}`,
+    minutes: Number(part('hour') || 0) * 60 + Number(part('minute') || 0)
+  };
+};
+
+const weekdayForDate = (date: string) =>
+  WEEKDAY_KEYS[new Date(`${date}T12:00:00Z`).getUTCDay()];
+
+const validateConfiguredAvailability = async (reservation: { date: string; time: string }) => {
+  const now = conakryNow();
+  if (reservation.date < now.date) throw new Error('Invalid reservation date: date is in the past');
+  if (reservation.date === now.date && toMinutes(reservation.time) <= now.minutes) {
+    throw new Error('Invalid reservation time: time has already passed');
+  }
+
+  const { data, error } = await supabase.from('settings').select('data').eq('id', 'global').maybeSingle();
+  if (error) throw error;
+
+  const schedule = (data?.data as any)?.weeklyHours;
+  if (!schedule?.enabled) return;
+
+  const day = schedule.days?.[weekdayForDate(reservation.date)];
+  if (!day || day.closed || !day.open || !day.close) {
+    throw new Error('Invalid reservation time: restaurant is closed on this date');
+  }
+
+  const value = toMinutes(reservation.time);
+  const open = toMinutes(day.open);
+  const close = toMinutes(day.close);
+  const allowed = open < close ? value >= open && value < close : value >= open || value < close;
+  if (!allowed) throw new Error('Invalid reservation time: outside configured opening hours');
+};
+
+const ensureNoDuplicateReservation = async (reservation: { date: string; time: string; email: string; phone: string }) => {
+  const { data, error } = await supabase
+    .from('reservations')
+    .select('id,status,data')
+    .eq('date', reservation.date);
+  if (error) throw error;
+
+  const duplicate = (data || []).some((row: any) => {
+    if (['cancelled', 'rejected'].includes(row.status)) return false;
+    const existing = row.data || {};
+    return existing.time === reservation.time &&
+      (existing.email === reservation.email || existing.phone === reservation.phone);
+  });
+
+  if (duplicate) {
+    throw new Error('Invalid reservation: a similar request already exists for this date and time');
+  }
+};
 
 const format = (row: any) => ({
   id: row.id,
@@ -86,6 +152,8 @@ export const getReservations = async (_req: Request, res: Response) => {
 export const createReservation = async (req: Request, res: Response) => {
   try {
     const reservation = validateReservation(req.body);
+    await validateConfiguredAvailability(reservation);
+    await ensureNoDuplicateReservation(reservation);
     const payload = { ...reservation, createdAt: new Date().toISOString() };
     const { data, error } = await supabase
       .from('reservations')
