@@ -25,7 +25,7 @@
       "file_type": "code",
       "norm_label": "brandsettings",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L142"
+      "source_location": "L144"
     },
     {
       "id": "src_app_core_services_admin_data_service_cateringevent",
@@ -205,7 +205,7 @@
       "file_type": "code",
       "norm_label": "admindataservice",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L204"
+      "source_location": "L206"
     },
     {
       "id": "src_app_core_services_admin_data_service_gallerymedia",
@@ -217,7 +217,7 @@
       "file_type": "code",
       "norm_label": "gallerymedia",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L167"
+      "source_location": "L169"
     },
     {
       "id": "src_app_pages_admin_gallery_admin_gallery_component_admingallerycomponent",
@@ -397,7 +397,7 @@
       "file_type": "code",
       "norm_label": "adminteammember",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L189"
+      "source_location": "L191"
     },
     {
       "id": "src_app_pages_admin_equipe_equipe_component_adminequipecomponent",
@@ -541,7 +541,7 @@
       "file_type": "code",
       "norm_label": "mediareference",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L28"
+      "source_location": "L30"
     },
     {
       "id": "src_app_core_services_admin_data_service_menuitem",
@@ -733,7 +733,7 @@
       "file_type": "code",
       "norm_label": "inventoryitem",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L176"
+      "source_location": "L178"
     },
     {
       "id": "src_app_pages_admin_stock_stock_component_stockcomponent",
@@ -793,7 +793,7 @@
       "file_type": "code",
       "norm_label": "mediatag",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L164"
+      "source_location": "L166"
     },
     {
       "id": "src_app_core_services_admin_data_service_mediausage",
@@ -805,7 +805,7 @@
       "file_type": "code",
       "norm_label": "mediausage",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L165"
+      "source_location": "L167"
     },
     {
       "id": "src_app_pages_admin_cms_cms_component_editdraft",
@@ -973,7 +973,7 @@
       "file_type": "code",
       "norm_label": "mediaasset",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L149"
+      "source_location": "L151"
     },
     {
       "id": "src_app_core_services_admin_data_service_mediacategory",
@@ -985,7 +985,7 @@
       "file_type": "code",
       "norm_label": "mediacategory",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L147"
+      "source_location": "L149"
     },
     {
       "id": "src_app_pages_admin_cms_cms_component_cmscomponent",
@@ -1189,7 +1189,7 @@
       "file_type": "code",
       "norm_label": "mediareference",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L136"
+      "source_location": "L138"
     },
     {
       "id": "src_app_core_services_admin_data_service_sitemediaslot",
@@ -1201,7 +1201,7 @@
       "file_type": "code",
       "norm_label": "sitemediaslot",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L132"
+      "source_location": "L134"
     },
     {
       "id": "src_app_pages_admin_settings_settings_component_adminsettingscomponent",
@@ -1295,7 +1295,7 @@
       "file_type": "code",
       "norm_label": ".addexpense()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L284"
+      "source_location": "L286"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_closeday",
@@ -1306,7 +1306,7 @@
       "file_type": "code",
       "norm_label": ".closeday()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L288"
+      "source_location": "L290"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_createcategory",
@@ -1317,7 +1317,7 @@
       "file_type": "code",
       "norm_label": ".createcategory()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L248"
+      "source_location": "L250"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_creategallerymedia",
@@ -1328,7 +1328,7 @@
       "file_type": "code",
       "norm_label": ".creategallerymedia()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L343"
+      "source_location": "L345"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_createinventoryitem",
@@ -1339,7 +1339,7 @@
       "file_type": "code",
       "norm_label": ".createinventoryitem()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L359"
+      "source_location": "L361"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_createmediatag",
@@ -1350,7 +1350,7 @@
       "file_type": "code",
       "norm_label": ".createmediatag()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L326"
+      "source_location": "L328"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_createmenuitem",
@@ -1361,7 +1361,7 @@
       "file_type": "code",
       "norm_label": ".createmenuitem()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L232"
+      "source_location": "L234"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_createteammember",
@@ -1372,7 +1372,7 @@
       "file_type": "code",
       "norm_label": ".createteammember()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L375"
+      "source_location": "L377"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_createwine",
@@ -1383,7 +1383,7 @@
       "file_type": "code",
       "norm_label": ".createwine()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L264"
+      "source_location": "L266"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_deletecategory",
@@ -1394,7 +1394,7 @@
       "file_type": "code",
       "norm_label": ".deletecategory()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L256"
+      "source_location": "L258"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_deletegallerymedia",
@@ -1405,7 +1405,7 @@
       "file_type": "code",
       "norm_label": ".deletegallerymedia()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L351"
+      "source_location": "L353"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_deleteinventoryitem",
@@ -1416,7 +1416,7 @@
       "file_type": "code",
       "norm_label": ".deleteinventoryitem()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L367"
+      "source_location": "L369"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_deletemediaasset",
@@ -1427,7 +1427,7 @@
       "file_type": "code",
       "norm_label": ".deletemediaasset()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L318"
+      "source_location": "L320"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_deletemenuitem",
@@ -1438,7 +1438,7 @@
       "file_type": "code",
       "norm_label": ".deletemenuitem()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L240"
+      "source_location": "L242"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_deleteteammember",
@@ -1449,7 +1449,7 @@
       "file_type": "code",
       "norm_label": ".deleteteammember()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L383"
+      "source_location": "L385"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_deletewine",
@@ -1460,7 +1460,7 @@
       "file_type": "code",
       "norm_label": ".deletewine()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L272"
+      "source_location": "L274"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_downloadmediaasset",
@@ -1471,7 +1471,7 @@
       "file_type": "code",
       "norm_label": ".downloadmediaasset()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L330"
+      "source_location": "L332"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getcategories",
@@ -1482,7 +1482,7 @@
       "file_type": "code",
       "norm_label": ".getcategories()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L244"
+      "source_location": "L246"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getcateringevents",
@@ -1493,7 +1493,7 @@
       "file_type": "code",
       "norm_label": ".getcateringevents()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L216"
+      "source_location": "L218"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getdashboardoverview",
@@ -1504,7 +1504,7 @@
       "file_type": "code",
       "norm_label": ".getdashboardoverview()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L212"
+      "source_location": "L214"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getexpenses",
@@ -1515,7 +1515,7 @@
       "file_type": "code",
       "norm_label": ".getexpenses()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L276"
+      "source_location": "L278"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getfinancereports",
@@ -1526,7 +1526,7 @@
       "file_type": "code",
       "norm_label": ".getfinancereports()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L280"
+      "source_location": "L282"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getgallerymedia",
@@ -1537,7 +1537,7 @@
       "file_type": "code",
       "norm_label": ".getgallerymedia()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L339"
+      "source_location": "L341"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getinventoryitems",
@@ -1548,7 +1548,7 @@
       "file_type": "code",
       "norm_label": ".getinventoryitems()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L355"
+      "source_location": "L357"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getmediaassets",
@@ -1559,7 +1559,7 @@
       "file_type": "code",
       "norm_label": ".getmediaassets()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L300"
+      "source_location": "L302"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getmediaassetusage",
@@ -1570,7 +1570,7 @@
       "file_type": "code",
       "norm_label": ".getmediaassetusage()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L334"
+      "source_location": "L336"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getmediatags",
@@ -1581,7 +1581,7 @@
       "file_type": "code",
       "norm_label": ".getmediatags()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L322"
+      "source_location": "L324"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getmenuitems",
@@ -1592,7 +1592,7 @@
       "file_type": "code",
       "norm_label": ".getmenuitems()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L228"
+      "source_location": "L230"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getreservations",
@@ -1603,7 +1603,7 @@
       "file_type": "code",
       "norm_label": ".getreservations()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L208"
+      "source_location": "L210"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getschoolprograms",
@@ -1614,7 +1614,7 @@
       "file_type": "code",
       "norm_label": ".getschoolprograms()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L224"
+      "source_location": "L226"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getsettings",
@@ -1625,7 +1625,7 @@
       "file_type": "code",
       "norm_label": ".getsettings()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L292"
+      "source_location": "L294"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getteammembers",
@@ -1636,7 +1636,7 @@
       "file_type": "code",
       "norm_label": ".getteammembers()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L371"
+      "source_location": "L373"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getwines",
@@ -1647,7 +1647,7 @@
       "file_type": "code",
       "norm_label": ".getwines()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L260"
+      "source_location": "L262"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updatecategory",
@@ -1658,7 +1658,7 @@
       "file_type": "code",
       "norm_label": ".updatecategory()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L252"
+      "source_location": "L254"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updatecateringstatus",
@@ -1669,7 +1669,7 @@
       "file_type": "code",
       "norm_label": ".updatecateringstatus()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L220"
+      "source_location": "L222"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updategallerymedia",
@@ -1680,7 +1680,7 @@
       "file_type": "code",
       "norm_label": ".updategallerymedia()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L347"
+      "source_location": "L349"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updateinventoryitem",
@@ -1691,7 +1691,7 @@
       "file_type": "code",
       "norm_label": ".updateinventoryitem()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L363"
+      "source_location": "L365"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updatemediaasset",
@@ -1702,7 +1702,7 @@
       "file_type": "code",
       "norm_label": ".updatemediaasset()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L314"
+      "source_location": "L316"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updatemenuitem",
@@ -1713,7 +1713,7 @@
       "file_type": "code",
       "norm_label": ".updatemenuitem()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L236"
+      "source_location": "L238"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updatereservationstatus",
@@ -1724,7 +1724,7 @@
       "file_type": "code",
       "norm_label": ".updatereservationstatus()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L387"
+      "source_location": "L389"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updatesettings",
@@ -1735,7 +1735,7 @@
       "file_type": "code",
       "norm_label": ".updatesettings()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L296"
+      "source_location": "L298"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updateteammember",
@@ -1746,7 +1746,7 @@
       "file_type": "code",
       "norm_label": ".updateteammember()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L379"
+      "source_location": "L381"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updatewine",
@@ -1757,7 +1757,7 @@
       "file_type": "code",
       "norm_label": ".updatewine()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L268"
+      "source_location": "L270"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_uploadmediaasset",
@@ -1768,7 +1768,7 @@
       "file_type": "code",
       "norm_label": ".uploadmediaasset()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L304"
+      "source_location": "L306"
     },
     {
       "id": "src_app_pages_admin_gallery_admin_gallery_component_admingallerycomponent_canceledit",
@@ -3132,7 +3132,7 @@
       "file_type": "code",
       "norm_label": "getlogs()",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L146"
+      "source_location": "L162"
     },
     {
       "id": "src_controllers_settings_controller_getsettings",
@@ -3143,7 +3143,7 @@
       "file_type": "code",
       "norm_label": "getsettings()",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L121"
+      "source_location": "L137"
     },
     {
       "id": "src_controllers_settings_controller_optionalsettingstext",
@@ -3154,7 +3154,7 @@
       "file_type": "code",
       "norm_label": "optionalsettingstext()",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L81"
+      "source_location": "L83"
     },
     {
       "id": "src_controllers_settings_controller_topublicsettings",
@@ -3165,7 +3165,7 @@
       "file_type": "code",
       "norm_label": "topublicsettings()",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L118"
+      "source_location": "L134"
     },
     {
       "id": "src_controllers_settings_controller_updatesettings",
@@ -3176,7 +3176,7 @@
       "file_type": "code",
       "norm_label": "updatesettings()",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L129"
+      "source_location": "L145"
     },
     {
       "id": "src_controllers_settings_controller_validatebrand",
@@ -3187,7 +3187,7 @@
       "file_type": "code",
       "norm_label": "validatebrand()",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L42"
+      "source_location": "L44"
     },
     {
       "id": "src_controllers_settings_controller_validatemediareference",
@@ -3198,7 +3198,7 @@
       "file_type": "code",
       "norm_label": "validatemediareference()",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L30"
+      "source_location": "L32"
     },
     {
       "id": "src_controllers_settings_controller_validatesettingspayload",
@@ -3209,7 +3209,7 @@
       "file_type": "code",
       "norm_label": "validatesettingspayload()",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L89"
+      "source_location": "L91"
     },
     {
       "id": "src_controllers_settings_controller_validatesocialmedia",
@@ -3220,7 +3220,7 @@
       "file_type": "code",
       "norm_label": "validatesocialmedia()",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L60"
+      "source_location": "L62"
     },
     {
       "id": "src_app_pages_admin_restaurant_restaurant_component_adminrestaurantcomponent_categoryname",
@@ -5882,7 +5882,7 @@
       "file_type": "code",
       "norm_label": ".image()",
       "source_file": "src/app/core/services/site-settings.service.ts",
-      "source_location": "L59"
+      "source_location": "L61"
     },
     {
       "id": "src_app_core_services_site_settings_service_sitesettingsservice_logo",
@@ -5893,7 +5893,7 @@
       "file_type": "code",
       "norm_label": ".logo()",
       "source_file": "src/app/core/services/site-settings.service.ts",
-      "source_location": "L55"
+      "source_location": "L57"
     },
     {
       "id": "src_app_pages_admin_settings_settings_component_adminsettingscomponent_activesocialcount",
@@ -6212,7 +6212,7 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "src/app/core/services/site-settings.service.ts",
-      "source_location": "L51"
+      "source_location": "L53"
     },
     {
       "id": "src_app_core_services_site_settings_service_sitesettingsservice_reload",
@@ -6223,7 +6223,7 @@
       "file_type": "code",
       "norm_label": ".reload()",
       "source_file": "src/app/core/services/site-settings.service.ts",
-      "source_location": "L67"
+      "source_location": "L69"
     },
     {
       "id": "src_app_core_services_site_settings_service_sitesettingsservice_socialurl",
@@ -6234,7 +6234,7 @@
       "file_type": "code",
       "norm_label": ".socialurl()",
       "source_file": "src/app/core/services/site-settings.service.ts",
-      "source_location": "L63"
+      "source_location": "L65"
     },
     {
       "id": "src_controllers_auth_controller_setupadmin",
@@ -7797,7 +7797,7 @@
       "file_type": "code",
       "norm_label": "brand_fields",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L21"
+      "source_location": "L23"
     },
     {
       "id": "src_controllers_settings_controller_media_reference_fields",
@@ -7807,7 +7807,7 @@
       "file_type": "code",
       "norm_label": "media_reference_fields",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L22"
+      "source_location": "L24"
     },
     {
       "id": "src_controllers_settings_controller_public_settings_keys",
@@ -7827,7 +7827,7 @@
       "file_type": "code",
       "norm_label": "settings_fields",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L20"
+      "source_location": "L22"
     },
     {
       "id": "src_controllers_settings_controller_site_media_slots",
@@ -7837,7 +7837,7 @@
       "file_type": "code",
       "norm_label": "site_media_slots",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L23"
+      "source_location": "L25"
     },
     {
       "id": "src_controllers_settings_controller_social_media_keys",
@@ -7847,7 +7847,7 @@
       "file_type": "code",
       "norm_label": "social_media_keys",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L58"
+      "source_location": "L60"
     },
     {
       "id": "src_app_pages_admin_restaurant_restaurant_component_ts_component",
@@ -11546,7 +11546,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/app/core/services/site-settings.service.ts",
-      "source_location": "L52",
+      "source_location": "L54",
       "weight": 1.0
     },
     {
@@ -14870,7 +14870,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L125",
+      "source_location": "L141",
       "weight": 1.0
     },
     {
@@ -14882,7 +14882,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L83",
+      "source_location": "L85",
       "weight": 1.0
     },
     {
@@ -14894,7 +14894,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L131",
+      "source_location": "L147",
       "weight": 1.0
     },
     {
@@ -14906,24 +14906,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L143",
+      "source_location": "L159",
       "weight": 1.0
     },
     {
       "source": "src_controllers_settings_controller_validatebrand",
       "target": "src_controllers_catalog_validation_requireknownfields",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L43",
-      "weight": 1.0
-    },
-    {
-      "source": "src_controllers_settings_controller_validatebrand",
-      "target": "src_controllers_settings_controller_validatemediareference",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14935,7 +14923,7 @@
     },
     {
       "source": "src_controllers_settings_controller_validatebrand",
-      "target": "src_controllers_catalog_validation_isrecord",
+      "target": "src_controllers_settings_controller_validatemediareference",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14947,6 +14935,18 @@
     },
     {
       "source": "src_controllers_settings_controller_validatebrand",
+      "target": "src_controllers_catalog_validation_isrecord",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/controllers/settings.controller.ts",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "src_controllers_settings_controller_validatebrand",
       "target": "src_controllers_catalog_validation_catalogvalidationerror",
       "relation": "calls",
       "_origin": "ast",
@@ -14954,36 +14954,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L48",
+      "source_location": "L50",
       "weight": 1.0
     },
     {
       "source": "src_controllers_settings_controller_validatemediareference",
       "target": "src_controllers_catalog_validation_requireknownfields",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L31",
-      "weight": 1.0
-    },
-    {
-      "source": "src_controllers_settings_controller_validatemediareference",
-      "target": "src_controllers_catalog_validation_catalogvalidationerror",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L32",
-      "weight": 1.0
-    },
-    {
-      "source": "src_controllers_settings_controller_validatemediareference",
-      "target": "src_controllers_catalog_validation_optionalimageurl",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14995,6 +14971,30 @@
     },
     {
       "source": "src_controllers_settings_controller_validatemediareference",
+      "target": "src_controllers_catalog_validation_catalogvalidationerror",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/controllers/settings.controller.ts",
+      "source_location": "L34",
+      "weight": 1.0
+    },
+    {
+      "source": "src_controllers_settings_controller_validatemediareference",
+      "target": "src_controllers_catalog_validation_optionalimageurl",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "src/controllers/settings.controller.ts",
+      "source_location": "L35",
+      "weight": 1.0
+    },
+    {
+      "source": "src_controllers_settings_controller_validatemediareference",
       "target": "src_controllers_catalog_validation_validateuuid",
       "relation": "calls",
       "_origin": "ast",
@@ -15002,7 +15002,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L36",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -15014,7 +15014,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L38",
+      "source_location": "L40",
       "weight": 1.0
     },
     {
@@ -15026,7 +15026,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L105",
+      "source_location": "L109",
       "weight": 1.0
     },
     {
@@ -15038,7 +15038,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L110",
+      "source_location": "L114",
       "weight": 1.0
     },
     {
@@ -15050,7 +15050,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L112",
+      "source_location": "L128",
       "weight": 1.0
     },
     {
@@ -15062,7 +15062,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L113",
+      "source_location": "L129",
       "weight": 1.0
     },
     {
@@ -15074,7 +15074,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L90",
+      "source_location": "L92",
       "weight": 1.0
     },
     {
@@ -15086,7 +15086,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L61",
+      "source_location": "L63",
       "weight": 1.0
     },
     {
@@ -15098,7 +15098,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L62",
+      "source_location": "L64",
       "weight": 1.0
     },
     {
@@ -15110,7 +15110,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L67",
+      "source_location": "L69",
       "weight": 1.0
     },
     {
@@ -15950,7 +15950,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L203",
+      "source_location": "L205",
       "weight": 1.0
     },
     {
@@ -23667,7 +23667,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/app/core/services/site-settings.service.ts",
-      "source_location": "L59",
+      "source_location": "L61",
       "weight": 1.0
     },
     {
@@ -24363,7 +24363,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/app/core/services/site-settings.service.ts",
-      "source_location": "L59",
+      "source_location": "L61",
       "weight": 1.0
     },
     {
@@ -24375,7 +24375,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "src/app/core/services/site-settings.service.ts",
-      "source_location": "L55",
+      "source_location": "L57",
       "weight": 1.0
     },
     {
@@ -26664,7 +26664,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L132",
+      "source_location": "L134",
       "weight": 1.0
     },
     {
@@ -26675,7 +26675,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L136",
+      "source_location": "L138",
       "weight": 1.0
     },
     {
@@ -26686,7 +26686,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L142",
+      "source_location": "L144",
       "weight": 1.0
     },
     {
@@ -26697,7 +26697,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L147",
+      "source_location": "L149",
       "weight": 1.0
     },
     {
@@ -26708,7 +26708,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L149",
+      "source_location": "L151",
       "weight": 1.0
     },
     {
@@ -26719,7 +26719,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L164",
+      "source_location": "L166",
       "weight": 1.0
     },
     {
@@ -26730,7 +26730,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L165",
+      "source_location": "L167",
       "weight": 1.0
     },
     {
@@ -26741,7 +26741,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L167",
+      "source_location": "L169",
       "weight": 1.0
     },
     {
@@ -26752,7 +26752,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L176",
+      "source_location": "L178",
       "weight": 1.0
     },
     {
@@ -26774,7 +26774,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L189",
+      "source_location": "L191",
       "weight": 1.0
     },
     {
@@ -26785,7 +26785,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L204",
+      "source_location": "L206",
       "weight": 1.0
     },
     {
@@ -29051,7 +29051,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L118",
+      "source_location": "L134",
       "weight": 1.0
     },
     {
@@ -29062,7 +29062,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L121",
+      "source_location": "L137",
       "weight": 1.0
     },
     {
@@ -29073,7 +29073,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L129",
+      "source_location": "L145",
       "weight": 1.0
     },
     {
@@ -29084,7 +29084,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L146",
+      "source_location": "L162",
       "weight": 1.0
     },
     {
@@ -29095,7 +29095,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L20",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -29106,7 +29106,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L21",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -29117,7 +29117,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L22",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -29128,7 +29128,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -29139,7 +29139,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L28",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -29150,7 +29150,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L30",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -29161,18 +29161,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L42",
-      "weight": 1.0
-    },
-    {
-      "source": "src_controllers_settings_controller",
-      "target": "src_controllers_settings_controller_social_media_keys",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L58",
+      "source_location": "L44",
       "weight": 1.0
     },
     {
@@ -29188,7 +29177,7 @@
     },
     {
       "source": "src_controllers_settings_controller",
-      "target": "src_controllers_settings_controller_validatesocialmedia",
+      "target": "src_controllers_settings_controller_social_media_keys",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -29199,13 +29188,24 @@
     },
     {
       "source": "src_controllers_settings_controller",
+      "target": "src_controllers_settings_controller_validatesocialmedia",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/controllers/settings.controller.ts",
+      "source_location": "L62",
+      "weight": 1.0
+    },
+    {
+      "source": "src_controllers_settings_controller",
       "target": "src_controllers_settings_controller_optionalsettingstext",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L81",
+      "source_location": "L83",
       "weight": 1.0
     },
     {
@@ -29216,7 +29216,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/controllers/settings.controller.ts",
-      "source_location": "L89",
+      "source_location": "L91",
       "weight": 1.0
     },
     {
@@ -30672,7 +30672,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L208",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -30683,7 +30683,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L212",
+      "source_location": "L214",
       "weight": 1.0
     },
     {
@@ -30694,7 +30694,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L216",
+      "source_location": "L218",
       "weight": 1.0
     },
     {
@@ -30705,7 +30705,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L220",
+      "source_location": "L222",
       "weight": 1.0
     },
     {
@@ -30716,7 +30716,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L224",
+      "source_location": "L226",
       "weight": 1.0
     },
     {
@@ -30727,7 +30727,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L228",
+      "source_location": "L230",
       "weight": 1.0
     },
     {
@@ -30738,7 +30738,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L232",
+      "source_location": "L234",
       "weight": 1.0
     },
     {
@@ -30749,7 +30749,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L236",
+      "source_location": "L238",
       "weight": 1.0
     },
     {
@@ -30760,7 +30760,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L240",
+      "source_location": "L242",
       "weight": 1.0
     },
     {
@@ -30771,7 +30771,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L244",
+      "source_location": "L246",
       "weight": 1.0
     },
     {
@@ -30782,7 +30782,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L248",
+      "source_location": "L250",
       "weight": 1.0
     },
     {
@@ -30793,7 +30793,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L252",
+      "source_location": "L254",
       "weight": 1.0
     },
     {
@@ -30804,7 +30804,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L256",
+      "source_location": "L258",
       "weight": 1.0
     },
     {
@@ -30815,7 +30815,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L260",
+      "source_location": "L262",
       "weight": 1.0
     },
     {
@@ -30826,7 +30826,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L264",
+      "source_location": "L266",
       "weight": 1.0
     },
     {
@@ -30837,7 +30837,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L268",
+      "source_location": "L270",
       "weight": 1.0
     },
     {
@@ -30848,7 +30848,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L272",
+      "source_location": "L274",
       "weight": 1.0
     },
     {
@@ -30859,7 +30859,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L276",
+      "source_location": "L278",
       "weight": 1.0
     },
     {
@@ -30870,7 +30870,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L280",
+      "source_location": "L282",
       "weight": 1.0
     },
     {
@@ -30881,7 +30881,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L284",
+      "source_location": "L286",
       "weight": 1.0
     },
     {
@@ -30892,7 +30892,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L288",
+      "source_location": "L290",
       "weight": 1.0
     },
     {
@@ -30903,7 +30903,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L292",
+      "source_location": "L294",
       "weight": 1.0
     },
     {
@@ -30914,7 +30914,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L296",
+      "source_location": "L298",
       "weight": 1.0
     },
     {
@@ -30925,7 +30925,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L300",
+      "source_location": "L302",
       "weight": 1.0
     },
     {
@@ -30936,7 +30936,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L304",
+      "source_location": "L306",
       "weight": 1.0
     },
     {
@@ -30947,7 +30947,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L314",
+      "source_location": "L316",
       "weight": 1.0
     },
     {
@@ -30958,7 +30958,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L318",
+      "source_location": "L320",
       "weight": 1.0
     },
     {
@@ -30969,7 +30969,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L322",
+      "source_location": "L324",
       "weight": 1.0
     },
     {
@@ -30980,7 +30980,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L326",
+      "source_location": "L328",
       "weight": 1.0
     },
     {
@@ -30991,7 +30991,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L330",
+      "source_location": "L332",
       "weight": 1.0
     },
     {
@@ -31002,7 +31002,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L334",
+      "source_location": "L336",
       "weight": 1.0
     },
     {
@@ -31013,7 +31013,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L339",
+      "source_location": "L341",
       "weight": 1.0
     },
     {
@@ -31024,7 +31024,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L343",
+      "source_location": "L345",
       "weight": 1.0
     },
     {
@@ -31035,7 +31035,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L347",
+      "source_location": "L349",
       "weight": 1.0
     },
     {
@@ -31046,7 +31046,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L351",
+      "source_location": "L353",
       "weight": 1.0
     },
     {
@@ -31057,7 +31057,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L355",
+      "source_location": "L357",
       "weight": 1.0
     },
     {
@@ -31068,7 +31068,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L359",
+      "source_location": "L361",
       "weight": 1.0
     },
     {
@@ -31079,7 +31079,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L363",
+      "source_location": "L365",
       "weight": 1.0
     },
     {
@@ -31090,7 +31090,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L367",
+      "source_location": "L369",
       "weight": 1.0
     },
     {
@@ -31101,7 +31101,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L371",
+      "source_location": "L373",
       "weight": 1.0
     },
     {
@@ -31112,7 +31112,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L375",
+      "source_location": "L377",
       "weight": 1.0
     },
     {
@@ -31123,7 +31123,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L379",
+      "source_location": "L381",
       "weight": 1.0
     },
     {
@@ -31134,7 +31134,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L383",
+      "source_location": "L385",
       "weight": 1.0
     },
     {
@@ -31145,7 +31145,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L387",
+      "source_location": "L389",
       "weight": 1.0
     },
     {
@@ -31508,7 +31508,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/site-settings.service.ts",
-      "source_location": "L51",
+      "source_location": "L53",
       "weight": 1.0
     },
     {
@@ -31519,7 +31519,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/site-settings.service.ts",
-      "source_location": "L55",
+      "source_location": "L57",
       "weight": 1.0
     },
     {
@@ -31530,7 +31530,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/site-settings.service.ts",
-      "source_location": "L59",
+      "source_location": "L61",
       "weight": 1.0
     },
     {
@@ -31541,7 +31541,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/site-settings.service.ts",
-      "source_location": "L63",
+      "source_location": "L65",
       "weight": 1.0
     },
     {
@@ -31552,7 +31552,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/site-settings.service.ts",
-      "source_location": "L67",
+      "source_location": "L69",
       "weight": 1.0
     },
     {
@@ -34834,5 +34834,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "0abee87e1064e84f0197f2e537aebf3d00ba6256"
+  "built_at_commit": "58ef7ba17cfa93ce913867a36a5d4ca7584c693c"
 }
