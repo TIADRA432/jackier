@@ -9,18 +9,17 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
   imports: [RouterLink, RouterLinkActive],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <header class="fixed w-full z-50 transition-all duration-500" 
-            [class.bg-white]="isScrolled() || isMobileMenuOpen()" 
-            [class.shadow-md]="isScrolled() || isMobileMenuOpen()"
-            [class.py-2]="isScrolled()"
-            [class.py-6]="!isScrolled()"
-            [class.bg-transparent]="!isScrolled() && !isMobileMenuOpen()">
+    <header
+      [class]="isScrolled() || isMobileMenuOpen()
+        ? 'fixed w-full z-50 border-b border-white/40 bg-white/90 py-2 shadow-[0_10px_35px_rgba(0,0,0,0.08)] backdrop-blur-xl transition-all duration-700'
+        : 'fixed w-full z-50 border-b border-transparent bg-transparent py-6 transition-all duration-700'">
       <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
         <!-- Logo -->
-        <a routerLink="/" class="inline-flex h-11 items-center transition-colors duration-300"
+        <a routerLink="/" class="inline-flex h-11 items-center transition-all duration-500"
            [class.text-jacquier-gold]="!isScrolled() && !isMobileMenuOpen()"
            [class.text-jacquier-primary]="isScrolled() || isMobileMenuOpen()">
-           <img [src]="siteSettings.logo().url" [alt]="siteSettings.logo().altText" class="h-10 w-auto max-w-[220px] object-contain object-left" />
+           <img [src]="siteSettings.logo().url" [alt]="siteSettings.logo().altText"
+             [class]="isScrolled() ? 'h-9 w-auto max-w-[200px] object-contain object-left transition-all duration-500' : 'h-10 w-auto max-w-[220px] object-contain object-left transition-all duration-500'" />
         </a>
 
         <!-- Desktop Nav -->
@@ -73,7 +72,7 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
       </div>
 
       <!-- Mobile Nav Panel -->
-      <nav id="mobile-nav-panel" aria-label="Navigation mobile" class="fixed top-0 right-0 h-full w-4/5 max-w-sm bg-white z-50 transform transition-transform duration-500 ease-in-out lg:hidden flex flex-col shadow-2xl"
+      <nav id="mobile-nav-panel" aria-label="Navigation mobile" class="fixed top-0 right-0 h-full w-full bg-jacquier-cream z-50 transform transition-transform duration-700 ease-[cubic-bezier(.22,.61,.36,1)] lg:hidden flex flex-col shadow-2xl"
            [class.translate-x-0]="isMobileMenuOpen()"
            [class.translate-x-full]="!isMobileMenuOpen()">
         
@@ -84,13 +83,13 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
           </button>
         </div>
 
-        <div class="flex-1 overflow-y-auto py-6 px-6 flex flex-col space-y-6">
+        <div class="flex-1 overflow-y-auto px-8 py-10 flex flex-col justify-center space-y-7">
           @for (link of navLinks; track link.path) {
             <a [routerLink]="link.path" 
                (click)="closeMobileMenu()"
                routerLinkActive="text-jacquier-gold font-bold pl-4 border-l-2 border-jacquier-gold"
                [routerLinkActiveOptions]="{exact: link.exact}"
-               class="text-jacquier-dark text-lg font-serif uppercase tracking-wider transition-all duration-300 hover:text-jacquier-gold hover:pl-2">
+               class="text-jacquier-dark text-3xl font-serif tracking-wide transition-all duration-500 hover:text-jacquier-gold hover:translate-x-2">
               {{ link.label }}
             </a>
           }
