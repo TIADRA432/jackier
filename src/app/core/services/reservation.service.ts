@@ -5,8 +5,18 @@ import { firstValueFrom } from 'rxjs';
 import { Reservation } from '../models';
 import { environment } from '../../../environments/environment';
 
+export interface ReservationReceipt {
+  id: string;
+  status: 'pending' | 'confirmed' | 'cancelled' | 'completed' | 'approved' | 'rejected';
+  name: string;
+  date: string;
+  time: string;
+  guests: number;
+}
+
 export interface ReservationResult {
   success: boolean;
+  reservation?: ReservationReceipt;
   /** Message prêt à afficher à l'utilisateur, déjà adapté au type d'erreur rencontré. */
   errorMessage?: string;
 }
@@ -21,8 +31,8 @@ export class ReservationService {
   async makeReservation(reservation: Reservation): Promise<ReservationResult> {
     try {
       // Le backend attend une heure au format HH:mm parmi des créneaux fixes (voir reservation.controller.ts).
-      await firstValueFrom(this.http.post(`${this.apiUrl}/reservations`, reservation));
-      return { success: true };
+      const created = await firstValueFrom(this.http.post<ReservationReceipt>(`${this.apiUrl}/reservations`, reservation));
+      return { success: true, reservation: created };
     } catch (error) {
       console.error('Échec de la création de réservation:', error);
       return { success: false, errorMessage: this.describeError(error) };
@@ -62,6 +72,6 @@ export class ReservationService {
       return 'Le serveur a rencontré un problème. Merci de réessayer dans un instant, ou de nous contacter directement.';
     }
 
-    return `Impossible de confirmer la réservation (code ${error.status}). Merci de réessayer, ou contactez-nous directement.`;
+    return `Impossible d’envoyer la demande de réservation (code ${error.status}). Merci de réessayer, ou contactez-nous directement.`;
   }
 }
