@@ -115,6 +115,16 @@ export interface FinanceReport {
   manualRevenue: number;
 }
 
+export interface TodaySettings {
+  enabled: boolean;
+  eyebrow: string;
+  title: string;
+  message: string;
+  featuredDishId?: string;
+  ctaLabel: string;
+  ctaPath: '/reservation' | '/menu' | '/gallery' | '/services-traiteur' | '/ecole-gastronomie' | '/contact';
+}
+
 export interface PublicSettings {
   restaurantName?: string;
   tagline?: string;
@@ -127,6 +137,7 @@ export interface PublicSettings {
   mapQuery?: string;
   legalNoticeUrl?: string;
   privacyPolicyUrl?: string;
+  today?: TodaySettings;
   socialMedia?: Record<string, string>;
   brand?: BrandSettings;
 }
