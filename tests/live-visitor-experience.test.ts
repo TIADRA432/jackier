@@ -147,3 +147,18 @@ test('live open status is surfaced across key visitor touchpoints', async () => 
     assert.match(component, /openStatus\(\)\.configured/);
   }
 });
+
+
+test('homepage hero rotates through real gallery imagery accessibly', async () => {
+  const home = await source('src', 'app', 'pages', 'home', 'home.component.ts');
+
+  assert.match(home, /heroSlides = computed/);
+  assert.match(home, /\['restaurant', 'ambiance', 'cuisine'\]/);
+  assert.match(home, /activeHeroIndex = signal/);
+  assert.match(home, /7000/);
+  assert.match(home, /prefers-reduced-motion: reduce/);
+  assert.match(home, /selectHero\(i\)/);
+  assert.match(home, /aria-pressed/);
+  assert.match(home, /ngOnDestroy/);
+  assert.match(home, /clearInterval/);
+});
