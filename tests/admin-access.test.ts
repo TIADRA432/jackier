@@ -47,6 +47,12 @@ test('the dashboard reads its operational metrics from the protected overview en
   assert.match(service, /get<DashboardOverview>\(`\$\{this\.apiUrl\}\/dashboard\/overview`\)/);
   assert.match(component, /this\.adminData\.getDashboardOverview\(\)/);
   assert.match(component, /Aucun rapport financier disponible/);
+  assert.match(controller, /readinessChecks/);
+  assert.match(controller, /activeWines/);
+  assert.match(controller, /publicTeam/);
+  assert.match(controller, /weeklyHours\?\.enabled === true/);
+  assert.match(component, /Préparation à la livraison/);
+  assert.match(component, /overview\(\)\.readiness\.percent/);
 });
 
 test('the catering screen reads and updates only the protected catering API', async () => {
