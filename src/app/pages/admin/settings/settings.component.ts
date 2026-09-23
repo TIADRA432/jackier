@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import {
   AdminDataService,
   BrandSettings,
@@ -22,6 +23,8 @@ const EMPTY_SETTINGS: PublicSettings = {
   openingHours: '',
   currency: 'FG',
   mapQuery: '',
+  legalNoticeUrl: '',
+  privacyPolicyUrl: '',
   socialMedia: {},
   brand: {}
 };
@@ -199,6 +202,27 @@ const SOCIAL_FIELDS = [
           </div>
         </section>
 
+        <section id="localisation-preview" class="overflow-hidden rounded-2xl border border-gray-800 bg-[#1a1a1a]">
+          <div class="grid lg:grid-cols-[1fr_1.4fr]">
+            <div class="p-6 md:p-8">
+              <h2 class="text-xl font-serif font-bold text-white">Aperçu localisation</h2>
+              <p class="mt-2 text-sm leading-relaxed text-gray-400">
+                Vérifiez ici que la recherche de carte pointe vers le bon établissement avant de publier.
+              </p>
+              <div class="mt-5 rounded-xl border border-gray-800 bg-black/20 p-4">
+                <p class="text-xs uppercase tracking-wider text-gray-500">Recherche utilisée</p>
+                <p class="mt-2 text-sm font-bold text-white">{{ settings.mapQuery || settings.address || 'Kipé, Conakry, Guinée' }}</p>
+              </div>
+              <a [href]="mapsSearchUrl()" target="_blank" rel="noopener noreferrer"
+                class="mt-4 inline-flex rounded-xl border border-jacquier-gold px-4 py-3 text-sm font-bold text-jacquier-gold hover:bg-jacquier-gold hover:text-jacquier-dark">
+                Tester dans Google Maps ↗
+              </a>
+            </div>
+            <iframe [src]="mapPreviewUrl()" title="Aperçu de la localisation"
+              class="min-h-80 w-full border-0 bg-gray-900" loading="lazy"></iframe>
+          </div>
+        </section>
+
         <section id="reseaux" class="rounded-2xl border border-gray-800 bg-[#1a1a1a] p-6 md:p-8">
           <div class="border-b border-gray-800 pb-4">
             <h2 class="text-xl font-serif font-bold text-white">Réseaux sociaux</h2>
@@ -213,6 +237,30 @@ const SOCIAL_FIELDS = [
               </label>
             }
           </div>
+        </section>
+
+        <section id="legal" class="rounded-2xl border border-gray-800 bg-[#1a1a1a] p-6 md:p-8">
+          <div class="border-b border-gray-800 pb-4">
+            <h2 class="text-xl font-serif font-bold text-white">Liens légaux & conformité</h2>
+            <p class="mt-1 text-sm text-gray-400">Les liens sont affichés dans le Footer uniquement lorsqu’ils sont renseignés.</p>
+          </div>
+          <div class="mt-6 grid gap-6 md:grid-cols-2">
+            <label class="text-sm text-gray-300">Mentions légales
+              <input type="url" [ngModel]="settings.legalNoticeUrl" (ngModelChange)="patch('legalNoticeUrl', $event)"
+                name="legalNoticeUrl" maxlength="2000" placeholder="https://..."
+                class="mt-2 w-full rounded-xl bg-gray-900 px-4 py-3 text-white" />
+            </label>
+            <label class="text-sm text-gray-300">Politique de confidentialité
+              <input type="url" [ngModel]="settings.privacyPolicyUrl" (ngModelChange)="patch('privacyPolicyUrl', $event)"
+                name="privacyPolicyUrl" maxlength="2000" placeholder="https://..."
+                class="mt-2 w-full rounded-xl bg-gray-900 px-4 py-3 text-white" />
+            </label>
+          </div>
+          @if (!settings.legalNoticeUrl && !settings.privacyPolicyUrl) {
+            <p class="mt-4 rounded-xl border border-amber-700/40 bg-amber-500/10 px-4 py-3 text-xs text-amber-200">
+              Aucun lien légal n’est configuré : le Footer ne montrera pas de faux lien ou de lien vide.
+            </p>
+          }
         </section>
 
         <section id="identite" class="rounded-2xl border border-jacquier-gold/30 bg-[#1a1a1a] p-6 md:p-8">
@@ -313,6 +361,7 @@ const SOCIAL_FIELDS = [
 export class AdminSettingsComponent {
   private readonly adminData = inject(AdminDataService);
   private readonly siteSettings = inject(SiteSettingsService);
+  private readonly sanitizer = inject(DomSanitizer);
 
   readonly loading = signal(true);
   readonly saving = signal(false);
@@ -384,6 +433,18 @@ export class AdminSettingsComponent {
 
   configuredHeroCount(): number {
     return Object.keys(this.settings.brand?.siteMedia ?? {}).length;
+  }
+
+  mapsSearchUrl(): string {
+    const query = this.settings.mapQuery?.trim() || this.settings.address?.trim() || 'Kipé, Conakry, Guinée';
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
+  }
+
+  mapPreviewUrl(): SafeResourceUrl {
+    const query = this.settings.mapQuery?.trim() || this.settings.address?.trim() || 'Kipé, Conakry, Guinée';
+    return this.sanitizer.bypassSecurityTrustResourceUrl(
+      `https://maps.google.com/maps?q=${encodeURIComponent(query)}&t=&z=15&ie=UTF8&iwloc=&output=embed`
+    );
   }
 
   canSave(): boolean {
@@ -517,6 +578,8 @@ export class AdminSettingsComponent {
       openingHours: this.settings.openingHours?.trim(),
       currency: this.settings.currency?.trim() || 'FG',
       mapQuery: this.settings.mapQuery?.trim(),
+      legalNoticeUrl: this.settings.legalNoticeUrl?.trim(),
+      privacyPolicyUrl: this.settings.privacyPolicyUrl?.trim(),
       socialMedia,
       brand: brand ?? { siteMedia: {} }
     };
