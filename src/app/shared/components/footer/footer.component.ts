@@ -40,6 +40,11 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
                   class="rounded-full bg-gray-800/50 border border-gray-700 px-4 h-10 flex items-center justify-center text-xs font-bold uppercase tracking-wider hover:bg-jacquier-primary hover:border-jacquier-primary hover:text-white transition-all duration-300"
                   aria-label="TikTok">TikTok</a>
               }
+              @if (siteSettings.socialUrl('linkedin')) {
+                <a [href]="siteSettings.socialUrl('linkedin')" target="_blank" rel="noopener noreferrer"
+                  class="rounded-full bg-gray-800/50 border border-gray-700 px-4 h-10 flex items-center justify-center text-xs font-bold uppercase tracking-wider hover:bg-jacquier-primary hover:border-jacquier-primary hover:text-white transition-all duration-300"
+                  aria-label="LinkedIn">LinkedIn</a>
+              }
             </div>
           }
         </div>
@@ -78,10 +83,18 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
 
       <div class="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 font-light">
         <p>&copy; {{ currentYear }} {{ info().restaurantName }}. Tous droits réservés.</p>
-        <div class="flex space-x-6 mt-4 md:mt-0">
-          <a href="#" class="hover:text-jacquier-gold transition-colors">Mentions légales</a>
-          <a href="#" class="hover:text-jacquier-gold transition-colors">Politique de confidentialité</a>
-        </div>
+        @if (info().legalNoticeUrl || info().privacyPolicyUrl) {
+          <div class="flex flex-wrap gap-x-6 gap-y-2 mt-4 md:mt-0">
+            @if (info().legalNoticeUrl) {
+              <a [href]="info().legalNoticeUrl" target="_blank" rel="noopener noreferrer"
+                class="hover:text-jacquier-gold transition-colors">Mentions légales</a>
+            }
+            @if (info().privacyPolicyUrl) {
+              <a [href]="info().privacyPolicyUrl" target="_blank" rel="noopener noreferrer"
+                class="hover:text-jacquier-gold transition-colors">Politique de confidentialité</a>
+            }
+          </div>
+        }
       </div>
     </footer>
   `
