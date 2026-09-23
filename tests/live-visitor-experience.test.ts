@@ -87,3 +87,15 @@ test('homepage only exposes real managed restaurant content', async () => {
   assert.doesNotMatch(service, /list\[Math\.min\(2/);
   assert.match(service, /find\(dish => dish\.isFeatured === true\)/);
 });
+
+
+test('homepage live visuals degrade gracefully when media is missing', async () => {
+  const home = await source('src', 'app', 'pages', 'home', 'home.component.ts');
+
+  assert.match(home, /cuisineVisual = computed/);
+  assert.match(home, /ambianceVisual = computed/);
+  assert.match(home, /image\.category === 'cuisine'/);
+  assert.match(home, /image\.category === 'ambiance'/);
+  assert.match(home, /À découvrir au Jacquier/);
+  assert.match(home, /@if \(dish\.image\)/);
+});
