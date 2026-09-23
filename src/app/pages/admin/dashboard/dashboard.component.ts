@@ -5,7 +5,8 @@ import { AdminDataService, DashboardOverview } from '../../../core/services/admi
 const EMPTY_OVERVIEW: DashboardOverview = {
   stats: { todayReservations: 0, pendingReservations: 0, todayRevenue: 0, monthlyRevenue: 0, activeMenuItems: 0, activeCatering: 0 },
   revenueChart: [],
-  recentActivities: []
+  recentActivities: [],
+  readiness: { completed: 0, total: 9, percent: 0, checks: [] }
 };
 
 @Component({
@@ -42,6 +43,44 @@ const EMPTY_OVERVIEW: DashboardOverview = {
               <p class="mt-2 text-xs text-gray-400">{{ stat.description }}</p>
             </article>
           }
+        </section>
+
+        <section class="rounded-2xl border border-jacquier-gold/30 bg-[#171717] p-6 md:p-8">
+          <div class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p class="text-xs font-bold uppercase tracking-[0.18em] text-jacquier-gold">Pré-livraison</p>
+              <h2 class="mt-1 text-2xl font-serif font-bold text-white">Préparation à la livraison</h2>
+              <p class="mt-2 text-sm text-gray-400">Ce score repose uniquement sur les contenus réellement disponibles et configurés.</p>
+            </div>
+            <div class="text-left md:text-right">
+              <p class="text-4xl font-bold text-white">{{ overview().readiness.percent }}%</p>
+              <p class="text-xs text-gray-500">{{ overview().readiness.completed }}/{{ overview().readiness.total }} contrôles prêts</p>
+            </div>
+          </div>
+
+          <div class="mt-6 h-2 overflow-hidden rounded-full bg-gray-800">
+            <div class="h-full rounded-full bg-jacquier-gold transition-all duration-700" [style.width.%]="overview().readiness.percent"></div>
+          </div>
+
+          <div class="mt-6 grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+            @for (check of overview().readiness.checks; track check.key) {
+              <article [class]="check.complete
+                ? 'rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4'
+                : 'rounded-xl border border-amber-500/20 bg-amber-500/5 p-4'">
+                <div class="flex items-start gap-3">
+                  <span [class]="check.complete
+                    ? 'mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-500/15 text-xs font-bold text-emerald-300'
+                    : 'mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-500/15 text-xs font-bold text-amber-300'">
+                    {{ check.complete ? '✓' : '!' }}
+                  </span>
+                  <div>
+                    <p class="text-sm font-bold text-white">{{ check.label }}</p>
+                    <p class="mt-1 text-xs text-gray-400">{{ check.detail }}</p>
+                  </div>
+                </div>
+              </article>
+            }
+          </div>
         </section>
 
         <section class="grid grid-cols-1 gap-8 lg:grid-cols-3">
