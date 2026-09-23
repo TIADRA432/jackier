@@ -42,6 +42,7 @@ test('the reservations screen uses protected API data and persists only allowed 
 
 test('the dashboard reads its operational metrics from the protected overview endpoint', async () => {
   const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+  const controller = await source('src', 'controllers', 'dashboard.controller.ts');
   const component = await source('src', 'app', 'pages', 'admin', 'dashboard', 'dashboard.component.ts');
 
   assert.match(service, /get<DashboardOverview>\(`\$\{this\.apiUrl\}\/dashboard\/overview`\)/);
