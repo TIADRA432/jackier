@@ -7,7 +7,7 @@ const EMPTY_OVERVIEW: DashboardOverview = {
   stats: { todayReservations: 0, pendingReservations: 0, todayRevenue: 0, monthlyRevenue: 0, activeMenuItems: 0, activeCatering: 0 },
   revenueChart: [],
   recentActivities: [],
-  readiness: { completed: 0, total: 9, percent: 0, checks: [] }
+  readiness: { completed: 0, total: 9, percent: 0, adminPending: 0, clientPending: 0, checks: [] }
 };
 
 @Component({
@@ -59,6 +59,18 @@ const EMPTY_OVERVIEW: DashboardOverview = {
             </div>
           </div>
 
+          <div class="mt-5 flex flex-wrap gap-2">
+            <span class="rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-300">
+              {{ overview().readiness.completed }} prêt(s)
+            </span>
+            <span class="rounded-full bg-blue-500/10 px-3 py-1.5 text-xs font-bold text-blue-300">
+              {{ overview().readiness.adminPending }} action(s) admin
+            </span>
+            <span class="rounded-full bg-amber-500/10 px-3 py-1.5 text-xs font-bold text-amber-300">
+              {{ overview().readiness.clientPending }} information(s) client
+            </span>
+          </div>
+
           <div class="mt-6 h-2 overflow-hidden rounded-full bg-gray-800">
             <div class="h-full rounded-full bg-jacquier-gold transition-all duration-700" [style.width.%]="overview().readiness.percent"></div>
           </div>
@@ -78,8 +90,11 @@ const EMPTY_OVERVIEW: DashboardOverview = {
                     <p class="text-sm font-bold text-white">{{ check.label }}</p>
                     <p class="mt-1 text-xs text-gray-400">{{ check.detail }}</p>
                     @if (!check.complete) {
+                      <p class="mt-2 text-xs leading-relaxed" [class.text-blue-300]="check.owner === 'admin'" [class.text-amber-300]="check.owner === 'client'">
+                        {{ check.owner === 'admin' ? 'Action admin' : 'Information client' }} · {{ check.nextAction }}
+                      </p>
                       <a [routerLink]="readinessPath(check.key)" class="mt-3 inline-flex text-xs font-bold text-jacquier-gold hover:text-white">
-                        Corriger maintenant →
+                        {{ check.owner === 'admin' ? 'Corriger maintenant →' : 'Préparer l’écran →' }}
                       </a>
                     }
                   </div>
