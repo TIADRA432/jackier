@@ -49,7 +49,7 @@
       "file_type": "code",
       "norm_label": "brandsettings",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L192"
+      "source_location": "L196"
     },
     {
       "id": "src_app_core_services_admin_data_service_mediareference",
@@ -61,7 +61,7 @@
       "file_type": "code",
       "norm_label": "mediareference",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L186"
+      "source_location": "L190"
     },
     {
       "id": "src_app_core_services_admin_data_service_openingday",
@@ -73,7 +73,7 @@
       "file_type": "code",
       "norm_label": "openingday",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L142"
+      "source_location": "L146"
     },
     {
       "id": "src_app_core_services_admin_data_service_publicsettings",
@@ -85,7 +85,7 @@
       "file_type": "code",
       "norm_label": "publicsettings",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L164"
+      "source_location": "L168"
     },
     {
       "id": "src_app_core_services_admin_data_service_sitemediaslot",
@@ -97,7 +97,7 @@
       "file_type": "code",
       "norm_label": "sitemediaslot",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L182"
+      "source_location": "L186"
     },
     {
       "id": "src_app_core_services_admin_data_service_todaysettings",
@@ -109,7 +109,7 @@
       "file_type": "code",
       "norm_label": "todaysettings",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L154"
+      "source_location": "L158"
     },
     {
       "id": "src_app_core_services_admin_data_service_weekdaykey",
@@ -121,7 +121,7 @@
       "file_type": "code",
       "norm_label": "weekdaykey",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L140"
+      "source_location": "L144"
     },
     {
       "id": "src_app_core_services_admin_data_service_weeklyhours",
@@ -133,7 +133,7 @@
       "file_type": "code",
       "norm_label": "weeklyhours",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L148"
+      "source_location": "L152"
     },
     {
       "id": "src_app_pages_admin_settings_settings_component_adminsettingscomponent",
@@ -373,7 +373,7 @@
       "file_type": "code",
       "norm_label": "gallerymedia",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L217"
+      "source_location": "L221"
     },
     {
       "id": "src_app_pages_admin_gallery_admin_gallery_component_admingallerycomponent",
@@ -493,7 +493,7 @@
       "file_type": "code",
       "norm_label": "adminteammember",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L239"
+      "source_location": "L243"
     },
     {
       "id": "src_app_pages_admin_equipe_equipe_component_adminequipecomponent",
@@ -529,7 +529,7 @@
       "file_type": "code",
       "norm_label": "admindataservice",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L254"
+      "source_location": "L258"
     },
     {
       "id": "src_controllers_menu_controller_menupayload",
@@ -601,7 +601,7 @@
       "file_type": "code",
       "norm_label": "menuitem",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L74"
+      "source_location": "L78"
     },
     {
       "id": "src_app_pages_admin_restaurant_restaurant_component_adminrestaurantcomponent",
@@ -673,7 +673,7 @@
       "file_type": "code",
       "norm_label": "inventoryitem",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L226"
+      "source_location": "L230"
     },
     {
       "id": "src_app_pages_admin_stock_stock_component_stockcomponent",
@@ -709,7 +709,7 @@
       "file_type": "code",
       "norm_label": "cateringevent",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L47"
+      "source_location": "L51"
     },
     {
       "id": "src_app_core_services_admin_data_service_dashboardoverview",
@@ -721,7 +721,7 @@
       "file_type": "code",
       "norm_label": "dashboardoverview",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L28"
+      "source_location": "L30"
     },
     {
       "id": "src_app_core_services_admin_data_service_dashboardreadinesscheck",
@@ -745,7 +745,7 @@
       "file_type": "code",
       "norm_label": "financeexpense",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L121"
+      "source_location": "L125"
     },
     {
       "id": "src_app_core_services_admin_data_service_financereport",
@@ -757,7 +757,7 @@
       "file_type": "code",
       "norm_label": "financereport",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L130"
+      "source_location": "L134"
     },
     {
       "id": "src_app_core_services_admin_data_service_menucategory",
@@ -769,7 +769,7 @@
       "file_type": "code",
       "norm_label": "menucategory",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L101"
+      "source_location": "L105"
     },
     {
       "id": "src_app_core_services_admin_data_service_menuitemcategory",
@@ -781,7 +781,7 @@
       "file_type": "code",
       "norm_label": "menuitemcategory",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L72"
+      "source_location": "L76"
     },
     {
       "id": "src_app_core_services_admin_data_service_menuitempayload",
@@ -793,7 +793,7 @@
       "file_type": "code",
       "norm_label": "menuitempayload",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L93"
+      "source_location": "L97"
     },
     {
       "id": "src_app_core_services_admin_data_service_wineitem",
@@ -805,7 +805,7 @@
       "file_type": "code",
       "norm_label": "wineitem",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L107"
+      "source_location": "L111"
     },
     {
       "id": "src_app_pages_admin_categories_categories_component_categorydraft",
@@ -913,7 +913,7 @@
       "file_type": "code",
       "norm_label": "schoolprogram",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L60"
+      "source_location": "L64"
     },
     {
       "id": "src_app_pages_admin_school_school_component_adminschoolcomponent",
@@ -949,7 +949,7 @@
       "file_type": "code",
       "norm_label": "mediatag",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L214"
+      "source_location": "L218"
     },
     {
       "id": "src_app_pages_admin_cms_cms_component_editdraft",
@@ -1021,7 +1021,7 @@
       "file_type": "code",
       "norm_label": "mediaasset",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L199"
+      "source_location": "L203"
     },
     {
       "id": "src_app_core_services_admin_data_service_mediacategory",
@@ -1033,7 +1033,7 @@
       "file_type": "code",
       "norm_label": "mediacategory",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L197"
+      "source_location": "L201"
     },
     {
       "id": "src_app_core_services_admin_data_service_mediausage",
@@ -1045,7 +1045,7 @@
       "file_type": "code",
       "norm_label": "mediausage",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L215"
+      "source_location": "L219"
     },
     {
       "id": "src_app_pages_admin_cms_cms_component_cmscomponent",
@@ -1165,7 +1165,7 @@
       "file_type": "code",
       "norm_label": "dashboardcomponent",
       "source_file": "src/app/pages/admin/dashboard/dashboard.component.ts",
-      "source_location": "L133"
+      "source_location": "L148"
     },
     {
       "id": "src_app_pages_menu_menu_component_menucomponent",
@@ -3075,7 +3075,7 @@
       "file_type": "code",
       "norm_label": ".addexpense()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L346"
+      "source_location": "L350"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_closeday",
@@ -3086,7 +3086,7 @@
       "file_type": "code",
       "norm_label": ".closeday()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L350"
+      "source_location": "L354"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_createcategory",
@@ -3097,7 +3097,7 @@
       "file_type": "code",
       "norm_label": ".createcategory()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L310"
+      "source_location": "L314"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_creategallerymedia",
@@ -3108,7 +3108,7 @@
       "file_type": "code",
       "norm_label": ".creategallerymedia()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L405"
+      "source_location": "L409"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_createinventoryitem",
@@ -3119,7 +3119,7 @@
       "file_type": "code",
       "norm_label": ".createinventoryitem()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L421"
+      "source_location": "L425"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_createmediatag",
@@ -3130,7 +3130,7 @@
       "file_type": "code",
       "norm_label": ".createmediatag()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L388"
+      "source_location": "L392"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_createmenuitem",
@@ -3141,7 +3141,7 @@
       "file_type": "code",
       "norm_label": ".createmenuitem()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L294"
+      "source_location": "L298"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_createschoolprogram",
@@ -3152,7 +3152,7 @@
       "file_type": "code",
       "norm_label": ".createschoolprogram()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L278"
+      "source_location": "L282"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_createteammember",
@@ -3163,7 +3163,7 @@
       "file_type": "code",
       "norm_label": ".createteammember()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L437"
+      "source_location": "L441"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_createwine",
@@ -3174,7 +3174,7 @@
       "file_type": "code",
       "norm_label": ".createwine()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L326"
+      "source_location": "L330"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_deletecategory",
@@ -3185,7 +3185,7 @@
       "file_type": "code",
       "norm_label": ".deletecategory()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L318"
+      "source_location": "L322"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_deletegallerymedia",
@@ -3196,7 +3196,7 @@
       "file_type": "code",
       "norm_label": ".deletegallerymedia()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L413"
+      "source_location": "L417"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_deleteinventoryitem",
@@ -3207,7 +3207,7 @@
       "file_type": "code",
       "norm_label": ".deleteinventoryitem()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L429"
+      "source_location": "L433"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_deletemediaasset",
@@ -3218,7 +3218,7 @@
       "file_type": "code",
       "norm_label": ".deletemediaasset()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L380"
+      "source_location": "L384"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_deletemenuitem",
@@ -3229,7 +3229,7 @@
       "file_type": "code",
       "norm_label": ".deletemenuitem()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L302"
+      "source_location": "L306"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_deleteschoolprogram",
@@ -3240,7 +3240,7 @@
       "file_type": "code",
       "norm_label": ".deleteschoolprogram()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L286"
+      "source_location": "L290"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_deleteteammember",
@@ -3251,7 +3251,7 @@
       "file_type": "code",
       "norm_label": ".deleteteammember()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L445"
+      "source_location": "L449"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_deletewine",
@@ -3262,7 +3262,7 @@
       "file_type": "code",
       "norm_label": ".deletewine()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L334"
+      "source_location": "L338"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_downloadmediaasset",
@@ -3273,7 +3273,7 @@
       "file_type": "code",
       "norm_label": ".downloadmediaasset()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L392"
+      "source_location": "L396"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getcategories",
@@ -3284,7 +3284,7 @@
       "file_type": "code",
       "norm_label": ".getcategories()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L306"
+      "source_location": "L310"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getcateringevents",
@@ -3295,7 +3295,7 @@
       "file_type": "code",
       "norm_label": ".getcateringevents()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L266"
+      "source_location": "L270"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getdashboardoverview",
@@ -3306,7 +3306,7 @@
       "file_type": "code",
       "norm_label": ".getdashboardoverview()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L262"
+      "source_location": "L266"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getexpenses",
@@ -3317,7 +3317,7 @@
       "file_type": "code",
       "norm_label": ".getexpenses()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L338"
+      "source_location": "L342"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getfinancereports",
@@ -3328,7 +3328,7 @@
       "file_type": "code",
       "norm_label": ".getfinancereports()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L342"
+      "source_location": "L346"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getgallerymedia",
@@ -3339,7 +3339,7 @@
       "file_type": "code",
       "norm_label": ".getgallerymedia()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L401"
+      "source_location": "L405"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getinventoryitems",
@@ -3350,7 +3350,7 @@
       "file_type": "code",
       "norm_label": ".getinventoryitems()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L417"
+      "source_location": "L421"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getmediaassets",
@@ -3361,7 +3361,7 @@
       "file_type": "code",
       "norm_label": ".getmediaassets()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L362"
+      "source_location": "L366"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getmediaassetusage",
@@ -3372,7 +3372,7 @@
       "file_type": "code",
       "norm_label": ".getmediaassetusage()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L396"
+      "source_location": "L400"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getmediatags",
@@ -3383,7 +3383,7 @@
       "file_type": "code",
       "norm_label": ".getmediatags()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L384"
+      "source_location": "L388"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getmenuitems",
@@ -3394,7 +3394,7 @@
       "file_type": "code",
       "norm_label": ".getmenuitems()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L290"
+      "source_location": "L294"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getreservations",
@@ -3405,7 +3405,7 @@
       "file_type": "code",
       "norm_label": ".getreservations()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L258"
+      "source_location": "L262"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getschoolprograms",
@@ -3416,7 +3416,7 @@
       "file_type": "code",
       "norm_label": ".getschoolprograms()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L274"
+      "source_location": "L278"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getsettings",
@@ -3427,7 +3427,7 @@
       "file_type": "code",
       "norm_label": ".getsettings()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L354"
+      "source_location": "L358"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getteammembers",
@@ -3438,7 +3438,7 @@
       "file_type": "code",
       "norm_label": ".getteammembers()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L433"
+      "source_location": "L437"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_getwines",
@@ -3449,7 +3449,7 @@
       "file_type": "code",
       "norm_label": ".getwines()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L322"
+      "source_location": "L326"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updatecategory",
@@ -3460,7 +3460,7 @@
       "file_type": "code",
       "norm_label": ".updatecategory()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L314"
+      "source_location": "L318"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updatecateringstatus",
@@ -3471,7 +3471,7 @@
       "file_type": "code",
       "norm_label": ".updatecateringstatus()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L270"
+      "source_location": "L274"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updategallerymedia",
@@ -3482,7 +3482,7 @@
       "file_type": "code",
       "norm_label": ".updategallerymedia()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L409"
+      "source_location": "L413"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updateinventoryitem",
@@ -3493,7 +3493,7 @@
       "file_type": "code",
       "norm_label": ".updateinventoryitem()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L425"
+      "source_location": "L429"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updatemediaasset",
@@ -3504,7 +3504,7 @@
       "file_type": "code",
       "norm_label": ".updatemediaasset()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L376"
+      "source_location": "L380"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updatemenuitem",
@@ -3515,7 +3515,7 @@
       "file_type": "code",
       "norm_label": ".updatemenuitem()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L298"
+      "source_location": "L302"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updatereservationstatus",
@@ -3526,7 +3526,7 @@
       "file_type": "code",
       "norm_label": ".updatereservationstatus()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L449"
+      "source_location": "L453"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updateschoolprogram",
@@ -3537,7 +3537,7 @@
       "file_type": "code",
       "norm_label": ".updateschoolprogram()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L282"
+      "source_location": "L286"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updatesettings",
@@ -3548,7 +3548,7 @@
       "file_type": "code",
       "norm_label": ".updatesettings()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L358"
+      "source_location": "L362"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updateteammember",
@@ -3559,7 +3559,7 @@
       "file_type": "code",
       "norm_label": ".updateteammember()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L441"
+      "source_location": "L445"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_updatewine",
@@ -3570,7 +3570,7 @@
       "file_type": "code",
       "norm_label": ".updatewine()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L330"
+      "source_location": "L334"
     },
     {
       "id": "src_app_core_services_admin_data_service_admindataservice_uploadmediaasset",
@@ -3581,7 +3581,7 @@
       "file_type": "code",
       "norm_label": ".uploadmediaasset()",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L366"
+      "source_location": "L370"
     },
     {
       "id": "src_controllers_menu_controller_createmenuitem",
@@ -6265,7 +6265,7 @@
       "file_type": "code",
       "norm_label": ".chartheight()",
       "source_file": "src/app/pages/admin/dashboard/dashboard.component.ts",
-      "source_location": "L175"
+      "source_location": "L190"
     },
     {
       "id": "src_app_pages_admin_dashboard_dashboard_component_dashboardcomponent_constructor",
@@ -6276,7 +6276,7 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "src/app/pages/admin/dashboard/dashboard.component.ts",
-      "source_location": "L151"
+      "source_location": "L166"
     },
     {
       "id": "src_app_pages_admin_dashboard_dashboard_component_dashboardcomponent_formatcurrency",
@@ -6287,7 +6287,7 @@
       "file_type": "code",
       "norm_label": ".formatcurrency()",
       "source_file": "src/app/pages/admin/dashboard/dashboard.component.ts",
-      "source_location": "L176"
+      "source_location": "L191"
     },
     {
       "id": "src_app_pages_admin_dashboard_dashboard_component_dashboardcomponent_load",
@@ -6298,7 +6298,7 @@
       "file_type": "code",
       "norm_label": ".load()",
       "source_file": "src/app/pages/admin/dashboard/dashboard.component.ts",
-      "source_location": "L153"
+      "source_location": "L168"
     },
     {
       "id": "src_app_pages_admin_dashboard_dashboard_component_dashboardcomponent_readinesspath",
@@ -6309,7 +6309,7 @@
       "file_type": "code",
       "norm_label": ".readinesspath()",
       "source_file": "src/app/pages/admin/dashboard/dashboard.component.ts",
-      "source_location": "L160"
+      "source_location": "L175"
     },
     {
       "id": "src_app_pages_menu_menu_component_menucomponent_resetfilters",
@@ -9497,7 +9497,7 @@
       "file_type": "code",
       "norm_label": "menu_item_categories",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L71"
+      "source_location": "L75"
     },
     {
       "id": "src_app_pages_admin_analytics_analytics_component",
@@ -13018,7 +13018,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/app/pages/admin/dashboard/dashboard.component.ts",
-      "source_location": "L151",
+      "source_location": "L166",
       "weight": 1.0
     },
     {
@@ -17890,7 +17890,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L253",
+      "source_location": "L257",
       "weight": 1.0
     },
     {
@@ -26495,7 +26495,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "src/app/pages/admin/dashboard/dashboard.component.ts",
-      "source_location": "L160",
+      "source_location": "L175",
       "weight": 1.0
     },
     {
@@ -29387,7 +29387,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L101",
+      "source_location": "L105",
       "weight": 1.0
     },
     {
@@ -29398,7 +29398,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L107",
+      "source_location": "L111",
       "weight": 1.0
     },
     {
@@ -29409,7 +29409,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L121",
+      "source_location": "L125",
       "weight": 1.0
     },
     {
@@ -29420,7 +29420,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L130",
+      "source_location": "L134",
       "weight": 1.0
     },
     {
@@ -29431,7 +29431,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L140",
+      "source_location": "L144",
       "weight": 1.0
     },
     {
@@ -29442,7 +29442,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L142",
+      "source_location": "L146",
       "weight": 1.0
     },
     {
@@ -29453,7 +29453,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L148",
+      "source_location": "L152",
       "weight": 1.0
     },
     {
@@ -29464,7 +29464,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L154",
+      "source_location": "L158",
       "weight": 1.0
     },
     {
@@ -29475,7 +29475,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L164",
+      "source_location": "L168",
       "weight": 1.0
     },
     {
@@ -29486,7 +29486,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L182",
+      "source_location": "L186",
       "weight": 1.0
     },
     {
@@ -29497,7 +29497,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L186",
+      "source_location": "L190",
       "weight": 1.0
     },
     {
@@ -29508,7 +29508,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L192",
+      "source_location": "L196",
       "weight": 1.0
     },
     {
@@ -29519,7 +29519,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L197",
+      "source_location": "L201",
       "weight": 1.0
     },
     {
@@ -29530,7 +29530,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L199",
+      "source_location": "L203",
       "weight": 1.0
     },
     {
@@ -29552,7 +29552,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L214",
+      "source_location": "L218",
       "weight": 1.0
     },
     {
@@ -29563,7 +29563,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L215",
+      "source_location": "L219",
       "weight": 1.0
     },
     {
@@ -29574,7 +29574,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L217",
+      "source_location": "L221",
       "weight": 1.0
     },
     {
@@ -29585,7 +29585,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L226",
+      "source_location": "L230",
       "weight": 1.0
     },
     {
@@ -29596,7 +29596,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L239",
+      "source_location": "L243",
       "weight": 1.0
     },
     {
@@ -29607,7 +29607,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L254",
+      "source_location": "L258",
       "weight": 1.0
     },
     {
@@ -29618,7 +29618,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L28",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -29629,7 +29629,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L47",
+      "source_location": "L51",
       "weight": 1.0
     },
     {
@@ -29651,7 +29651,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L60",
+      "source_location": "L64",
       "weight": 1.0
     },
     {
@@ -29662,7 +29662,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L71",
+      "source_location": "L75",
       "weight": 1.0
     },
     {
@@ -29673,7 +29673,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L72",
+      "source_location": "L76",
       "weight": 1.0
     },
     {
@@ -29684,7 +29684,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L74",
+      "source_location": "L78",
       "weight": 1.0
     },
     {
@@ -29706,7 +29706,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L93",
+      "source_location": "L97",
       "weight": 1.0
     },
     {
@@ -29926,7 +29926,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/admin/dashboard/dashboard.component.ts",
-      "source_location": "L133",
+      "source_location": "L148",
       "weight": 1.0
     },
     {
@@ -33890,7 +33890,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L258",
+      "source_location": "L262",
       "weight": 1.0
     },
     {
@@ -33901,7 +33901,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L262",
+      "source_location": "L266",
       "weight": 1.0
     },
     {
@@ -33912,7 +33912,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L266",
+      "source_location": "L270",
       "weight": 1.0
     },
     {
@@ -33923,7 +33923,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L270",
+      "source_location": "L274",
       "weight": 1.0
     },
     {
@@ -33934,7 +33934,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L274",
+      "source_location": "L278",
       "weight": 1.0
     },
     {
@@ -33945,7 +33945,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L278",
+      "source_location": "L282",
       "weight": 1.0
     },
     {
@@ -33956,7 +33956,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L282",
+      "source_location": "L286",
       "weight": 1.0
     },
     {
@@ -33967,7 +33967,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L286",
+      "source_location": "L290",
       "weight": 1.0
     },
     {
@@ -33978,7 +33978,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L290",
+      "source_location": "L294",
       "weight": 1.0
     },
     {
@@ -33989,7 +33989,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L294",
+      "source_location": "L298",
       "weight": 1.0
     },
     {
@@ -34000,7 +34000,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L298",
+      "source_location": "L302",
       "weight": 1.0
     },
     {
@@ -34011,7 +34011,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L302",
+      "source_location": "L306",
       "weight": 1.0
     },
     {
@@ -34022,7 +34022,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L306",
+      "source_location": "L310",
       "weight": 1.0
     },
     {
@@ -34033,7 +34033,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L310",
+      "source_location": "L314",
       "weight": 1.0
     },
     {
@@ -34044,7 +34044,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L314",
+      "source_location": "L318",
       "weight": 1.0
     },
     {
@@ -34055,7 +34055,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L318",
+      "source_location": "L322",
       "weight": 1.0
     },
     {
@@ -34066,7 +34066,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L322",
+      "source_location": "L326",
       "weight": 1.0
     },
     {
@@ -34077,7 +34077,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L326",
+      "source_location": "L330",
       "weight": 1.0
     },
     {
@@ -34088,7 +34088,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L330",
+      "source_location": "L334",
       "weight": 1.0
     },
     {
@@ -34099,7 +34099,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L334",
+      "source_location": "L338",
       "weight": 1.0
     },
     {
@@ -34110,7 +34110,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L338",
+      "source_location": "L342",
       "weight": 1.0
     },
     {
@@ -34121,7 +34121,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L342",
+      "source_location": "L346",
       "weight": 1.0
     },
     {
@@ -34132,7 +34132,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L346",
+      "source_location": "L350",
       "weight": 1.0
     },
     {
@@ -34143,7 +34143,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L350",
+      "source_location": "L354",
       "weight": 1.0
     },
     {
@@ -34154,7 +34154,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L354",
+      "source_location": "L358",
       "weight": 1.0
     },
     {
@@ -34165,7 +34165,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L358",
+      "source_location": "L362",
       "weight": 1.0
     },
     {
@@ -34176,7 +34176,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L362",
+      "source_location": "L366",
       "weight": 1.0
     },
     {
@@ -34187,7 +34187,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L366",
+      "source_location": "L370",
       "weight": 1.0
     },
     {
@@ -34198,7 +34198,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L376",
+      "source_location": "L380",
       "weight": 1.0
     },
     {
@@ -34209,7 +34209,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L380",
+      "source_location": "L384",
       "weight": 1.0
     },
     {
@@ -34220,7 +34220,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L384",
+      "source_location": "L388",
       "weight": 1.0
     },
     {
@@ -34231,7 +34231,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L388",
+      "source_location": "L392",
       "weight": 1.0
     },
     {
@@ -34242,7 +34242,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L392",
+      "source_location": "L396",
       "weight": 1.0
     },
     {
@@ -34253,7 +34253,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L396",
+      "source_location": "L400",
       "weight": 1.0
     },
     {
@@ -34264,7 +34264,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L401",
+      "source_location": "L405",
       "weight": 1.0
     },
     {
@@ -34275,7 +34275,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L405",
+      "source_location": "L409",
       "weight": 1.0
     },
     {
@@ -34286,7 +34286,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L409",
+      "source_location": "L413",
       "weight": 1.0
     },
     {
@@ -34297,7 +34297,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L413",
+      "source_location": "L417",
       "weight": 1.0
     },
     {
@@ -34308,7 +34308,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L417",
+      "source_location": "L421",
       "weight": 1.0
     },
     {
@@ -34319,7 +34319,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L421",
+      "source_location": "L425",
       "weight": 1.0
     },
     {
@@ -34330,7 +34330,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L425",
+      "source_location": "L429",
       "weight": 1.0
     },
     {
@@ -34341,7 +34341,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L429",
+      "source_location": "L433",
       "weight": 1.0
     },
     {
@@ -34352,7 +34352,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L433",
+      "source_location": "L437",
       "weight": 1.0
     },
     {
@@ -34363,7 +34363,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L437",
+      "source_location": "L441",
       "weight": 1.0
     },
     {
@@ -34374,7 +34374,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L441",
+      "source_location": "L445",
       "weight": 1.0
     },
     {
@@ -34385,7 +34385,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L445",
+      "source_location": "L449",
       "weight": 1.0
     },
     {
@@ -34396,7 +34396,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/admin-data.service.ts",
-      "source_location": "L449",
+      "source_location": "L453",
       "weight": 1.0
     },
     {
@@ -35408,7 +35408,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/admin/dashboard/dashboard.component.ts",
-      "source_location": "L151",
+      "source_location": "L166",
       "weight": 1.0
     },
     {
@@ -35419,7 +35419,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/admin/dashboard/dashboard.component.ts",
-      "source_location": "L153",
+      "source_location": "L168",
       "weight": 1.0
     },
     {
@@ -35430,7 +35430,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/admin/dashboard/dashboard.component.ts",
-      "source_location": "L160",
+      "source_location": "L175",
       "weight": 1.0
     },
     {
@@ -35441,7 +35441,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/admin/dashboard/dashboard.component.ts",
-      "source_location": "L175",
+      "source_location": "L190",
       "weight": 1.0
     },
     {
@@ -35452,7 +35452,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/admin/dashboard/dashboard.component.ts",
-      "source_location": "L176",
+      "source_location": "L191",
       "weight": 1.0
     },
     {
@@ -38571,5 +38571,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "19120f9b943d98f763a1ab4034f240a855de4820"
+  "built_at_commit": "bfd1a26cea3822def2fc6fa475dc368dd1bef627"
 }
