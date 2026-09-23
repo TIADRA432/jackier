@@ -949,7 +949,7 @@
       "file_type": "code",
       "norm_label": "analyticscomponent",
       "source_file": "src/app/pages/admin/analytics/analytics.component.ts",
-      "source_location": "L72"
+      "source_location": "L73"
     },
     {
       "id": "src_app_pages_menu_menu_component_menucomponent",
@@ -5792,7 +5792,7 @@
       "file_type": "code",
       "norm_label": ".chartheight()",
       "source_file": "src/app/pages/admin/analytics/analytics.component.ts",
-      "source_location": "L98"
+      "source_location": "L99"
     },
     {
       "id": "src_app_pages_admin_analytics_analytics_component_analyticscomponent_constructor",
@@ -5803,7 +5803,7 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "src/app/pages/admin/analytics/analytics.component.ts",
-      "source_location": "L88"
+      "source_location": "L89"
     },
     {
       "id": "src_app_pages_admin_analytics_analytics_component_analyticscomponent_formatcurrency",
@@ -5814,7 +5814,7 @@
       "file_type": "code",
       "norm_label": ".formatcurrency()",
       "source_file": "src/app/pages/admin/analytics/analytics.component.ts",
-      "source_location": "L99"
+      "source_location": "L100"
     },
     {
       "id": "src_app_pages_admin_analytics_analytics_component_analyticscomponent_formatdate",
@@ -5825,7 +5825,7 @@
       "file_type": "code",
       "norm_label": ".formatdate()",
       "source_file": "src/app/pages/admin/analytics/analytics.component.ts",
-      "source_location": "L100"
+      "source_location": "L101"
     },
     {
       "id": "src_app_pages_admin_analytics_analytics_component_analyticscomponent_load",
@@ -5836,7 +5836,7 @@
       "file_type": "code",
       "norm_label": ".load()",
       "source_file": "src/app/pages/admin/analytics/analytics.component.ts",
-      "source_location": "L90"
+      "source_location": "L91"
     },
     {
       "id": "src_app_pages_menu_menu_component_menucomponent_resetfilters",
@@ -12318,7 +12318,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/app/pages/admin/analytics/analytics.component.ts",
-      "source_location": "L88",
+      "source_location": "L89",
       "weight": 1.0
     },
     {
@@ -17226,7 +17226,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "src/app/pages/admin/analytics/analytics.component.ts",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0
     },
     {
@@ -28839,7 +28839,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/admin/analytics/analytics.component.ts",
-      "source_location": "L72",
+      "source_location": "L73",
       "weight": 1.0
     },
     {
@@ -33633,7 +33633,7 @@
     },
     {
       "source": "src_app_pages_admin_analytics_analytics_component_analyticscomponent",
-      "target": "src_app_pages_admin_analytics_analytics_component_analyticscomponent_formatdate",
+      "target": "src_app_pages_admin_analytics_analytics_component_analyticscomponent_formatcurrency",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -33644,13 +33644,24 @@
     },
     {
       "source": "src_app_pages_admin_analytics_analytics_component_analyticscomponent",
+      "target": "src_app_pages_admin_analytics_analytics_component_analyticscomponent_formatdate",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/app/pages/admin/analytics/analytics.component.ts",
+      "source_location": "L101",
+      "weight": 1.0
+    },
+    {
+      "source": "src_app_pages_admin_analytics_analytics_component_analyticscomponent",
       "target": "src_app_pages_admin_analytics_analytics_component_analyticscomponent_constructor",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/admin/analytics/analytics.component.ts",
-      "source_location": "L88",
+      "source_location": "L89",
       "weight": 1.0
     },
     {
@@ -33661,23 +33672,12 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/admin/analytics/analytics.component.ts",
-      "source_location": "L90",
+      "source_location": "L91",
       "weight": 1.0
     },
     {
       "source": "src_app_pages_admin_analytics_analytics_component_analyticscomponent",
       "target": "src_app_pages_admin_analytics_analytics_component_analyticscomponent_chartheight",
-      "relation": "method",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/app/pages/admin/analytics/analytics.component.ts",
-      "source_location": "L98",
-      "weight": 1.0
-    },
-    {
-      "source": "src_app_pages_admin_analytics_analytics_component_analyticscomponent",
-      "target": "src_app_pages_admin_analytics_analytics_component_analyticscomponent_formatcurrency",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -37230,5 +37230,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "8baaa2e5a2b7b99b22854e2d72a7ed3b334c8be2"
+  "built_at_commit": "24f94d97a25db90dbfaaf6a6c291602c5c777cd6"
 }
