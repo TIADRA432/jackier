@@ -1,7 +1,7 @@
 
-import { Component } from '@angular/core';
+import { Component, PLATFORM_ID, inject } from '@angular/core';
 import { ActivatedRoute, RouterOutlet, Router, NavigationEnd } from '@angular/router';
-import { ViewportScroller } from '@angular/common';
+import { DOCUMENT, ViewportScroller, isPlatformBrowser } from '@angular/common';
 import { HeaderComponent } from './app/shared/components/header/header.component';
 import { FooterComponent } from './app/shared/components/footer/footer.component';
 import { VisitorActionBarComponent } from './app/shared/components/visitor-action-bar/visitor-action-bar.component';
@@ -15,6 +15,8 @@ import { SeoConfig, SeoService } from './app/core/services/seo.service';
   templateUrl: './app.component.html'
 })
 export class AppComponent {
+  private readonly document = inject(DOCUMENT);
+  private readonly platformId = inject(PLATFORM_ID);
   private readonly defaultSeo: SeoConfig = {
     description: 'Découvrez Le Jacquier à Kipé, Conakry : menu, réservation, galerie, service traiteur et informations pratiques.'
   };
@@ -40,6 +42,12 @@ export class AppComponent {
         : (routeSeo ?? this.defaultSeo);
 
       this.seo.apply(event.urlAfterRedirects, config, current.snapshot.title);
+
+      if (isPlatformBrowser(this.platformId)) {
+        queueMicrotask(() => {
+          this.document.getElementById('main-content')?.focus({ preventScroll: true });
+        });
+      }
     });
   }
 }
