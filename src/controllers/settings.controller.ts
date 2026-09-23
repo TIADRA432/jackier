@@ -15,6 +15,7 @@ const PUBLIC_SETTINGS_KEYS = [
   'mapQuery',
   'legalNoticeUrl',
   'privacyPolicyUrl',
+  'today',
   'socialMedia',
   'brand',
 ] as const;
@@ -58,6 +59,39 @@ const validateBrand = (value: unknown) => {
 };
 
 const SOCIAL_MEDIA_KEYS = new Set(['facebook', 'instagram', 'whatsapp', 'tiktok', 'linkedin']);
+const TODAY_FIELDS = new Set(['enabled', 'eyebrow', 'title', 'message', 'featuredDishId', 'ctaLabel', 'ctaPath']);
+const TODAY_CTA_PATHS = new Set(['/reservation', '/menu', '/gallery', '/services-traiteur', '/ecole-gastronomie', '/contact']);
+
+const validateToday = (value: unknown) => {
+  const source = requireKnownFields(value, TODAY_FIELDS);
+  if (typeof source.enabled !== 'boolean') throw new CatalogValidationError('Invalid today.enabled');
+
+  const eyebrow = optionalSettingsText(source.eyebrow, 'today.eyebrow', 80) ?? '';
+  const title = optionalSettingsText(source.title, 'today.title', 140) ?? '';
+  const message = optionalSettingsText(source.message, 'today.message', 420) ?? '';
+  const ctaLabel = optionalSettingsText(source.ctaLabel, 'today.ctaLabel', 80) ?? '';
+  const ctaPath = optionalSettingsText(source.ctaPath, 'today.ctaPath', 120) ?? '';
+
+  if (ctaPath && !TODAY_CTA_PATHS.has(ctaPath)) {
+    throw new CatalogValidationError('Invalid today.ctaPath');
+  }
+
+  let featuredDishId: string | undefined;
+  if (source.featuredDishId !== undefined && source.featuredDishId !== '') {
+    if (typeof source.featuredDishId !== 'string') throw new CatalogValidationError('Invalid today.featuredDishId');
+    featuredDishId = validateUuid(source.featuredDishId, 'today.featuredDishId');
+  }
+
+  return {
+    enabled: source.enabled,
+    eyebrow,
+    title,
+    message,
+    ...(featuredDishId ? { featuredDishId } : {}),
+    ctaLabel,
+    ctaPath: ctaPath || '/reservation'
+  };
+};
 
 const validateSocialMedia = (value: unknown): Record<string, string> => {
   if (!isRecord(value) || Object.keys(value).length > SOCIAL_MEDIA_KEYS.size) {
@@ -125,6 +159,7 @@ const validateSettingsPayload = (body: unknown): Record<string, unknown> => {
     }
   }
 
+  if (source.today !== undefined) settings.today = validateToday(source.today);
   if (source.socialMedia !== undefined) settings.socialMedia = validateSocialMedia(source.socialMedia);
   if (source.brand !== undefined) settings.brand = validateBrand(source.brand);
   if (!Object.keys(settings).length) throw new CatalogValidationError('Invalid settings payload');
