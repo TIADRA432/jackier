@@ -119,7 +119,7 @@ test('category and wine admin screens use the authenticated catalogue API', asyn
 
   assert.match(service, /get<MenuCategory\[\]>\(`\$\{this\.apiUrl\}\/categories`\)/);
   assert.match(service, /post<MenuCategory>\(`\$\{this\.apiUrl\}\/categories`, payload\)/);
-  assert.match(service, /get<WineItem\[\]>\(`\$\{this\.apiUrl\}\/wines`\)/);
+  assert.match(service, /get<WineItem\[\]>\(`\$\{this\.apiUrl\}\/admin\/wines`\)/);
   assert.match(service, /post<WineItem>\(`\$\{this\.apiUrl\}\/wines`, payload\)/);
   assert.match(categories, /this\.adminData\.createCategory/);
   assert.match(categories, /this\.adminData\.deleteCategory/);
