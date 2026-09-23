@@ -115,6 +115,20 @@ export interface FinanceReport {
   manualRevenue: number;
 }
 
+export type WeekdayKey = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+
+export interface OpeningDay {
+  closed: boolean;
+  open: string;
+  close: string;
+}
+
+export interface WeeklyHours {
+  enabled: boolean;
+  timezone: 'Africa/Conakry';
+  days: Record<WeekdayKey, OpeningDay>;
+}
+
 export interface TodaySettings {
   enabled: boolean;
   eyebrow: string;
@@ -133,6 +147,7 @@ export interface PublicSettings {
   phone?: string;
   email?: string;
   openingHours?: string;
+  weeklyHours?: WeeklyHours;
   currency?: string;
   mapQuery?: string;
   legalNoticeUrl?: string;
