@@ -50,16 +50,18 @@ export const getDashboardOverview = async (req: Request, res: Response) => {
     const settingsData = (settings.data?.data || {}) as Record<string, any>;
     const activeSchoolPrograms = (school.data || []).filter((row: any) => row.data?.active !== false).length;
     const socialMedia = settingsData.socialMedia && typeof settingsData.socialMedia === 'object' ? settingsData.socialMedia : {};
+    const hasSocial = Object.values(socialMedia).some(value => typeof value === 'string' && value.trim());
+    const hasLegal = Boolean(settingsData.legalNoticeUrl && settingsData.privacyPolicyUrl);
     const readinessChecks = [
-      { key: 'settings', label: 'Paramètres établissement', complete: Boolean(settings.data), detail: settings.data ? 'Configuration enregistrée' : 'Configuration globale absente' },
-      { key: 'menu', label: 'Menu public', complete: (activeDishes.count || 0) > 0, detail: `${activeDishes.count || 0} plat(s) actif(s)` },
-      { key: 'wines', label: 'Carte des vins', complete: (activeWines.count || 0) > 0, detail: `${activeWines.count || 0} vin(s) actif(s)` },
-      { key: 'team', label: 'Équipe publique', complete: (publicTeam.count || 0) > 0, detail: `${publicTeam.count || 0} profil(s) public(s)` },
-      { key: 'gallery', label: 'Galerie', complete: (gallery.count || 0) > 0, detail: `${gallery.count || 0} image(s)` },
-      { key: 'school', label: 'École gastronomique', complete: activeSchoolPrograms > 0, detail: `${activeSchoolPrograms} programme(s) public(s)` },
-      { key: 'hours', label: 'Horaires temps réel', complete: settingsData.weeklyHours?.enabled === true, detail: settingsData.weeklyHours?.enabled === true ? 'Statut ouvert/fermé actif' : 'Horaires détaillés non activés' },
-      { key: 'social', label: 'Réseaux sociaux', complete: Object.values(socialMedia).some(value => typeof value === 'string' && value.trim()), detail: Object.values(socialMedia).some(value => typeof value === 'string' && value.trim()) ? 'Au moins un réseau configuré' : 'Aucun réseau configuré' },
-      { key: 'legal', label: 'Liens légaux', complete: Boolean(settingsData.legalNoticeUrl && settingsData.privacyPolicyUrl), detail: settingsData.legalNoticeUrl && settingsData.privacyPolicyUrl ? 'Mentions légales et confidentialité configurées' : 'Liens légaux incomplets' }
+      { key: 'settings', label: 'Paramètres établissement', complete: Boolean(settings.data), detail: settings.data ? 'Configuration enregistrée' : 'Configuration globale absente', owner: 'admin', nextAction: settings.data ? 'Aucune action' : 'Enregistrer les paramètres globaux' },
+      { key: 'menu', label: 'Menu public', complete: (activeDishes.count || 0) > 0, detail: `${activeDishes.count || 0} plat(s) actif(s)`, owner: 'admin', nextAction: (activeDishes.count || 0) > 0 ? 'Aucune action' : 'Publier au moins un plat validé' },
+      { key: 'wines', label: 'Carte des vins', complete: (activeWines.count || 0) > 0, detail: `${activeWines.count || 0} vin(s) actif(s)`, owner: 'client', nextAction: (activeWines.count || 0) > 0 ? 'Aucune action' : 'Obtenir la carte des vins validée puis la saisir' },
+      { key: 'team', label: 'Équipe publique', complete: (publicTeam.count || 0) > 0, detail: `${publicTeam.count || 0} profil(s) public(s)`, owner: 'client', nextAction: (publicTeam.count || 0) > 0 ? 'Aucune action' : 'Obtenir noms, rôles, bios et photos validés' },
+      { key: 'gallery', label: 'Galerie', complete: (gallery.count || 0) > 0, detail: `${gallery.count || 0} image(s)`, owner: 'admin', nextAction: (gallery.count || 0) > 0 ? 'Aucune action' : 'Publier des visuels validés' },
+      { key: 'school', label: 'École gastronomique', complete: activeSchoolPrograms > 0, detail: `${activeSchoolPrograms} programme(s) public(s)`, owner: 'client', nextAction: activeSchoolPrograms > 0 ? 'Aucune action' : 'Obtenir les programmes validés puis les publier' },
+      { key: 'hours', label: 'Horaires temps réel', complete: settingsData.weeklyHours?.enabled === true, detail: settingsData.weeklyHours?.enabled === true ? 'Statut ouvert/fermé actif' : 'Horaires détaillés non activés', owner: 'client', nextAction: settingsData.weeklyHours?.enabled === true ? 'Aucune action' : 'Faire confirmer les horaires jour par jour' },
+      { key: 'social', label: 'Réseaux sociaux', complete: hasSocial, detail: hasSocial ? 'Au moins un réseau configuré' : 'Aucun réseau configuré', owner: 'client', nextAction: hasSocial ? 'Aucune action' : 'Obtenir les URLs officielles des réseaux sociaux' },
+      { key: 'legal', label: 'Liens légaux', complete: hasLegal, detail: hasLegal ? 'Mentions légales et confidentialité configurées' : 'Liens légaux incomplets', owner: 'client', nextAction: hasLegal ? 'Aucune action' : 'Obtenir ou faire valider les documents légaux' }
     ];
     const completedReadiness = readinessChecks.filter(check => check.complete).length;
 
@@ -78,6 +80,8 @@ export const getDashboardOverview = async (req: Request, res: Response) => {
         completed: completedReadiness,
         total: readinessChecks.length,
         percent: Math.round((completedReadiness / readinessChecks.length) * 100),
+        adminPending: readinessChecks.filter(check => !check.complete && check.owner === 'admin').length,
+        clientPending: readinessChecks.filter(check => !check.complete && check.owner === 'client').length,
         checks: readinessChecks
       }
     });
