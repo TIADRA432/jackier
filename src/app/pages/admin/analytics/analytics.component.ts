@@ -5,7 +5,8 @@ import { AdminDataService, DashboardOverview } from '../../../core/services/admi
 const EMPTY_OVERVIEW: DashboardOverview = {
   stats: { todayReservations: 0, pendingReservations: 0, todayRevenue: 0, monthlyRevenue: 0, activeMenuItems: 0, activeCatering: 0 },
   revenueChart: [],
-  recentActivities: []
+  recentActivities: [],
+  readiness: { completed: 0, total: 9, percent: 0, checks: [] }
 };
 
 @Component({
