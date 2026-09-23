@@ -23,7 +23,18 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
       </div>
       
       <div class="relative z-10 max-w-5xl mx-auto text-white animate-fade-in-up">
-        <span class="block text-jacquier-gold font-bold tracking-[0.2em] mb-4 uppercase text-sm md:text-base">Bienvenue à Conakry</span>
+        <div class="mb-4 flex flex-wrap items-center justify-center gap-2">
+          <span class="block text-jacquier-gold font-bold tracking-[0.2em] uppercase text-sm md:text-base">Bienvenue à {{ siteSettings.publicInfo().neighborhood }}</span>
+          @if (siteSettings.openStatus().configured) {
+            <span [class]="siteSettings.openStatus().isOpen
+              ? 'inline-flex items-center gap-2 rounded-full border border-emerald-300/30 bg-emerald-500/15 px-3 py-1 text-xs font-bold text-emerald-100'
+              : 'inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/25 px-3 py-1 text-xs font-bold text-white/80'">
+              <span [class]="siteSettings.openStatus().isOpen ? 'h-2 w-2 rounded-full bg-emerald-300' : 'h-2 w-2 rounded-full bg-white/50'"></span>
+              {{ siteSettings.openStatus().label }}
+              @if (siteSettings.openStatus().detail) { <span class="font-normal opacity-70">· {{ siteSettings.openStatus().detail }}</span> }
+            </span>
+          }
+        </div>
         <h1 class="text-6xl md:text-8xl font-serif font-bold mb-6 leading-tight">
           {{ siteSettings.publicInfo().restaurantName }}
         </h1>
