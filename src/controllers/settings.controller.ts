@@ -11,6 +11,7 @@ const PUBLIC_SETTINGS_KEYS = [
   'phone',
   'email',
   'openingHours',
+  'weeklyHours',
   'currency',
   'mapQuery',
   'legalNoticeUrl',
@@ -61,6 +62,37 @@ const validateBrand = (value: unknown) => {
 const SOCIAL_MEDIA_KEYS = new Set(['facebook', 'instagram', 'whatsapp', 'tiktok', 'linkedin']);
 const TODAY_FIELDS = new Set(['enabled', 'eyebrow', 'title', 'message', 'featuredDishId', 'ctaLabel', 'ctaPath']);
 const TODAY_CTA_PATHS = new Set(['/reservation', '/menu', '/gallery', '/services-traiteur', '/ecole-gastronomie', '/contact']);
+const WEEKDAY_KEYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const;
+const WEEKLY_HOURS_FIELDS = new Set(['enabled', 'timezone', 'days']);
+const OPENING_DAY_FIELDS = new Set(['closed', 'open', 'close']);
+const TIME_PATTERN = /^(?:[01]\d|2[0-3]):[0-5]\d$/;
+
+const validateWeeklyHours = (value: unknown) => {
+  const source = requireKnownFields(value, WEEKLY_HOURS_FIELDS);
+  if (typeof source.enabled !== 'boolean') throw new CatalogValidationError('Invalid weeklyHours.enabled');
+  if (source.timezone !== 'Africa/Conakry') throw new CatalogValidationError('Invalid weeklyHours.timezone');
+  if (!isRecord(source.days)) throw new CatalogValidationError('Invalid weeklyHours.days');
+
+  const extraDays = Object.keys(source.days).filter(day => !WEEKDAY_KEYS.includes(day as typeof WEEKDAY_KEYS[number]));
+  if (extraDays.length) throw new CatalogValidationError('Invalid weeklyHours.days');
+
+  const days = Object.fromEntries(WEEKDAY_KEYS.map(day => {
+    const raw = source.days[day];
+    const entry = requireKnownFields(raw, OPENING_DAY_FIELDS);
+    if (typeof entry.closed !== 'boolean') throw new CatalogValidationError(`Invalid weeklyHours.days.${day}.closed`);
+    const open = optionalSettingsText(entry.open, `weeklyHours.days.${day}.open`, 5) ?? '';
+    const close = optionalSettingsText(entry.close, `weeklyHours.days.${day}.close`, 5) ?? '';
+    if (!entry.closed && (!TIME_PATTERN.test(open) || !TIME_PATTERN.test(close) || open === close)) {
+      throw new CatalogValidationError(`Invalid weeklyHours.days.${day}`);
+    }
+    if (entry.closed && ((open && !TIME_PATTERN.test(open)) || (close && !TIME_PATTERN.test(close)))) {
+      throw new CatalogValidationError(`Invalid weeklyHours.days.${day}`);
+    }
+    return [day, { closed: entry.closed, open, close }];
+  }));
+
+  return { enabled: source.enabled, timezone: 'Africa/Conakry', days };
+};
 
 const validateToday = (value: unknown) => {
   const source = requireKnownFields(value, TODAY_FIELDS);
@@ -159,6 +191,7 @@ const validateSettingsPayload = (body: unknown): Record<string, unknown> => {
     }
   }
 
+  if (source.weeklyHours !== undefined) settings.weeklyHours = validateWeeklyHours(source.weeklyHours);
   if (source.today !== undefined) settings.today = validateToday(source.today);
   if (source.socialMedia !== undefined) settings.socialMedia = validateSocialMedia(source.socialMedia);
   if (source.brand !== undefined) settings.brand = validateBrand(source.brand);
