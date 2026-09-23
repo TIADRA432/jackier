@@ -4,7 +4,6 @@ import { CateringHeroComponent } from '../../shared/components/catering-hero/cat
 import { CateringServicesComponent } from '../../shared/components/catering-services/catering-services.component';
 import { CateringProcessComponent } from '../../shared/components/catering-process/catering-process.component';
 import { CateringGalleryComponent } from '../../shared/components/catering-gallery/catering-gallery.component';
-import { CateringTestimonialsComponent } from '../../shared/components/catering-testimonials/catering-testimonials.component';
 import { CateringCtaComponent } from '../../shared/components/catering-cta/catering-cta.component';
 import { CateringFormComponent } from '../../shared/components/catering-form/catering-form.component';
 
@@ -16,7 +15,6 @@ import { CateringFormComponent } from '../../shared/components/catering-form/cat
     CateringServicesComponent,
     CateringProcessComponent,
     CateringGalleryComponent,
-    CateringTestimonialsComponent,
     CateringCtaComponent,
     CateringFormComponent
   ],
@@ -27,7 +25,6 @@ import { CateringFormComponent } from '../../shared/components/catering-form/cat
       <app-catering-services />
       <app-catering-process />
       <app-catering-gallery />
-      <app-catering-testimonials />
       <app-catering-form />
       <app-catering-cta />
     </div>
