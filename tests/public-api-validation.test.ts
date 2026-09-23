@@ -40,14 +40,22 @@ test('rejects invalid reservation dates, time slots and guest counts', () => {
   assert.throws(() => validateReservation({ ...validPayload, guests: 9 }), /guests must be between 1 and 8/);
 });
 
-test('rejects excessively nested catering payloads', () => {
-  const tooDeep = { a: { b: { c: { d: { e: { f: 'value' } } } } } };
-
-  assert.throws(() => validateCateringPayload(tooDeep), /Payload nesting is too deep/);
-  assert.deepEqual(validateCateringPayload({ eventType: 'Mariage', guests: 120 }), {
-    eventType: 'Mariage',
+test('validates catering requests with a narrow public contract', () => {
+  const request = {
+    name: 'Aïssatou Diallo',
+    phone: '+224 620 00 00 00',
+    email: 'aissatou@example.com',
+    eventType: 'mariage',
+    date: '2026-10-10',
     guests: 120,
-  });
+    budget: '12000000',
+    message: 'Réception familiale à Conakry.'
+  };
+
+  assert.deepEqual(validateCateringPayload(request), request);
+  assert.throws(() => validateCateringPayload({ ...request, unexpected: true }), /Invalid catering field/);
+  assert.throws(() => validateCateringPayload({ ...request, eventType: 'inconnu' }), /Invalid catering event type/);
+  assert.throws(() => validateCateringPayload({ ...request, guests: 0 }), /Invalid catering guests/);
 });
 
 
