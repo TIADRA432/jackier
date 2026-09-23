@@ -1,7 +1,8 @@
-import { ChangeDetectionStrategy, Component, ElementRef, input, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, input, viewChild } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import type { Dish } from '../../../core/models';
+import { SiteSettingsService } from '../../../core/services/site-settings.service';
 
 @Component({
   selector: 'app-dish-detail', standalone: true,
@@ -12,7 +13,7 @@ import type { Dish } from '../../../core/models';
         <form method="dialog" class="mb-4 text-right"><button autofocus class="rounded-lg border px-4 py-3" aria-label="Fermer la fiche du plat">Fermer ×</button></form>
         @if (dish().image) { <img [src]="dish().image" [alt]="dish().name" class="mb-6 h-56 w-full rounded-2xl object-cover" /> }
         <h2 class="text-3xl font-serif text-jacquier-primary">{{ dish().name }}</h2>
-        <p class="my-4 text-lg font-bold">{{ dish().price | number:'1.0-0' }} GNF</p>
+        <p class="my-4 text-lg font-bold">{{ dish().price | number:'1.0-0' }} {{ siteSettings.publicInfo().currency }}</p>
         <p class="whitespace-pre-line leading-relaxed">{{ dish().description }}</p>
         <ul class="my-5 flex flex-wrap gap-3 text-sm">
           @if (dish().isFeatured) { <li>Suggestion de la Cheffe</li> }
@@ -33,6 +34,7 @@ import type { Dish } from '../../../core/models';
 })
 export class DishDetailComponent {
   readonly dish = input.required<Dish>();
+  readonly siteSettings = inject(SiteSettingsService);
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dialog');
   open() { this.dialog().nativeElement.showModal(); }
   close() { this.dialog().nativeElement.close(); }
