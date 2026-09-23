@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, PLATFORM_ID, computed, inject, signal } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { AdminDataService, DashboardOverview } from '../../../core/services/admin-data.service';
 
@@ -59,7 +59,7 @@ const EMPTY_OVERVIEW: DashboardOverview = {
             </div>
           </div>
 
-          <div class="mt-5 flex flex-wrap gap-2">
+          <div class="mt-5 flex flex-wrap items-center gap-2">
             <span class="rounded-full bg-emerald-500/10 px-3 py-1.5 text-xs font-bold text-emerald-300">
               {{ overview().readiness.completed }} prêt(s)
             </span>
@@ -69,6 +69,15 @@ const EMPTY_OVERVIEW: DashboardOverview = {
             <span class="rounded-full bg-amber-500/10 px-3 py-1.5 text-xs font-bold text-amber-300">
               {{ overview().readiness.clientPending }} information(s) client
             </span>
+            @if (overview().readiness.clientPending > 0) {
+              <button type="button" (click)="copyClientRequest()"
+                class="rounded-full border border-jacquier-gold/40 px-3 py-1.5 text-xs font-bold text-jacquier-gold transition hover:bg-jacquier-gold hover:text-jacquier-dark">
+                Copier la liste à demander
+              </button>
+            }
+            @if (copyFeedback()) {
+              <span class="text-xs text-emerald-300" role="status">{{ copyFeedback() }}</span>
+            }
           </div>
 
           <div class="mt-6 h-2 overflow-hidden rounded-full bg-gray-800">
@@ -147,10 +156,12 @@ const EMPTY_OVERVIEW: DashboardOverview = {
 })
 export class DashboardComponent {
   private readonly adminData = inject(AdminDataService);
+  private readonly platformId = inject(PLATFORM_ID);
 
   readonly overview = signal<DashboardOverview>(EMPTY_OVERVIEW);
   readonly loading = signal(true);
   readonly errorMessage = signal('');
+  readonly copyFeedback = signal('');
   readonly maximumRevenue = computed(() => Math.max(...this.overview().revenueChart.map(({ total }) => total), 1));
   readonly statCards = computed(() => {
     const stats = this.overview().stats;
@@ -170,6 +181,36 @@ export class DashboardComponent {
     try { this.overview.set(await this.adminData.getDashboardOverview()); }
     catch { this.errorMessage.set('Impossible de charger le tableau de bord. Vérifiez votre session administrateur puis réessayez.'); }
     finally { this.loading.set(false); }
+  }
+
+  async copyClientRequest(): Promise<void> {
+    const pending = this.overview().readiness.checks.filter(check => !check.complete && check.owner === 'client');
+    if (!pending.length) {
+      this.copyFeedback.set('Aucune information client manquante.');
+      return;
+    }
+
+    const message = [
+      'Bonjour,',
+      '',
+      'Pour finaliser le site Le Jacquier avant livraison, merci de nous confirmer ou transmettre les éléments suivants :',
+      ...pending.map(check => `- ${check.label} : ${check.nextAction}`),
+      '',
+      'Dès réception, ces éléments pourront être intégrés dans l’administration du site.'
+    ].join('\n');
+
+    if (!isPlatformBrowser(this.platformId) || !navigator.clipboard) {
+      this.copyFeedback.set('Copie indisponible sur cet appareil.');
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(message);
+      this.copyFeedback.set('Liste copiée.');
+      window.setTimeout(() => this.copyFeedback.set(''), 2500);
+    } catch {
+      this.copyFeedback.set('Copie impossible. Réessayez.');
+    }
   }
 
   readinessPath(key: DashboardOverview['readiness']['checks'][number]['key']): string {
