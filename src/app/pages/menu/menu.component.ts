@@ -17,7 +17,7 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
   template: `
     <!-- Hero -->
     <div class="relative min-h-[360px] pt-28 pb-14 flex items-center justify-center text-center px-4 overflow-hidden bg-jacquier-dark">
-      <img [ngSrc]="siteSettings.image('menuHero', 'https://picsum.photos/seed/menu_hero/1920/1080').url" fill priority class="object-cover opacity-40" [alt]="siteSettings.image('menuHero', '').altText || 'Notre Menu'" referrerPolicy="no-referrer">
+      <img [ngSrc]="siteSettings.image('menuHero', '/og-image.png').url" fill priority class="object-cover opacity-40" [alt]="siteSettings.image('menuHero', '').altText || 'Notre Menu'" referrerPolicy="no-referrer">
       <div appRevealOnScroll class="relative z-10 max-w-4xl mx-auto text-white">
         <span class="block text-jacquier-gold font-bold tracking-[0.2em] mb-4 uppercase text-sm md:text-base">Saveurs d'ici et d'ailleurs</span>
         <h1 class="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight">Notre Carte</h1>
