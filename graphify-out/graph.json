@@ -529,7 +529,7 @@
       "file_type": "code",
       "norm_label": "cateringservicescomponent",
       "source_file": "src/app/shared/components/catering-services/catering-services.component.ts",
-      "source_location": "L30"
+      "source_location": "L31"
     },
     {
       "id": "src_app_component_appcomponent",
@@ -30478,7 +30478,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/shared/components/catering-services/catering-services.component.ts",
-      "source_location": "L30",
+      "source_location": "L31",
       "weight": 1.0
     },
     {
@@ -38628,5 +38628,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "0198ca927c748da7798b7ebf663cd3dd06dfa990"
+  "built_at_commit": "7185fee6452aa6a1852a68b5a416c72829576734"
 }
