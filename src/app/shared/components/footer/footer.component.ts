@@ -74,6 +74,17 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
           <div class="bg-gray-800/30 border border-gray-700/50 p-6 rounded-2xl backdrop-blur-sm">
             <p class="text-jacquier-gold font-bold mb-2 tracking-wide uppercase text-xs">{{ info().neighborhood }}</p>
             <p class="text-white text-xl font-serif leading-relaxed">{{ info().openingHours }}</p>
+            @if (siteSettings.openStatus().configured) {
+              <div class="mt-4 flex items-center gap-2 border-t border-gray-700/50 pt-4 text-xs">
+                <span [class]="siteSettings.openStatus().isOpen ? 'h-2 w-2 rounded-full bg-emerald-400' : 'h-2 w-2 rounded-full bg-gray-500'"></span>
+                <span [class.text-emerald-300]="siteSettings.openStatus().isOpen" [class.text-gray-400]="!siteSettings.openStatus().isOpen">
+                  {{ siteSettings.openStatus().label }}
+                </span>
+                @if (siteSettings.openStatus().detail) {
+                  <span class="text-gray-500">· {{ siteSettings.openStatus().detail }}</span>
+                }
+              </div>
+            }
           </div>
           <a routerLink="/reservation" class="mt-6 inline-block w-full text-center border border-jacquier-gold text-jacquier-gold px-6 py-3 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-jacquier-gold hover:text-jacquier-dark transition-colors duration-300">
             Réserver une table
