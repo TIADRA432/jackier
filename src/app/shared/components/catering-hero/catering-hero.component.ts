@@ -15,12 +15,12 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
       </div>
       
       <div class="relative z-10 max-w-5xl mx-auto text-white animate-fade-in-up mt-20">
-        <span class="block text-jacquier-gold font-bold tracking-[0.2em] mb-6 uppercase text-sm md:text-base">Le Jacquier Prestige</span>
+        <span class="block text-jacquier-gold font-bold tracking-[0.2em] mb-6 uppercase text-sm md:text-base">Le Jacquier · Traiteur</span>
         <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif font-bold mb-8 leading-tight">
-          Service Traiteur & Événementiel d’Exception
+          Service Traiteur & Événementiel
         </h1>
         <p class="text-lg md:text-2xl text-jacquier-light mb-12 max-w-3xl mx-auto font-light leading-relaxed">
-          Organisation complète de vos mariages, baptêmes, anniversaires, événements d’entreprise et dîners VIP.
+          Décrivez votre mariage, anniversaire, événement d’entreprise ou dîner privé : l’équipe étudie chaque demande et prépare une proposition adaptée.
         </p>
         <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
           <button (click)="scrollToForm()" class="w-full sm:w-auto px-10 py-5 bg-jacquier-gold text-jacquier-dark rounded-xl font-bold uppercase tracking-widest hover:bg-white transition-all duration-300 shadow-lg hover:shadow-jacquier-gold/30 min-h-[44px] text-sm">
