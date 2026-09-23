@@ -1,6 +1,7 @@
 import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RestaurantService } from '../../../core/services/restaurant.service';
+import { SiteSettingsService } from '../../../core/services/site-settings.service';
 
 @Component({
   selector: 'app-catering-form',
@@ -117,10 +118,10 @@ import { RestaurantService } from '../../../core/services/restaurant.service';
                 
                 <!-- Budget -->
                 <div class="space-y-2">
-                  <label for="budget" class="block text-sm font-bold text-jacquier-dark uppercase tracking-widest">Budget Estimé (FG)</label>
+                  <label for="budget" class="block text-sm font-bold text-jacquier-dark uppercase tracking-widest">Budget estimé ({{ siteSettings.publicInfo().currency }})</label>
                   <input type="text" id="budget" formControlName="budget" 
                          class="w-full px-6 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-jacquier-gold focus:border-transparent transition-all outline-none text-jacquier-dark"
-                         placeholder="Ex: 10 000 000 FG">
+                         [placeholder]="'Ex: 10 000 000 ' + siteSettings.publicInfo().currency">
                 </div>
                 
                 <!-- Message -->
@@ -163,7 +164,8 @@ import { RestaurantService } from '../../../core/services/restaurant.service';
   `
 })
 export class CateringFormComponent {
-  private restaurantService = inject(RestaurantService);
+  private readonly restaurantService = inject(RestaurantService);
+  readonly siteSettings = inject(SiteSettingsService);
 
   isSubmitting = signal(false);
   isSubmitted = signal(false);
