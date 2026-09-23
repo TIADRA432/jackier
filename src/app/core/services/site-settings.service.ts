@@ -32,6 +32,19 @@ export class SiteSettingsService {
   readonly settings = signal<PublicSettings>({});
   readonly loading = signal(true);
 
+  readonly today = computed(() => {
+    const today = this.settings().today;
+    return {
+      enabled: today?.enabled ?? false,
+      eyebrow: today?.eyebrow?.trim() || 'Aujourd’hui au Jacquier',
+      title: today?.title?.trim() || '',
+      message: today?.message?.trim() || '',
+      featuredDishId: today?.featuredDishId?.trim() || '',
+      ctaLabel: today?.ctaLabel?.trim() || 'Réserver une table',
+      ctaPath: today?.ctaPath || '/reservation',
+    };
+  });
+
   readonly publicInfo = computed(() => {
     const current = this.settings();
     return {
