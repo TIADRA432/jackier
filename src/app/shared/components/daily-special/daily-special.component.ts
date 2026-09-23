@@ -1,8 +1,9 @@
 
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { NgOptimizedImage, DecimalPipe } from '@angular/common';
 import { Dish } from '../../../core/models';
+import { SiteSettingsService } from '../../../core/services/site-settings.service';
 
 @Component({
   selector: 'app-daily-special',
@@ -19,7 +20,7 @@ import { Dish } from '../../../core/models';
           <h2 class="text-4xl md:text-5xl font-serif font-bold mb-6 leading-tight">{{ dish().name }}</h2>
           <p class="text-jacquier-light font-light mb-8 leading-relaxed text-lg">{{ dish().description }}</p>
           <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6">
-            <span class="text-3xl font-bold text-jacquier-gold">{{ dish().price | number:'1.0-0' }} FG</span>
+            <span class="text-3xl font-bold text-jacquier-gold">{{ dish().price | number:'1.0-0' }} {{ siteSettings.publicInfo().currency }}</span>
             <a routerLink="/reservation" class="px-8 py-3 border border-jacquier-gold text-jacquier-gold rounded-xl text-sm font-bold uppercase tracking-widest hover:bg-jacquier-gold hover:text-jacquier-dark transition-colors duration-300">
               Réserver ce plat
             </a>
@@ -34,5 +35,6 @@ import { Dish } from '../../../core/models';
   `
 })
 export class DailySpecialComponent {
-  dish = input.required<Dish>();
+  readonly dish = input.required<Dish>();
+  readonly siteSettings = inject(SiteSettingsService);
 }
