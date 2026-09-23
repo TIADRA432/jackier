@@ -1189,7 +1189,7 @@
       "file_type": "code",
       "norm_label": "homecomponent",
       "source_file": "src/app/pages/home/home.component.ts",
-      "source_location": "L359"
+      "source_location": "L363"
     },
     {
       "id": "src_app_pages_school_school_component_schoolcomponent",
@@ -6292,7 +6292,7 @@
       "file_type": "code",
       "norm_label": ".initials()",
       "source_file": "src/app/pages/home/home.component.ts",
-      "source_location": "L387"
+      "source_location": "L399"
     },
     {
       "id": "src_app_pages_school_school_component_schoolcomponent_retry",
@@ -28118,7 +28118,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/home/home.component.ts",
-      "source_location": "L359",
+      "source_location": "L363",
       "weight": 1.0
     },
     {
@@ -34392,7 +34392,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/home/home.component.ts",
-      "source_location": "L387",
+      "source_location": "L399",
       "weight": 1.0
     },
     {
@@ -35650,5 +35650,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "f1c71962ab5b0889eca56bc75124c677d15e73e9"
+  "built_at_commit": "34cbc24907ed57c3f30c50548951b340039c551f"
 }
