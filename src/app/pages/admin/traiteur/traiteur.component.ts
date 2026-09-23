@@ -26,7 +26,16 @@ const LABELS: Record<ReservationStatus, string> = { pending: 'En attente', confi
         @else { <div class="divide-y divide-gray-800 p-2">
           @for (event of events(); track event.id) {
             <article class="flex flex-col gap-4 rounded-xl p-4 transition hover:bg-gray-800/30 lg:flex-row lg:items-center lg:justify-between">
-              <div><h3 class="font-bold text-white">{{ event.name || 'Client non renseigné' }}</h3><p class="mt-1 text-sm text-gray-400">{{ event.eventType || 'Type non précisé' }} · {{ event.date || 'Date à confirmer' }} · {{ event.guests || '?' }} pers.</p>@if (event.message) { <p class="mt-2 text-xs text-gray-500">{{ event.message }}</p> }</div>
+              <div>
+                <h3 class="font-bold text-white">{{ event.name || 'Client non renseigné' }}</h3>
+                <p class="mt-1 font-mono text-[10px] text-gray-600">#{{ shortReference(event.id) }}</p>
+                <p class="mt-2 text-sm text-gray-400">{{ event.eventType || 'Type non précisé' }} · {{ event.date || 'Date à confirmer' }} · {{ event.guests || '?' }} pers.</p>
+                <div class="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-400">
+                  @if (event.phone) { <a [href]="'tel:' + event.phone" class="hover:text-jacquier-gold">{{ event.phone }}</a> }
+                  @if (event.email) { <a [href]="'mailto:' + event.email" class="hover:text-jacquier-gold">{{ event.email }}</a> }
+                </div>
+                @if (event.message) { <p class="mt-2 text-xs text-gray-500">{{ event.message }}</p> }
+              </div>
               <div class="flex items-center gap-3"><span class="text-sm font-bold text-gray-200">{{ event.budget || 'Budget non précisé' }}{{ event.budget ? ' FG' : '' }}</span><label class="sr-only" [for]="'catering-' + event.id">Statut de {{ event.name || 'la demande' }}</label><select [id]="'catering-' + event.id" [value]="event.status" (change)="updateStatus(event, $any($event.target).value)" [disabled]="updatingId() === event.id" class="rounded-lg border border-gray-700 bg-[#121212] px-2 py-1 text-xs text-white outline-none focus:border-jacquier-gold disabled:opacity-50">@for (status of statuses; track status) { <option [value]="status">{{ label(status) }}</option> }</select></div>
             </article>
           }
@@ -44,5 +53,6 @@ export class AdminTraiteurComponent {
   constructor() { void this.load(); }
   async load(): Promise<void> { this.loading.set(true); this.errorMessage.set(''); try { this.events.set(await this.adminData.getCateringEvents()); } catch { this.errorMessage.set('Impossible de charger les demandes traiteur. Vérifiez votre session administrateur puis réessayez.'); } finally { this.loading.set(false); } }
   async updateStatus(event: CateringEvent, value: string): Promise<void> { if (!STATUSES.includes(value as ReservationStatus) || value === event.status) return; this.updatingId.set(event.id); this.errorMessage.set(''); try { const updated = await this.adminData.updateCateringStatus(event.id, value as ReservationStatus); this.events.update(items => items.map(item => item.id === updated.id ? updated : item)); } catch { this.errorMessage.set('La mise à jour du devis a échoué. Aucune modification locale n’a été conservée.'); } finally { this.updatingId.set(null); } }
+  shortReference(id: string): string { return id.split('-')[0]?.toUpperCase() || id; }
   label(status: ReservationStatus): string { return LABELS[status]; }
 }
