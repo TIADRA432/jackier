@@ -16,7 +16,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
     <div class="min-h-screen bg-jacquier-cream flex flex-col">
       <!-- Hero -->
       <div class="relative h-[40vh] flex items-center justify-center text-center px-4 overflow-hidden bg-jacquier-dark">
-        <img [ngSrc]="siteSettings.image('reservationHero', 'https://picsum.photos/seed/reservation_hero/1920/1080').url" fill priority class="object-cover opacity-40" [alt]="siteSettings.image('reservationHero', '').altText || 'Réservation'" referrerPolicy="no-referrer">
+        <img [ngSrc]="siteSettings.image('reservationHero', '/og-image.png').url" fill priority class="object-cover opacity-40" [alt]="siteSettings.image('reservationHero', '').altText || 'Réservation'" referrerPolicy="no-referrer">
         <div class="relative z-10 max-w-4xl mx-auto text-white animate-fade-in-up">
           <span class="block text-jacquier-gold font-bold tracking-[0.2em] mb-4 uppercase text-sm md:text-base">Vivez l'expérience Le Jacquier</span>
           <h1 class="text-5xl md:text-6xl font-serif font-bold mb-6 leading-tight">Réservez votre table</h1>
@@ -28,7 +28,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
           
           <!-- Image Side -->
           <div class="lg:w-2/5 relative hidden lg:block">
-            <img [ngSrc]="siteSettings.image('reservationHero', 'https://picsum.photos/seed/reservation_hero/800/1200').url" fill priority
+            <img [ngSrc]="siteSettings.image('reservationHero', '/og-image.png').url" fill priority
               class="object-cover" [alt]="siteSettings.image('reservationHero', '').altText || 'Table au Jacquier'" referrerPolicy="no-referrer">
             <div class="absolute inset-0 bg-gradient-to-t from-jacquier-dark/90 via-jacquier-dark/40 to-transparent"></div>
             <div class="absolute bottom-12 left-10 right-10 text-white">
