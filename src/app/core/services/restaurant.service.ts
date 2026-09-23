@@ -211,7 +211,7 @@ export class RestaurantService {
   }
 
   /** Soumet une demande de devis traiteur/événement vers /api/catering (endpoint public). */
-  async submitCateringRequest(payload: Record<string, unknown>) {
-    return firstValueFrom(this.http.post(`${this.apiUrl}/catering`, payload));
+  async submitCateringRequest(payload: Record<string, unknown>): Promise<{ id: string; status: string; createdAt?: string }> {
+    return firstValueFrom(this.http.post<{ id: string; status: string; createdAt?: string }>(`${this.apiUrl}/catering`, payload));
   }
 }
