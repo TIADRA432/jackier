@@ -5,11 +5,12 @@ import { RestaurantService } from '../../core/services/restaurant.service';
 import { SiteSettingsService } from '../../core/services/site-settings.service';
 import { DailySpecialComponent } from '../../shared/components/daily-special/daily-special.component';
 import { NgOptimizedImage, DecimalPipe } from '@angular/common';
+import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scroll.directive';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [RouterLink, DailySpecialComponent, NgOptimizedImage, DecimalPipe],
+  imports: [RouterLink, DailySpecialComponent, NgOptimizedImage, DecimalPipe, RevealOnScrollDirective],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <!-- Hero Section -->
@@ -40,8 +41,70 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
       </div>
     </section>
 
+    @if (siteSettings.today().enabled) {
+      <section appRevealOnScroll class="relative z-20 -mt-10 px-4 pb-10">
+        <div class="mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-jacquier-gold/30 bg-jacquier-dark text-white shadow-2xl">
+          <div class="grid lg:grid-cols-[1.15fr_.85fr]">
+            <div class="p-7 md:p-10 lg:p-12">
+              <span class="inline-flex rounded-full border border-jacquier-gold/40 bg-jacquier-gold/10 px-4 py-2 text-[11px] font-bold uppercase tracking-[0.18em] text-jacquier-gold">
+                {{ siteSettings.today().eyebrow }}
+              </span>
+
+              <h2 class="mt-6 max-w-3xl font-serif text-3xl font-bold leading-tight md:text-5xl">
+                {{ siteSettings.today().title || 'Une expérience particulière vous attend aujourd’hui' }}
+              </h2>
+
+              @if (siteSettings.today().message) {
+                <p class="mt-5 max-w-2xl text-base font-light leading-relaxed text-gray-300 md:text-lg">
+                  {{ siteSettings.today().message }}
+                </p>
+              }
+
+              <div class="mt-8 flex flex-wrap items-center gap-4">
+                <a [routerLink]="siteSettings.today().ctaPath"
+                  class="inline-flex min-h-[48px] items-center justify-center rounded-xl bg-jacquier-gold px-6 py-3 text-sm font-bold uppercase tracking-wider text-jacquier-dark transition hover:bg-white">
+                  {{ siteSettings.today().ctaLabel }}
+                </a>
+                <span class="text-xs uppercase tracking-[0.16em] text-gray-500">
+                  {{ siteSettings.publicInfo().neighborhood }} · {{ siteSettings.publicInfo().openingHours }}
+                </span>
+              </div>
+            </div>
+
+            @if (todayDish(); as dish) {
+              <div class="relative min-h-72 overflow-hidden bg-black/20">
+                @if (dish.image) {
+                  <img [src]="dish.image" [alt]="dish.name" class="absolute inset-0 h-full w-full object-cover" />
+                  <div class="absolute inset-0 bg-gradient-to-t from-jacquier-dark via-jacquier-dark/20 to-transparent lg:bg-gradient-to-l"></div>
+                }
+                <div class="relative flex h-full min-h-72 items-end p-7 md:p-10">
+                  <div class="w-full rounded-2xl border border-white/15 bg-black/35 p-5 backdrop-blur">
+                    <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-jacquier-gold">À découvrir aujourd’hui</p>
+                    <div class="mt-2 flex items-end justify-between gap-4">
+                      <div>
+                        <h3 class="font-serif text-2xl font-bold text-white">{{ dish.name }}</h3>
+                        <p class="mt-2 line-clamp-2 text-sm text-gray-300">{{ dish.description }}</p>
+                      </div>
+                      <p class="shrink-0 font-bold text-jacquier-gold">{{ dish.price | number:'1.0-0' }} {{ siteSettings.publicInfo().currency }}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            } @else {
+              <div class="flex min-h-72 items-center justify-center bg-gradient-to-br from-jacquier-primary to-jacquier-burgundy p-10 text-center">
+                <div>
+                  <p class="text-xs font-bold uppercase tracking-[0.18em] text-jacquier-gold">Le Jacquier aujourd’hui</p>
+                  <p class="mt-4 font-serif text-3xl font-bold">Cuisine, accueil et ambiance en mouvement.</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </section>
+    }
+
     <!-- Daily Special Section -->
-    <section class="py-16 bg-jacquier-cream relative z-20 px-4">
+    <section appRevealOnScroll class="py-16 bg-jacquier-cream relative z-20 px-4">
       <div class="max-w-7xl mx-auto">
         <div class="text-center mb-12">
           <span class="text-jacquier-gold font-bold tracking-widest uppercase text-sm">Notre Suggestion</span>
@@ -66,7 +129,7 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
     </section>
 
     <!-- Patrimoine Culinaire (Local Dishes) -->
-    <section class="py-24 bg-white px-4">
+    <section appRevealOnScroll class="py-24 bg-white px-4">
       <div class="max-w-7xl mx-auto">
         <div class="flex flex-col lg:flex-row items-center gap-16">
           <div class="lg:w-1/2">
@@ -93,7 +156,7 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
     </section>
 
     <!-- Seafood Section -->
-    <section class="py-24 bg-jacquier-primary text-jacquier-light relative overflow-hidden px-4">
+    <section appRevealOnScroll class="py-24 bg-jacquier-primary text-jacquier-light relative overflow-hidden px-4">
       <div class="absolute inset-0 opacity-10">
         <img ngSrc="https://picsum.photos/seed/ocean_pattern/1920/1080" fill class="object-cover" alt="" aria-hidden="true" referrerPolicy="no-referrer">
       </div>
@@ -130,7 +193,7 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
     </section>
 
     <!-- Bar & Boissons -->
-    <section class="py-24 bg-jacquier-cream px-4">
+    <section appRevealOnScroll class="py-24 bg-jacquier-cream px-4">
       <div class="max-w-7xl mx-auto text-center">
         <span class="text-jacquier-gold font-bold tracking-widest uppercase text-sm">Lounge & Mixologie</span>
         <h2 class="text-4xl md:text-5xl font-serif font-bold text-jacquier-primary mt-2 mb-16">Bar & Boissons</h2>
@@ -165,7 +228,7 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
     </section>
 
     <!-- Catering Teaser -->
-    <section class="py-24 bg-jacquier-burgundy text-white px-4">
+    <section appRevealOnScroll class="py-24 bg-jacquier-burgundy text-white px-4">
       <div class="max-w-7xl mx-auto text-center">
         <h2 class="text-4xl md:text-5xl font-serif font-bold mb-6">Événementiel & Traiteur</h2>
         <p class="text-xl font-light max-w-3xl mx-auto mb-10 text-gray-200">
@@ -179,7 +242,7 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
     </section>
 
     <!-- Team Section -->
-    <section class="py-24 bg-white px-4">
+    <section appRevealOnScroll class="py-24 bg-white px-4">
       <div class="max-w-7xl mx-auto">
         <div class="text-center mb-16">
           <span class="text-jacquier-gold font-bold tracking-widest uppercase text-sm">Les Artisans du Goût</span>
@@ -292,6 +355,11 @@ export class HomeComponent {
   // asynchrone côté service, il doit donc se recalculer automatiquement une fois les
   // données arrivées, plutôt que de rester bloqué sur la valeur (souvent undefined) prise
   // au moment de la construction du composant.
+  todayDish = computed(() => {
+    const id = this.siteSettings.today().featuredDishId;
+    return id ? this.restaurantService.getDishes()().find(dish => dish.id === id) : undefined;
+  });
+
   dailyDish = computed(() => {
     const dishes = this.restaurantService.getDishes()();
     return dishes.length ? this.restaurantService.getDailySpecial() : undefined;
