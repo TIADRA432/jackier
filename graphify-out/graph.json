@@ -229,7 +229,7 @@
       "file_type": "code",
       "norm_label": "footercomponent",
       "source_file": "src/app/shared/components/footer/footer.component.ts",
-      "source_location": "L102"
+      "source_location": "L113"
     },
     {
       "id": "src_app_shared_components_visitor_action_bar_visitor_action_bar_component_visitoractionbarcomponent",
@@ -241,7 +241,7 @@
       "file_type": "code",
       "norm_label": "visitoractionbarcomponent",
       "source_file": "src/app/shared/components/visitor-action-bar/visitor-action-bar.component.ts",
-      "source_location": "L36"
+      "source_location": "L43"
     },
     {
       "id": "src_app_core_models_index_dish",
@@ -1201,7 +1201,7 @@
       "file_type": "code",
       "norm_label": "contactcomponent",
       "source_file": "src/app/pages/contact/contact.component.ts",
-      "source_location": "L58"
+      "source_location": "L67"
     },
     {
       "id": "src_app_pages_home_home_component_homecomponent",
@@ -1213,7 +1213,7 @@
       "file_type": "code",
       "norm_label": "homecomponent",
       "source_file": "src/app/pages/home/home.component.ts",
-      "source_location": "L363"
+      "source_location": "L374"
     },
     {
       "id": "src_app_pages_school_school_component_schoolcomponent",
@@ -2907,7 +2907,7 @@
       "file_type": "code",
       "norm_label": ".hassociallinks()",
       "source_file": "src/app/shared/components/footer/footer.component.ts",
-      "source_location": "L111"
+      "source_location": "L122"
     },
     {
       "id": "src_app_shared_components_footer_footer_component_footercomponent_phonehref",
@@ -2918,7 +2918,7 @@
       "file_type": "code",
       "norm_label": ".phonehref()",
       "source_file": "src/app/shared/components/footer/footer.component.ts",
-      "source_location": "L107"
+      "source_location": "L118"
     },
     {
       "id": "src_app_shared_components_visitor_action_bar_visitor_action_bar_component_visitoractionbarcomponent_constructor",
@@ -2929,7 +2929,7 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "src/app/shared/components/visitor-action-bar/visitor-action-bar.component.ts",
-      "source_location": "L45"
+      "source_location": "L52"
     },
     {
       "id": "src_app_shared_components_visitor_action_bar_visitor_action_bar_component_visitoractionbarcomponent_phonehref",
@@ -2940,7 +2940,7 @@
       "file_type": "code",
       "norm_label": ".phonehref()",
       "source_file": "src/app/shared/components/visitor-action-bar/visitor-action-bar.component.ts",
-      "source_location": "L50"
+      "source_location": "L57"
     },
     {
       "id": "src_app_core_services_site_settings_service_sitesettingsservice_constructor",
@@ -6328,7 +6328,7 @@
       "file_type": "code",
       "norm_label": ".phonehref()",
       "source_file": "src/app/pages/contact/contact.component.ts",
-      "source_location": "L69"
+      "source_location": "L78"
     },
     {
       "id": "src_app_pages_home_home_component_homecomponent_initials",
@@ -6339,7 +6339,7 @@
       "file_type": "code",
       "norm_label": ".initials()",
       "source_file": "src/app/pages/home/home.component.ts",
-      "source_location": "L399"
+      "source_location": "L410"
     },
     {
       "id": "src_app_pages_school_school_component_schoolcomponent_retry",
@@ -28559,7 +28559,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/contact/contact.component.ts",
-      "source_location": "L58",
+      "source_location": "L67",
       "weight": 1.0
     },
     {
@@ -28603,7 +28603,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/home/home.component.ts",
-      "source_location": "L363",
+      "source_location": "L374",
       "weight": 1.0
     },
     {
@@ -28779,7 +28779,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/shared/components/footer/footer.component.ts",
-      "source_location": "L102",
+      "source_location": "L113",
       "weight": 1.0
     },
     {
@@ -28812,7 +28812,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/shared/components/visitor-action-bar/visitor-action-bar.component.ts",
-      "source_location": "L36",
+      "source_location": "L43",
       "weight": 1.0
     },
     {
@@ -34866,7 +34866,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/contact/contact.component.ts",
-      "source_location": "L69",
+      "source_location": "L78",
       "weight": 1.0
     },
     {
@@ -34987,7 +34987,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/home/home.component.ts",
-      "source_location": "L399",
+      "source_location": "L410",
       "weight": 1.0
     },
     {
@@ -35196,7 +35196,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/shared/components/footer/footer.component.ts",
-      "source_location": "L107",
+      "source_location": "L118",
       "weight": 1.0
     },
     {
@@ -35207,7 +35207,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/shared/components/footer/footer.component.ts",
-      "source_location": "L111",
+      "source_location": "L122",
       "weight": 1.0
     },
     {
@@ -35273,7 +35273,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/shared/components/visitor-action-bar/visitor-action-bar.component.ts",
-      "source_location": "L45",
+      "source_location": "L52",
       "weight": 1.0
     },
     {
@@ -35284,7 +35284,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/shared/components/visitor-action-bar/visitor-action-bar.component.ts",
-      "source_location": "L50",
+      "source_location": "L57",
       "weight": 1.0
     },
     {
@@ -36245,5 +36245,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "6175636ff91358886e664e7d82f44db1ed2505a2"
+  "built_at_commit": "65fc18e1bddeffbe7d5640d3e3c33d0cff16e8b1"
 }
