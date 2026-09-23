@@ -8,11 +8,14 @@ export type ReservationStatus = 'pending' | 'confirmed' | 'cancelled' | 'complet
 export interface AdminReservation {
   id: string;
   name: string;
+  email?: string;
+  phone?: string;
   date: string;
   time: string;
   guests: number;
   notes?: string;
   status: ReservationStatus;
+  createdAt?: string;
 }
 
 export interface DashboardReadinessCheck {
