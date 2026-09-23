@@ -111,7 +111,7 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
                 </div>
                 <h3 class="text-2xl font-serif font-bold mb-2">{{ dish.name }}</h3>
                 <p class="text-gray-300 font-light mb-4 line-clamp-2">{{ dish.description }}</p>
-                <div class="text-jacquier-gold font-bold">{{ dish.price | number:'1.0-0' }} FG</div>
+                <div class="text-jacquier-gold font-bold">{{ dish.price | number:'1.0-0' }} {{ siteSettings.publicInfo().currency }}</div>
               </div>
             }
           </div>
