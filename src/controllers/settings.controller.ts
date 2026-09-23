@@ -78,6 +78,14 @@ const validateSocialMedia = (value: unknown): Record<string, string> => {
   }));
 };
 
+const optionalSettingsText = (value: unknown, field: string, maxLength: number): string | undefined => {
+  if (value === undefined) return undefined;
+  if (typeof value !== 'string') throw new CatalogValidationError(`Invalid ${field}`);
+  const result = value.trim();
+  if (result.length > maxLength) throw new CatalogValidationError(`Invalid ${field}`);
+  return result;
+};
+
 const validateSettingsPayload = (body: unknown): Record<string, unknown> => {
   const source = requireKnownFields(body, SETTINGS_FIELDS);
   const settings: Record<string, unknown> = {};
@@ -94,7 +102,7 @@ const validateSettingsPayload = (body: unknown): Record<string, unknown> => {
   ];
 
   for (const [key, label, maxLength] of textFields) {
-    const value = optionalText(source[key], label, maxLength);
+    const value = optionalSettingsText(source[key], label, maxLength);
     if (value !== undefined) settings[key] = value;
   }
 
