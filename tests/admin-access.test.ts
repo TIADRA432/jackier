@@ -54,6 +54,10 @@ test('the dashboard reads its operational metrics from the protected overview en
   assert.match(controller, /weeklyHours\?\.enabled === true/);
   assert.match(component, /Préparation à la livraison/);
   assert.match(component, /overview\(\)\.readiness\.percent/);
+  assert.match(component, /Copier la liste à demander/);
+  assert.match(component, /copyClientRequest\(\)/);
+  assert.match(component, /navigator\.clipboard\.writeText/);
+  assert.match(component, /owner === 'client'/);
   assert.match(component, /readinessPath/);
   assert.match(component, /Corriger maintenant/);
   assert.match(controller, /owner: 'client'/);
