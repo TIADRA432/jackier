@@ -2,7 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../controllers/category.controller';
 import { getMenuItems, getPublicMenuItems, createMenuItem, updateMenuItem, deleteMenuItem } from '../controllers/menu.controller';
-import { getWines, createWine, updateWine, deleteWine } from '../controllers/wine.controller';
+import { getWines, getPublicWines, createWine, updateWine, deleteWine } from '../controllers/wine.controller';
 import { uploadMenuImage, uploadWineImage } from '../controllers/upload.controller';
 import { createMediaAsset, createMediaTag, deleteMediaAsset, downloadMediaAsset, getMediaAssetUsage, getMediaAssets, getMediaTags, updateMediaAsset } from '../controllers/media.controller';
 import { getGalleryImages, createGalleryImage, updateGalleryImage, deleteGalleryImage } from '../controllers/gallery.controller';
@@ -109,8 +109,9 @@ router.post('/menu', verifyToken, requireRole(['ADMIN']), createMenuItem);
 router.put('/menu/:id', verifyToken, requireRole(['ADMIN']), updateMenuItem);
 router.delete('/menu/:id', verifyToken, requireRole(['ADMIN']), deleteMenuItem);
 
-// Wines
-router.get('/wines', getWines);
+// Wines. Public catalogue exposes only active entries; admin keeps inactive wines editable.
+router.get('/wines', getPublicWines);
+router.get('/admin/wines', verifyToken, requireRole(['ADMIN']), getWines);
 router.post('/wines', verifyToken, requireRole(['ADMIN']), createWine);
 router.put('/wines/:id', verifyToken, requireRole(['ADMIN']), updateWine);
 router.delete('/wines/:id', verifyToken, requireRole(['ADMIN']), deleteWine);
