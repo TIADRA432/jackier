@@ -9,9 +9,12 @@ import {
   MediaAsset,
   MediaReference,
   MenuItem,
+  OpeningDay,
   PublicSettings,
   SiteMediaSlot,
-  TodaySettings
+  TodaySettings,
+  WeekdayKey,
+  WeeklyHours
 } from '../../../core/services/admin-data.service';
 import { SiteSettingsService } from '../../../core/services/site-settings.service';
 
@@ -23,6 +26,19 @@ const EMPTY_SETTINGS: PublicSettings = {
   phone: '',
   email: '',
   openingHours: '',
+  weeklyHours: {
+    enabled: false,
+    timezone: 'Africa/Conakry',
+    days: {
+      monday: { closed: false, open: '12:00', close: '23:00' },
+      tuesday: { closed: false, open: '12:00', close: '23:00' },
+      wednesday: { closed: false, open: '12:00', close: '23:00' },
+      thursday: { closed: false, open: '12:00', close: '23:00' },
+      friday: { closed: false, open: '12:00', close: '23:00' },
+      saturday: { closed: false, open: '12:00', close: '23:00' },
+      sunday: { closed: false, open: '12:00', close: '23:00' }
+    }
+  },
   currency: 'FG',
   mapQuery: '',
   legalNoticeUrl: '',
@@ -57,6 +73,16 @@ const SOCIAL_FIELDS = [
   { key: 'tiktok', label: 'TikTok', placeholder: 'https://tiktok.com/@...' },
   { key: 'linkedin', label: 'LinkedIn', placeholder: 'https://linkedin.com/...' },
 ] as const;
+
+const WEEKDAYS: Array<{ key: WeekdayKey; label: string }> = [
+  { key: 'monday', label: 'Lundi' },
+  { key: 'tuesday', label: 'Mardi' },
+  { key: 'wednesday', label: 'Mercredi' },
+  { key: 'thursday', label: 'Jeudi' },
+  { key: 'friday', label: 'Vendredi' },
+  { key: 'saturday', label: 'Samedi' },
+  { key: 'sunday', label: 'Dimanche' },
+];
 
 const TODAY_CTA_OPTIONS: Array<{ path: TodaySettings['ctaPath']; label: string }> = [
   { path: '/reservation', label: 'Réserver une table' },
@@ -313,6 +339,61 @@ const TODAY_CTA_OPTIONS: Array<{ path: TodaySettings['ctaPath']; label: string }
           </div>
         </section>
 
+        <section id="horaires-live" class="rounded-2xl border border-jacquier-gold/30 bg-[#1a1a1a] p-6 md:p-8">
+          <div class="flex flex-col gap-4 border-b border-gray-800 pb-5 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p class="text-xs font-bold uppercase tracking-[0.18em] text-jacquier-gold">Statut en temps réel</p>
+              <h2 class="mt-1 text-xl font-serif font-bold text-white">Horaires détaillés</h2>
+              <p class="mt-1 text-sm text-gray-400">Activez-les pour afficher automatiquement “Ouvert maintenant” ou “Fermé actuellement” sur le site.</p>
+            </div>
+            <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-gray-700 bg-black/20 px-4 py-3 text-sm text-gray-300">
+              <input type="checkbox" [ngModel]="settings.weeklyHours?.enabled" (ngModelChange)="patchWeeklyEnabled($event)"
+                name="weekly-hours-enabled" class="h-4 w-4 accent-yellow-500" />
+              <span><strong class="block text-white">Activer</strong><span class="text-xs text-gray-500">Fuseau : Africa/Conakry</span></span>
+            </label>
+          </div>
+
+          <div class="mt-6 space-y-3">
+            @for (day of weekdays; track day.key) {
+              <div class="grid gap-3 rounded-xl border border-gray-800 bg-black/20 p-4 md:grid-cols-[140px_110px_1fr_1fr] md:items-center">
+                <p class="font-bold text-white">{{ day.label }}</p>
+                <label class="flex items-center gap-2 text-xs text-gray-400">
+                  <input type="checkbox" [ngModel]="daySchedule(day.key).closed"
+                    (ngModelChange)="patchDay(day.key, 'closed', $event)"
+                    [name]="'closed-' + day.key" class="h-4 w-4 accent-yellow-500" />
+                  Fermé
+                </label>
+                <label class="text-xs text-gray-400">Ouverture
+                  <input type="time" [disabled]="daySchedule(day.key).closed"
+                    [ngModel]="daySchedule(day.key).open" (ngModelChange)="patchDay(day.key, 'open', $event)"
+                    [name]="'open-' + day.key"
+                    class="mt-1 w-full rounded-lg bg-gray-900 px-3 py-2 text-sm text-white disabled:opacity-40" />
+                </label>
+                <label class="text-xs text-gray-400">Fermeture
+                  <input type="time" [disabled]="daySchedule(day.key).closed"
+                    [ngModel]="daySchedule(day.key).close" (ngModelChange)="patchDay(day.key, 'close', $event)"
+                    [name]="'close-' + day.key"
+                    class="mt-1 w-full rounded-lg bg-gray-900 px-3 py-2 text-sm text-white disabled:opacity-40" />
+                </label>
+              </div>
+            }
+          </div>
+
+          <div class="mt-5 grid gap-3 md:grid-cols-2">
+            <div class="rounded-xl border border-gray-800 bg-black/20 p-4">
+              <p class="text-xs uppercase tracking-wider text-gray-500">Texte public</p>
+              <p class="mt-2 text-sm font-bold text-white">{{ settings.openingHours || 'Horaires non renseignés' }}</p>
+            </div>
+            <div class="rounded-xl border border-gray-800 bg-black/20 p-4">
+              <p class="text-xs uppercase tracking-wider text-gray-500">Comportement</p>
+              <p class="mt-2 text-sm font-bold" [class.text-emerald-300]="settings.weeklyHours?.enabled" [class.text-gray-400]="!settings.weeklyHours?.enabled">
+                {{ settings.weeklyHours?.enabled ? 'Statut automatique actif' : 'Statut automatique désactivé' }}
+              </p>
+              <p class="mt-1 text-xs text-gray-500">Les horaires après minuit sont pris en charge.</p>
+            </div>
+          </div>
+        </section>
+
         <section id="localisation-preview" class="overflow-hidden rounded-2xl border border-gray-800 bg-[#1a1a1a]">
           <div class="grid lg:grid-cols-[1fr_1.4fr]">
             <div class="p-6 md:p-8">
@@ -486,6 +567,7 @@ export class AdminSettingsComponent {
   readonly siteMediaSlots = SITE_MEDIA_SLOTS;
   readonly socialFields = SOCIAL_FIELDS;
   readonly todayCtaOptions = TODAY_CTA_OPTIONS;
+  readonly weekdays = WEEKDAYS;
   readonly coreFieldCount = 7;
 
   settings: PublicSettings = { ...EMPTY_SETTINGS };
@@ -582,6 +664,31 @@ export class AdminSettingsComponent {
   patch(key: keyof PublicSettings, value: string): void {
     this.settings = { ...this.settings, [key]: value };
     this.markDirty();
+  }
+
+  patchWeeklyEnabled(enabled: boolean): void {
+    const current = this.ensureWeeklyHours();
+    this.settings = { ...this.settings, weeklyHours: { ...current, enabled } };
+    this.markDirty();
+  }
+
+  patchDay<K extends keyof OpeningDay>(day: WeekdayKey, key: K, value: OpeningDay[K]): void {
+    const current = this.ensureWeeklyHours();
+    this.settings = {
+      ...this.settings,
+      weeklyHours: {
+        ...current,
+        days: {
+          ...current.days,
+          [day]: { ...current.days[day], [key]: value }
+        }
+      }
+    };
+    this.markDirty();
+  }
+
+  daySchedule(day: WeekdayKey): OpeningDay {
+    return this.ensureWeeklyHours().days[day];
   }
 
   patchToday<K extends keyof TodaySettings>(key: K, value: TodaySettings[K]): void {
@@ -713,6 +820,7 @@ export class AdminSettingsComponent {
       phone: this.settings.phone?.trim(),
       email: this.settings.email?.trim(),
       openingHours: this.settings.openingHours?.trim(),
+      weeklyHours: this.ensureWeeklyHours(),
       currency: this.settings.currency?.trim() || 'FG',
       mapQuery: this.settings.mapQuery?.trim(),
       legalNoticeUrl: this.settings.legalNoticeUrl?.trim(),
@@ -735,6 +843,7 @@ export class AdminSettingsComponent {
     return {
       ...EMPTY_SETTINGS,
       ...settings,
+      weeklyHours: settings.weeklyHours ? this.cloneWeeklyHours(settings.weeklyHours) : this.defaultWeeklyHours(),
       today: {
         enabled: settings.today?.enabled ?? false,
         eyebrow: settings.today?.eyebrow ?? 'Aujourd’hui au Jacquier',
@@ -750,6 +859,27 @@ export class AdminSettingsComponent {
         siteMedia: { ...(settings.brand?.siteMedia ?? {}) }
       }
     };
+  }
+
+  private defaultWeeklyHours(): WeeklyHours {
+    return {
+      enabled: false,
+      timezone: 'Africa/Conakry',
+      days: Object.fromEntries(
+        WEEKDAYS.map(day => [day.key, { closed: false, open: '12:00', close: '23:00' }])
+      ) as WeeklyHours['days']
+    };
+  }
+
+  private cloneWeeklyHours(hours: WeeklyHours): WeeklyHours {
+    return JSON.parse(JSON.stringify(hours)) as WeeklyHours;
+  }
+
+  private ensureWeeklyHours(): WeeklyHours {
+    if (!this.settings.weeklyHours) {
+      this.settings = { ...this.settings, weeklyHours: this.defaultWeeklyHours() };
+    }
+    return this.settings.weeklyHours!;
   }
 
   private cloneSettings(settings: PublicSettings): PublicSettings {
