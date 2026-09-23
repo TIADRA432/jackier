@@ -168,7 +168,9 @@ export class RestaurantService {
     this.errorSchool.set(null);
     try {
       const raw = await firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/school`));
-      this.schoolPrograms.set(raw || []);
+      this.schoolPrograms.set((raw || [])
+        .filter(item => item.active !== false)
+        .sort((a, b) => Number(a.displayOrder ?? 0) - Number(b.displayOrder ?? 0)));
     } catch (err) {
       console.error('Impossible de charger les programmes école depuis l\'API', err);
       this.errorSchool.set('Les programmes de l\'école n\'ont pas pu être chargés.');
