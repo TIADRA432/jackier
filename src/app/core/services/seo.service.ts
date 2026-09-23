@@ -27,10 +27,11 @@ export class SeoService {
     });
   }
 
-  apply(url: string, config: SeoConfig): void {
+  apply(url: string, config: SeoConfig, routeTitle?: string): void {
     const cleanPath = this.cleanPath(url);
     const canonical = `${SITE_ORIGIN}${cleanPath === '/' ? '/' : cleanPath}`;
-    const pageTitle = this.title.getTitle() || this.siteSettings.publicInfo().restaurantName;
+    const pageTitle = routeTitle?.trim() || this.title.getTitle() || this.siteSettings.publicInfo().restaurantName;
+    if (routeTitle?.trim()) this.title.setTitle(routeTitle);
 
     this.currentUrl.set(cleanPath);
     this.meta.updateTag({ name: 'description', content: config.description });
