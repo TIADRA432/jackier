@@ -4,12 +4,13 @@ import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { ViewportScroller } from '@angular/common';
 import { HeaderComponent } from './app/shared/components/header/header.component';
 import { FooterComponent } from './app/shared/components/footer/footer.component';
+import { VisitorActionBarComponent } from './app/shared/components/visitor-action-bar/visitor-action-bar.component';
 import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, HeaderComponent, FooterComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, VisitorActionBarComponent],
   templateUrl: './app.component.html'
 })
 export class AppComponent {
