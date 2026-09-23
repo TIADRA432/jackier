@@ -1,10 +1,11 @@
 
-import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, signal, computed, effect, ChangeDetectionStrategy } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgOptimizedImage } from '@angular/common';
 import { ReservationService } from '../../core/services/reservation.service';
 import { Reservation } from '../../core/models';
 import { SiteSettingsService } from '../../core/services/site-settings.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-reservation',
@@ -27,7 +28,8 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
           
           <!-- Image Side -->
           <div class="lg:w-2/5 relative hidden lg:block">
-            <img ngSrc="https://picsum.photos/seed/table/800/1200" fill priority class="object-cover" alt="Table setting" referrerPolicy="no-referrer">
+            <img [ngSrc]="siteSettings.image('reservationHero', 'https://picsum.photos/seed/reservation_hero/800/1200').url" fill priority
+              class="object-cover" [alt]="siteSettings.image('reservationHero', '').altText || 'Table au Jacquier'" referrerPolicy="no-referrer">
             <div class="absolute inset-0 bg-gradient-to-t from-jacquier-dark/90 via-jacquier-dark/40 to-transparent"></div>
             <div class="absolute bottom-12 left-10 right-10 text-white">
               <span class="text-jacquier-gold font-bold tracking-widest uppercase text-xs mb-3 block">L'Excellence</span>
@@ -57,6 +59,15 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
               <div class="mb-10 text-center lg:text-left">
                 <h2 class="text-3xl font-serif font-bold text-jacquier-primary mb-2">Vos Coordonnées</h2>
                 <p class="text-jacquier-text font-light">Veuillez remplir le formulaire ci-dessous.</p>
+                @if (siteSettings.openStatus().configured) {
+                  <div class="mt-4 inline-flex items-center gap-2 rounded-full bg-jacquier-cream px-4 py-2 text-xs font-bold">
+                    <span [class]="siteSettings.openStatus().isOpen ? 'h-2 w-2 rounded-full bg-emerald-500' : 'h-2 w-2 rounded-full bg-gray-400'"></span>
+                    <span [class.text-emerald-700]="siteSettings.openStatus().isOpen" [class.text-gray-600]="!siteSettings.openStatus().isOpen">
+                      {{ siteSettings.openStatus().label }}
+                    </span>
+                    @if (siteSettings.openStatus().detail) { <span class="font-normal text-gray-500">· {{ siteSettings.openStatus().detail }}</span> }
+                  </div>
+                }
               </div>
 
               @if (submitError()) {
@@ -95,7 +106,8 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                   <div class="space-y-2">
                     <label for="res-date" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Date</label>
-                    <input id="res-date" type="date" formControlName="date" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold outline-none transition-all">
+                    <input id="res-date" type="date" formControlName="date" [min]="todayDate"
+                      class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold outline-none transition-all">
                     @if (reservationForm.get('date')?.touched && reservationForm.get('date')?.invalid) {
                       <p class="text-red-500 text-xs mt-1" role="alert">Date requise</p>
                     }
@@ -104,12 +116,15 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
                     <label for="res-time" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Heure</label>
                     <select id="res-time" formControlName="time" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold outline-none transition-all appearance-none cursor-pointer">
                       <option value="" disabled selected>Choisir</option>
-                      @for (slot of timeSlots; track slot) {
+                      @for (slot of availableTimeSlots(); track slot) {
                         <option [value]="slot">{{ slot }}</option>
                       }
                     </select>
                      @if (reservationForm.get('time')?.touched && reservationForm.get('time')?.invalid) {
                       <p class="text-red-500 text-xs mt-1" role="alert">Heure requise</p>
+                    }
+                    @if (selectedDate() && siteSettings.settings().weeklyHours?.enabled && availableTimeSlots().length === 0) {
+                      <p class="text-amber-700 text-xs mt-1" role="status">Le restaurant est fermé ce jour-là selon les horaires configurés.</p>
                     }
                   </div>
                   <div class="space-y-2">
@@ -151,7 +166,8 @@ export class ReservationComponent {
   readonly siteSettings = inject(SiteSettingsService);
 
   // Créneaux alignés avec ceux acceptés par le backend (reservation.controller.ts ALLOWED_TIMES).
-  timeSlots = ['12:00', '12:30', '13:00', '13:30', '14:00', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+  readonly timeSlots = ['12:00', '12:30', '13:00', '13:30', '14:00', '19:00', '19:30', '20:00', '20:30', '21:00', '21:30'];
+  readonly todayDate = this.conakryDateString();
 
   reservationForm = this.fb.group({
     name: ['', Validators.required],
@@ -162,11 +178,70 @@ export class ReservationComponent {
     guests: ['2', Validators.required]
   });
 
+  readonly selectedDate = toSignal(this.reservationForm.controls.date.valueChanges, {
+    initialValue: this.reservationForm.controls.date.value ?? ''
+  });
+
+  readonly availableTimeSlots = computed(() => {
+    const selectedDate = this.selectedDate();
+    const schedule = this.siteSettings.settings().weeklyHours;
+    if (!selectedDate || !schedule?.enabled) return this.timeSlots;
+
+    const dayKey = this.weekdayForDate(selectedDate);
+    const day = schedule.days[dayKey];
+    if (!day || day.closed || !day.open || !day.close) return [];
+
+    const toMinutes = (time: string) => {
+      const [hours, minutes] = time.split(':').map(Number);
+      return (hours || 0) * 60 + (minutes || 0);
+    };
+    const open = toMinutes(day.open);
+    const close = toMinutes(day.close);
+
+    return this.timeSlots.filter(slot => {
+      const value = toMinutes(slot);
+      return open < close ? value >= open && value < close : value >= open || value < close;
+    });
+  });
+
   isSubmitting = signal(false);
   successMessage = signal(false);
   submitError = signal<string | null>(null);
   lastReservationName = signal('');
   lastReservationDate = signal('');
+
+  constructor() {
+    effect(() => {
+      const slots = this.availableTimeSlots();
+      const selected = this.reservationForm.controls.time.value ?? '';
+      if (selected && !slots.includes(selected)) {
+        this.reservationForm.controls.time.setValue('');
+      }
+    });
+  }
+
+  private conakryDateString(): string {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Africa/Conakry',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).formatToParts(new Date());
+    const year = parts.find(part => part.type === 'year')?.value ?? '';
+    const month = parts.find(part => part.type === 'month')?.value ?? '';
+    const day = parts.find(part => part.type === 'day')?.value ?? '';
+    return `${year}-${month}-${day}`;
+  }
+
+  private weekdayForDate(date: string): 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday' {
+    const weekday = new Intl.DateTimeFormat('en-US', { weekday: 'short', timeZone: 'UTC' })
+      .format(new Date(`${date}T12:00:00Z`));
+    const map = {
+      Mon: 'monday', Tue: 'tuesday', Wed: 'wednesday', Thu: 'thursday',
+      Fri: 'friday', Sat: 'saturday', Sun: 'sunday'
+    } as const;
+    return map[weekday as keyof typeof map] ?? 'monday';
+  }
 
   async onSubmit() {
     if (this.reservationForm.valid) {
