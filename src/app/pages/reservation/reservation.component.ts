@@ -16,7 +16,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
     <div class="min-h-screen bg-jacquier-cream flex flex-col">
       <!-- Hero -->
       <div class="relative h-[40vh] flex items-center justify-center text-center px-4 overflow-hidden bg-jacquier-dark">
-        <img [ngSrc]="siteSettings.image('reservationHero', 'https://picsum.photos/seed/reservation_hero/1920/1080').url" fill priority class="object-cover opacity-40" [alt]="siteSettings.image('reservationHero', '').altText || 'Réservation'" referrerPolicy="no-referrer">
+        <img [ngSrc]="siteSettings.image('reservationHero', '/og-image.png').url" fill priority class="object-cover opacity-40" [alt]="siteSettings.image('reservationHero', '').altText || 'Réservation'" referrerPolicy="no-referrer">
         <div class="relative z-10 max-w-4xl mx-auto text-white animate-fade-in-up">
           <span class="block text-jacquier-gold font-bold tracking-[0.2em] mb-4 uppercase text-sm md:text-base">Vivez l'expérience Le Jacquier</span>
           <h1 class="text-5xl md:text-6xl font-serif font-bold mb-6 leading-tight">Réservez votre table</h1>
@@ -28,7 +28,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
           
           <!-- Image Side -->
           <div class="lg:w-2/5 relative hidden lg:block">
-            <img [ngSrc]="siteSettings.image('reservationHero', 'https://picsum.photos/seed/reservation_hero/800/1200').url" fill priority
+            <img [ngSrc]="siteSettings.image('reservationHero', '/og-image.png').url" fill priority
               class="object-cover" [alt]="siteSettings.image('reservationHero', '').altText || 'Table au Jacquier'" referrerPolicy="no-referrer">
             <div class="absolute inset-0 bg-gradient-to-t from-jacquier-dark/90 via-jacquier-dark/40 to-transparent"></div>
             <div class="absolute bottom-12 left-10 right-10 text-white">
@@ -45,12 +45,22 @@ import { toSignal } from '@angular/core/rxjs-interop';
                 <div class="w-24 h-24 bg-jacquier-cream rounded-full flex items-center justify-center mb-8 shadow-inner">
                   <svg class="w-12 h-12 text-jacquier-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                 </div>
-                <h3 class="text-3xl font-serif font-bold text-jacquier-primary mb-4">Réservation Confirmée !</h3>
-                <p class="text-jacquier-text font-light text-lg mb-10 leading-relaxed max-w-md">
+                <h3 class="text-3xl font-serif font-bold text-jacquier-primary mb-4">Demande de réservation reçue</h3>
+                <p class="text-jacquier-text font-light text-lg leading-relaxed max-w-md">
                   Merci <strong class="font-bold text-jacquier-dark">{{ lastReservationName() }}</strong>.<br><br>
-                  Nous avons bien reçu votre demande pour le <strong class="font-bold text-jacquier-dark">{{ lastReservationDate() }}</strong>.<br>
-                  Un email de confirmation vous a été envoyé.
+                  Votre demande pour le <strong class="font-bold text-jacquier-dark">{{ lastReservationDate() }}</strong> a bien été enregistrée.
                 </p>
+                <div class="my-6 w-full max-w-md rounded-2xl border border-jacquier-gold/30 bg-jacquier-cream p-5 text-left">
+                  <p class="text-xs font-bold uppercase tracking-wider text-jacquier-gold">Statut</p>
+                  <p class="mt-1 font-bold text-jacquier-dark">En attente de confirmation par le restaurant</p>
+                  @if (lastReservationReference()) {
+                    <p class="mt-4 text-xs text-gray-500">Référence</p>
+                    <p class="mt-1 break-all font-mono text-sm font-bold text-jacquier-primary">{{ lastReservationReference() }}</p>
+                  }
+                  <p class="mt-4 text-xs leading-relaxed text-gray-600">
+                    Aucun e-mail automatique n’est envoyé actuellement. Le restaurant utilisera les coordonnées fournies pour traiter la demande.
+                  </p>
+                </div>
                 <button (click)="resetForm()" class="px-8 py-4 bg-jacquier-primary text-white rounded-xl font-bold uppercase tracking-wide hover:bg-jacquier-burgundy transition-colors min-h-[44px]">
                   Nouvelle réservation
                 </button>
@@ -149,7 +159,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
                       Traitement...
                     </span>
                   } @else {
-                    Confirmer la réservation
+                    Envoyer la demande
                   }
                 </button>
               </form>
@@ -209,6 +219,7 @@ export class ReservationComponent {
   submitError = signal<string | null>(null);
   lastReservationName = signal('');
   lastReservationDate = signal('');
+  lastReservationReference = signal('');
 
   constructor() {
     effect(() => {
@@ -260,15 +271,16 @@ export class ReservationComponent {
       
       try {
         const result = await this.reservationService.makeReservation(data);
-        if (result.success) {
-          this.lastReservationName.set(data.name);
-          this.lastReservationDate.set(`${data.date} à ${data.time}`);
+        if (result.success && result.reservation) {
+          this.lastReservationName.set(result.reservation.name || data.name);
+          this.lastReservationDate.set(`${result.reservation.date} à ${result.reservation.time}`);
+          this.lastReservationReference.set(result.reservation.id);
           this.successMessage.set(true);
         } else {
           // La réservation a été rejetée par le serveur : on affiche le message précis
           // renvoyé par ReservationService (distingue 429 / 400 / 500 / coupure réseau)
           // plutôt qu'un message générique qui masquerait la vraie cause.
-          this.submitError.set(result.errorMessage ?? 'Impossible de confirmer la réservation. Merci de réessayer, ou contactez-nous directement.');
+          this.submitError.set(result.errorMessage ?? 'Impossible d’envoyer la demande de réservation. Merci de réessayer, ou contactez-nous directement.');
         }
       } catch (e) {
         console.error(e);
@@ -284,6 +296,7 @@ export class ReservationComponent {
   resetForm() {
     this.successMessage.set(false);
     this.submitError.set(null);
+    this.lastReservationReference.set('');
     this.reservationForm.reset({ guests: '2' });
   }
 }

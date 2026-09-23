@@ -24,8 +24,17 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
               <div class="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
                 <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
               </div>
-              <h3 class="text-3xl font-serif font-bold text-jacquier-dark mb-4">Demande Envoyée !</h3>
-              <p class="text-jacquier-text font-light text-lg mb-8">Notre équipe vous contactera sous 24h ouvrées pour discuter de votre événement.</p>
+              <h3 class="text-3xl font-serif font-bold text-jacquier-dark mb-4">Demande de devis reçue</h3>
+              <p class="text-jacquier-text font-light text-lg">Votre demande a été enregistrée et sera examinée par l’équipe du Jacquier.</p>
+              <div class="mx-auto my-6 max-w-md rounded-2xl border border-jacquier-gold/30 bg-white/70 p-5 text-left">
+                <p class="text-xs font-bold uppercase tracking-wider text-jacquier-gold">Statut</p>
+                <p class="mt-1 font-bold text-jacquier-dark">En attente de traitement</p>
+                @if (requestReference()) {
+                  <p class="mt-4 text-xs text-gray-500">Référence</p>
+                  <p class="mt-1 break-all font-mono text-sm font-bold text-jacquier-primary">{{ requestReference() }}</p>
+                }
+                <p class="mt-4 text-xs leading-relaxed text-gray-600">Aucun délai automatique ni confirmation par e-mail n’est garanti actuellement. L’équipe utilisera les coordonnées fournies pour vous recontacter.</p>
+              </div>
               <button (click)="resetForm()" class="px-8 py-4 bg-jacquier-primary text-white rounded-xl font-bold uppercase tracking-widest hover:bg-jacquier-burgundy transition-colors duration-300 text-sm">
                 Nouvelle Demande
               </button>
@@ -96,7 +105,7 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
                 <!-- Date -->
                 <div class="space-y-2">
                   <label for="date" class="block text-sm font-bold text-jacquier-dark uppercase tracking-widest">Date Prévue *</label>
-                  <input type="date" id="date" formControlName="date" 
+                  <input type="date" id="date" formControlName="date" [min]="todayDate" 
                          class="w-full px-6 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-jacquier-gold focus:border-transparent transition-all outline-none text-jacquier-dark"
                          [class.border-red-500]="devisForm.get('date')?.invalid && devisForm.get('date')?.touched">
                   @if (devisForm.get('date')?.invalid && devisForm.get('date')?.touched) {
@@ -170,6 +179,8 @@ export class CateringFormComponent {
   isSubmitting = signal(false);
   isSubmitted = signal(false);
   submitError = signal<string | null>(null);
+  requestReference = signal('');
+  readonly todayDate = this.conakryDateString();
   
   devisForm: FormGroup;
 
@@ -191,7 +202,11 @@ export class CateringFormComponent {
       this.isSubmitting.set(true);
       this.submitError.set(null);
       try {
-        await this.restaurantService.submitCateringRequest(this.devisForm.getRawValue());
+        const receipt = await this.restaurantService.submitCateringRequest({
+          ...this.devisForm.getRawValue(),
+          guests: Number(this.devisForm.controls['guests'].value)
+        });
+        this.requestReference.set(receipt.id);
         this.isSubmitted.set(true);
       } catch (err) {
         console.error('Échec de l\'envoi de la demande de devis traiteur', err);
@@ -206,9 +221,21 @@ export class CateringFormComponent {
     }
   }
 
+  private conakryDateString(): string {
+    const parts = new Intl.DateTimeFormat('en-CA', {
+      timeZone: 'Africa/Conakry',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    }).formatToParts(new Date());
+    const part = (type: string) => parts.find(entry => entry.type === type)?.value ?? '';
+    return `${part('year')}-${part('month')}-${part('day')}`;
+  }
+
   resetForm() {
     this.devisForm.reset();
     this.isSubmitted.set(false);
     this.submitError.set(null);
+    this.requestReference.set('');
   }
 }

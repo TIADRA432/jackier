@@ -10,7 +10,7 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="relative h-[50vh] flex items-center justify-center text-center px-4 overflow-hidden bg-jacquier-dark">
-      <img [ngSrc]="siteSettings.image('contactHero', 'https://picsum.photos/seed/contact_hero/1920/1080').url" fill priority
+      <img [ngSrc]="siteSettings.image('contactHero', '/og-image.png').url" fill priority
         class="object-cover opacity-40" [alt]="siteSettings.image('contactHero', '').altText || 'Contact'" referrerPolicy="no-referrer">
       <div class="relative z-10 max-w-4xl mx-auto text-white animate-fade-in-up">
         <span class="block text-jacquier-gold font-bold tracking-[0.2em] mb-4 uppercase text-sm md:text-base">Nous trouver à Conakry</span>

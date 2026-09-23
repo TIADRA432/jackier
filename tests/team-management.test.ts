@@ -53,5 +53,5 @@ test('About page uses managed public team data instead of fictitious profiles', 
   assert.doesNotMatch(service, /Chef Amadou Diallo/);
   assert.doesNotMatch(service, /Sophie Martin/);
   assert.match(about, /teamLoading/);
-  assert.match(about, /L’équipe publique sera bientôt présentée ici/);
+  assert.match(about, /Aucun profil d’équipe n’est publié pour le moment/);
 });

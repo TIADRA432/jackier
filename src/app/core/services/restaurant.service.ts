@@ -2,7 +2,7 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { Dish, TeamMember, CateringService, SchoolProgram, Wine, GalleryImage } from '../models';
+import { Dish, TeamMember, SchoolProgram, Wine, GalleryImage } from '../models';
 import { environment } from '../../../environments/environment';
 import { MenuCategory } from '../models/menu-catalog';
 
@@ -13,14 +13,6 @@ export class RestaurantService {
   private http = inject(HttpClient);
   private apiUrl = environment.apiUrl;
 
-  readonly info = {
-    name: 'Le Jacquier',
-    address: 'Face au Lycée Kipé / T2 Carrefour Métal Guinée, Conakry',
-    phone: '+224 625 67 53 63',
-    hours: 'Tous les jours de 12h à 23h',
-    email: 'contact@lejacquier-conakry.com',
-    location: { lat: 9.608, lng: -13.626 } // Approx coordinates for Kipé
-  };
 
   private dishes = signal<Dish[]>([]);
   readonly menuCategories = signal<MenuCategory[]>([]);
@@ -40,14 +32,6 @@ export class RestaurantService {
   private errorSchool = signal<string | null>(null);
   private errorTeam = signal<string | null>(null);
 
-
-  // Cartes marketing statiques présentées sur la page traiteur (distinctes des demandes de devis, qui elles sont envoyées via /api/catering).
-  private cateringServices = signal<CateringService[]>([
-    { id: '1', title: 'Mariages & Cérémonies', description: 'Des menus sur-mesure pour votre grand jour.', icon: '💍' },
-    { id: '2', title: 'Événements d\'Entreprise', description: 'Cocktails, buffets et déjeuners d\'affaires.', icon: '🏢' },
-    { id: '3', title: 'Dîners Privés', description: 'L\'expérience Le Jacquier directement chez vous.', icon: '🍽️' },
-    { id: '4', title: 'Location Matériel', description: 'Tables, chaises, vaisselle et décoration.', icon: '🎪' }
-  ]);
 
   constructor() {
     this.loadDishes();
@@ -103,6 +87,9 @@ export class RestaurantService {
       this.wines.set((raw || []).map(item => ({
         id: item.id,
         name: item.name,
+        origin: item.origin ?? '',
+        grape: item.grape ?? '',
+        year: item.year,
         description: item.description ?? '',
         priceBottle: item.priceBottle,
         priceGlass: item.priceGlass,
@@ -165,7 +152,9 @@ export class RestaurantService {
     this.errorSchool.set(null);
     try {
       const raw = await firstValueFrom(this.http.get<any[]>(`${this.apiUrl}/school`));
-      this.schoolPrograms.set(raw || []);
+      this.schoolPrograms.set((raw || [])
+        .filter(item => item.active !== false)
+        .sort((a, b) => Number(a.displayOrder ?? 0) - Number(b.displayOrder ?? 0)));
     } catch (err) {
       console.error('Impossible de charger les programmes école depuis l\'API', err);
       this.errorSchool.set('Les programmes de l\'école n\'ont pas pu être chargés.');
@@ -179,7 +168,6 @@ export class RestaurantService {
   getWines() { return this.wines.asReadonly(); }
   getGalleryImages() { return this.galleryImages.asReadonly(); }
   getTeam() { return this.team.asReadonly(); }
-  getCateringServices() { return this.cateringServices.asReadonly(); }
   getSchoolPrograms() { return this.schoolPrograms.asReadonly(); }
 
   // États de chargement/erreur (lecture seule) pour piloter spinners/messages côté pages
@@ -196,6 +184,7 @@ export class RestaurantService {
 
   /** Relance le chargement du menu après une erreur (bouton "Réessayer"). */
   retryLoadDishes() { return this.loadDishes(); }
+  retryLoadWines() { return this.loadWines(); }
   retryLoadGallery() { return this.loadGallery(); }
   retryLoadSchoolPrograms() { return this.loadSchoolPrograms(); }
   retryLoadTeam() { return this.loadTeam(); }
@@ -205,7 +194,7 @@ export class RestaurantService {
   }
 
   /** Soumet une demande de devis traiteur/événement vers /api/catering (endpoint public). */
-  async submitCateringRequest(payload: Record<string, unknown>) {
-    return firstValueFrom(this.http.post(`${this.apiUrl}/catering`, payload));
+  async submitCateringRequest(payload: Record<string, unknown>): Promise<{ id: string; status: string; createdAt?: string }> {
+    return firstValueFrom(this.http.post<{ id: string; status: string; createdAt?: string }>(`${this.apiUrl}/catering`, payload));
   }
 }

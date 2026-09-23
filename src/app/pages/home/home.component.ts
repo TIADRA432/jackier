@@ -194,7 +194,7 @@ import { ParallaxDirective } from '../../shared/directives/parallax.directive';
     <!-- Seafood Section -->
     <section appRevealOnScroll class="py-24 bg-jacquier-primary text-jacquier-light relative overflow-hidden px-4">
       <div class="absolute inset-0 opacity-10">
-        <img ngSrc="https://picsum.photos/seed/ocean_pattern/1920/1080" fill class="object-cover" alt="" aria-hidden="true" referrerPolicy="no-referrer">
+        <img ngSrc="/og-image.png" fill class="object-cover" alt="" aria-hidden="true" referrerPolicy="no-referrer">
       </div>
       <div class="max-w-7xl mx-auto relative z-10">
         <div class="text-center mb-16">
@@ -426,7 +426,7 @@ export class HomeComponent implements OnDestroy {
   heroSlides = computed(() => {
     const primary = this.siteSettings.image(
       'homeHero',
-      'https://picsum.photos/seed/jacquier_interior/1920/1080'
+      '/og-image.png'
     );
     const candidates = this.restaurantService.getGalleryImages()()
       .filter(image => ['restaurant', 'ambiance', 'cuisine'].includes(image.category))
@@ -476,11 +476,11 @@ export class HomeComponent implements OnDestroy {
   schoolHighlights = computed(() => this.restaurantService.getSchoolPrograms()().slice(0, 3));
   cuisineVisual = computed(() =>
     this.restaurantService.getGalleryImages()().find(image => image.category === 'cuisine')?.imageUrl
-      || this.siteSettings.image('homeHero', 'https://picsum.photos/seed/local_food/800/600').url
+      || this.siteSettings.image('homeHero', '/og-image.png').url
   );
   ambianceVisual = computed(() =>
     this.restaurantService.getGalleryImages()().find(image => image.category === 'ambiance')?.imageUrl
-      || this.siteSettings.image('homeHero', 'https://picsum.photos/seed/cocktail_bar/800/1000').url
+      || this.siteSettings.image('homeHero', '/og-image.png').url
   );
 
   initials(name: string): string {

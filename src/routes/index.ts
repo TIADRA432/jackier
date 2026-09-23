@@ -2,14 +2,14 @@ import { Router } from 'express';
 import multer from 'multer';
 import { getCategories, createCategory, updateCategory, deleteCategory } from '../controllers/category.controller';
 import { getMenuItems, getPublicMenuItems, createMenuItem, updateMenuItem, deleteMenuItem } from '../controllers/menu.controller';
-import { getWines, createWine, updateWine, deleteWine } from '../controllers/wine.controller';
+import { getWines, getPublicWines, createWine, updateWine, deleteWine } from '../controllers/wine.controller';
 import { uploadMenuImage, uploadWineImage } from '../controllers/upload.controller';
 import { createMediaAsset, createMediaTag, deleteMediaAsset, downloadMediaAsset, getMediaAssetUsage, getMediaAssets, getMediaTags, updateMediaAsset } from '../controllers/media.controller';
 import { getGalleryImages, createGalleryImage, updateGalleryImage, deleteGalleryImage } from '../controllers/gallery.controller';
 import { getDashboardOverview } from '../controllers/dashboard.controller';
 import { getReservations, createReservation, updateReservationStatus, deleteReservation } from '../controllers/reservation.controller';
 import { getCateringEvents, createCateringEvent, updateCateringEvent, deleteCateringEvent } from '../controllers/catering.controller';
-import { getSchoolPrograms, createSchoolProgram, updateSchoolProgram, deleteSchoolProgram } from '../controllers/school.controller';
+import { getSchoolPrograms, getPublicSchoolPrograms, createSchoolProgram, updateSchoolProgram, deleteSchoolProgram } from '../controllers/school.controller';
 import { getExpenses, getReports, addExpense, dailyClose } from '../controllers/finance.controller';
 import { getSettings, updateSettings, getLogs } from '../controllers/settings.controller';
 import { createInventoryItem, deleteInventoryItem, getInventoryItems, updateInventoryItem } from '../controllers/inventory.controller';
@@ -49,8 +49,9 @@ router.post('/catering', publicWriteRateLimiter, createCateringEvent); // Public
 router.put('/catering/:id', verifyToken, requireRole(['ADMIN']), updateCateringEvent);
 router.delete('/catering/:id', verifyToken, requireRole(['ADMIN']), deleteCateringEvent);
 
-// School
-router.get('/school', getSchoolPrograms); // Public
+// School. Public catalogue exposes only active programs; admin keeps drafts editable.
+router.get('/school', getPublicSchoolPrograms);
+router.get('/admin/school', verifyToken, requireRole(['ADMIN']), getSchoolPrograms);
 router.post('/school', verifyToken, requireRole(['ADMIN']), createSchoolProgram);
 router.put('/school/:id', verifyToken, requireRole(['ADMIN']), updateSchoolProgram);
 router.delete('/school/:id', verifyToken, requireRole(['ADMIN']), deleteSchoolProgram);
@@ -109,8 +110,9 @@ router.post('/menu', verifyToken, requireRole(['ADMIN']), createMenuItem);
 router.put('/menu/:id', verifyToken, requireRole(['ADMIN']), updateMenuItem);
 router.delete('/menu/:id', verifyToken, requireRole(['ADMIN']), deleteMenuItem);
 
-// Wines
-router.get('/wines', getWines);
+// Wines. Public catalogue exposes only active entries; admin keeps inactive wines editable.
+router.get('/wines', getPublicWines);
+router.get('/admin/wines', verifyToken, requireRole(['ADMIN']), getWines);
 router.post('/wines', verifyToken, requireRole(['ADMIN']), createWine);
 router.put('/wines/:id', verifyToken, requireRole(['ADMIN']), updateWine);
 router.delete('/wines/:id', verifyToken, requireRole(['ADMIN']), deleteWine);

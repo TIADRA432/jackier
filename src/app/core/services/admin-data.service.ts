@@ -8,11 +8,23 @@ export type ReservationStatus = 'pending' | 'confirmed' | 'cancelled' | 'complet
 export interface AdminReservation {
   id: string;
   name: string;
+  email?: string;
+  phone?: string;
   date: string;
   time: string;
   guests: number;
   notes?: string;
   status: ReservationStatus;
+  createdAt?: string;
+}
+
+export interface DashboardReadinessCheck {
+  key: 'settings' | 'menu' | 'wines' | 'team' | 'gallery' | 'school' | 'hours' | 'social' | 'legal';
+  label: string;
+  complete: boolean;
+  detail: string;
+  owner: 'admin' | 'client';
+  nextAction: string;
 }
 
 export interface DashboardOverview {
@@ -26,6 +38,14 @@ export interface DashboardOverview {
   };
   revenueChart: Array<{ month: string; total: number }>;
   recentActivities: Array<{ id: string; type: string; message: string; date: string }>;
+  readiness: {
+    completed: number;
+    total: number;
+    percent: number;
+    adminPending: number;
+    clientPending: number;
+    checks: DashboardReadinessCheck[];
+  };
 }
 
 export interface CateringEvent {
@@ -47,6 +67,8 @@ export interface SchoolProgram {
   description?: string;
   duration?: string;
   level?: string;
+  active?: boolean;
+  displayOrder?: number;
 }
 
 // Catégories historiques ; les filtres publics utilisent les catégories du catalogue.
@@ -89,11 +111,15 @@ export interface MenuCategory {
 export interface WineItem {
   id: string;
   name: string;
+  origin?: string;
+  grape?: string;
+  year?: number;
   description?: string;
   priceBottle: number;
   priceGlass?: number;
   imageUrl?: string;
   displayOrder?: number;
+  active?: boolean;
 }
 
 export interface FinanceExpense {
@@ -250,7 +276,19 @@ export class AdminDataService {
   }
 
   async getSchoolPrograms(): Promise<SchoolProgram[]> {
-    return firstValueFrom(this.http.get<SchoolProgram[]>(`${this.apiUrl}/school`));
+    return firstValueFrom(this.http.get<SchoolProgram[]>(`${this.apiUrl}/admin/school`));
+  }
+
+  async createSchoolProgram(payload: Omit<SchoolProgram, 'id'>): Promise<SchoolProgram> {
+    return firstValueFrom(this.http.post<SchoolProgram>(`${this.apiUrl}/school`, payload));
+  }
+
+  async updateSchoolProgram(id: string, payload: Partial<Omit<SchoolProgram, 'id'>>): Promise<SchoolProgram> {
+    return firstValueFrom(this.http.put<SchoolProgram>(`${this.apiUrl}/school/${id}`, payload));
+  }
+
+  async deleteSchoolProgram(id: string): Promise<void> {
+    await firstValueFrom(this.http.delete(`${this.apiUrl}/school/${id}`));
   }
 
   async getMenuItems(): Promise<MenuItem[]> {
@@ -286,7 +324,7 @@ export class AdminDataService {
   }
 
   async getWines(): Promise<WineItem[]> {
-    return firstValueFrom(this.http.get<WineItem[]>(`${this.apiUrl}/wines`));
+    return firstValueFrom(this.http.get<WineItem[]>(`${this.apiUrl}/admin/wines`));
   }
 
   async createWine(payload: Omit<WineItem, 'id'>): Promise<WineItem> {

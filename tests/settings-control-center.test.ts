@@ -89,10 +89,10 @@ test('configured currency is reused across public pricing surfaces', async () =>
   assert.doesNotMatch(daily, /> FG</);
 });
 
-test('catering CTA uses configured restaurant identity and phone', async () => {
-  const catering = await source('src', 'app', 'pages', 'catering', 'catering.component.ts');
+test('catering CTA uses configured restaurant phone', async () => {
+  const catering = await source('src', 'app', 'shared', 'components', 'catering-cta', 'catering-cta.component.ts');
 
-  assert.match(catering, /publicInfo\(\)\.restaurantName/);
+  assert.match(catering, /SiteSettingsService/);
   assert.match(catering, /publicInfo\(\)\.phone/);
   assert.match(catering, /phoneHref\(\)/);
   assert.doesNotMatch(catering, /tel:\+224625675363/);

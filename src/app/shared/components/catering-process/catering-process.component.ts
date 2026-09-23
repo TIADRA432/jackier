@@ -9,7 +9,7 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
       <div class="max-w-7xl mx-auto">
         <div class="text-center mb-20 lg:mb-24">
           <span class="text-jacquier-gold font-bold tracking-[0.2em] uppercase text-sm block mb-4">Notre Processus</span>
-          <h2 class="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-jacquier-primary">L'Organisation Parfaite</h2>
+          <h2 class="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-jacquier-primary">Du besoin à la proposition</h2>
         </div>
         
         <div class="relative">
@@ -39,10 +39,10 @@ import { Component, ChangeDetectionStrategy } from '@angular/core';
 })
 export class CateringProcessComponent {
   steps = [
-    { title: 'Prise de Contact', description: 'Échange initial pour comprendre vos envies et la nature de l’événement.' },
-    { title: 'Étude du Besoin', description: 'Définition du menu, du lieu, du nombre d’invités et des contraintes.' },
-    { title: 'Proposition Personnalisée', description: 'Devis détaillé et dégustation avec notre Chef pour valider les choix.' },
-    { title: 'Validation & Logistique', description: 'Planification du matériel, de l’équipe et repérage des lieux.' },
-    { title: 'Exécution le Jour J', description: 'Service impeccable, discrétion et excellence gastronomique.' }
+    { title: 'Demande', description: 'Vous transmettez les informations essentielles de votre événement via le formulaire.' },
+    { title: 'Analyse', description: 'L’équipe examine la date, le nombre d’invités, le budget indicatif et les besoins exprimés.' },
+    { title: 'Échange', description: 'Le restaurant peut vous recontacter pour préciser les éléments nécessaires à l’étude.' },
+    { title: 'Proposition', description: 'Une proposition adaptée peut être préparée à partir des informations validées ensemble.' },
+    { title: 'Suivi', description: 'Le statut de la demande est suivi dans l’administration jusqu’à sa clôture.' }
   ];
 }

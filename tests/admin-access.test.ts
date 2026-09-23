@@ -42,11 +42,27 @@ test('the reservations screen uses protected API data and persists only allowed 
 
 test('the dashboard reads its operational metrics from the protected overview endpoint', async () => {
   const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+  const controller = await source('src', 'controllers', 'dashboard.controller.ts');
   const component = await source('src', 'app', 'pages', 'admin', 'dashboard', 'dashboard.component.ts');
 
   assert.match(service, /get<DashboardOverview>\(`\$\{this\.apiUrl\}\/dashboard\/overview`\)/);
   assert.match(component, /this\.adminData\.getDashboardOverview\(\)/);
   assert.match(component, /Aucun rapport financier disponible/);
+  assert.match(controller, /readinessChecks/);
+  assert.match(controller, /activeWines/);
+  assert.match(controller, /publicTeam/);
+  assert.match(controller, /weeklyHours\?\.enabled === true/);
+  assert.match(component, /Préparation à la livraison/);
+  assert.match(component, /overview\(\)\.readiness\.percent/);
+  assert.match(component, /readinessPath/);
+  assert.match(component, /Corriger maintenant/);
+  assert.match(controller, /owner: 'client'/);
+  assert.match(controller, /owner: 'admin'/);
+  assert.match(controller, /nextAction/);
+  assert.match(component, /Information client/);
+  assert.match(component, /Action admin/);
+  assert.match(component, /adminPending/);
+  assert.match(component, /clientPending/);
 });
 
 test('the catering screen reads and updates only the protected catering API', async () => {
@@ -63,9 +79,12 @@ test('the school screen displays real programs instead of fictitious students', 
   const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
   const component = await source('src', 'app', 'pages', 'admin', 'school', 'school.component.ts');
 
-  assert.match(service, /get<SchoolProgram\[\]>\(`\$\{this\.apiUrl\}\/school`\)/);
+  assert.match(service, /get<SchoolProgram\[\]>\(`\$\{this\.apiUrl\}\/admin\/school`\)/);
   assert.match(component, /this\.adminData\.getSchoolPrograms\(\)/);
-  assert.match(component, /gestion des étudiants n’est pas encore modélisée/);
+  assert.match(component, /this\.adminData\.createSchoolProgram/);
+  assert.match(component, /this\.adminData\.updateSchoolProgram/);
+  assert.match(component, /this\.adminData\.deleteSchoolProgram/);
+  assert.match(component, /Les étudiants, inscriptions et paiements ne sont pas encore modélisés/);
 });
 
 test('the restaurant screen creates dishes and persists editorial changes', async () => {
@@ -119,7 +138,7 @@ test('category and wine admin screens use the authenticated catalogue API', asyn
 
   assert.match(service, /get<MenuCategory\[\]>\(`\$\{this\.apiUrl\}\/categories`\)/);
   assert.match(service, /post<MenuCategory>\(`\$\{this\.apiUrl\}\/categories`, payload\)/);
-  assert.match(service, /get<WineItem\[\]>\(`\$\{this\.apiUrl\}\/wines`\)/);
+  assert.match(service, /get<WineItem\[\]>\(`\$\{this\.apiUrl\}\/admin\/wines`\)/);
   assert.match(service, /post<WineItem>\(`\$\{this\.apiUrl\}\/wines`, payload\)/);
   assert.match(categories, /this\.adminData\.createCategory/);
   assert.match(categories, /this\.adminData\.deleteCategory/);

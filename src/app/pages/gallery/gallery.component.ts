@@ -30,7 +30,7 @@ const CATEGORY_LABELS: Record<string, string> = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="relative h-[50vh] flex items-center justify-center text-center px-4 overflow-hidden bg-jacquier-dark">
-      <img [ngSrc]="siteSettings.image('galleryHero', 'https://picsum.photos/seed/gallery_hero/1920/1080').url" fill priority class="object-cover opacity-40" [alt]="siteSettings.image('galleryHero', '').altText || 'Galerie'" referrerPolicy="no-referrer">
+      <img [ngSrc]="siteSettings.image('galleryHero', '/og-image.png').url" fill priority class="object-cover opacity-40" [alt]="siteSettings.image('galleryHero', '').altText || 'Galerie'" referrerPolicy="no-referrer">
       <div appRevealOnScroll revealVariant="fade-up" class="relative z-10 max-w-4xl mx-auto text-white">
         <span class="block text-jacquier-gold font-bold tracking-[0.2em] mb-4 uppercase text-sm md:text-base">Immersion visuelle</span>
         <h1 class="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight">Galerie</h1>

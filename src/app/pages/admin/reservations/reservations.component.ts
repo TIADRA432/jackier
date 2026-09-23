@@ -50,12 +50,19 @@ const STATUS_CLASSES: Record<ReservationStatus, string> = {
             <div class="overflow-x-auto p-6">
               <table class="w-full border-collapse text-left text-sm">
                 <thead><tr class="border-b border-gray-800 text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                  <th class="pb-4">Client</th><th class="pb-4">Date</th><th class="pb-4">Heure</th><th class="pb-4">Couverts</th><th class="pb-4">Statut</th><th class="pb-4 text-right">Modifier</th>
+                  <th class="pb-4">Client</th><th class="pb-4">Contact</th><th class="pb-4">Date</th><th class="pb-4">Heure</th><th class="pb-4">Couverts</th><th class="pb-4">Statut</th><th class="pb-4 text-right">Modifier</th>
                 </tr></thead>
                 <tbody>
                   @for (reservation of reservations(); track reservation.id) {
                     <tr class="border-b border-gray-800/50 transition-colors hover:bg-gray-800/20">
-                      <td class="py-4 font-medium text-white">{{ reservation.name }}</td>
+                      <td class="py-4">
+                        <p class="font-medium text-white">{{ reservation.name }}</p>
+                        <p class="mt-1 font-mono text-[10px] text-gray-600">#{{ shortReference(reservation.id) }}</p>
+                      </td>
+                      <td class="py-4 text-xs text-gray-300">
+                        @if (reservation.phone) { <a [href]="'tel:' + reservation.phone" class="block hover:text-jacquier-gold">{{ reservation.phone }}</a> }
+                        @if (reservation.email) { <a [href]="'mailto:' + reservation.email" class="mt-1 block hover:text-jacquier-gold">{{ reservation.email }}</a> }
+                      </td>
                       <td class="py-4 text-gray-300">{{ reservation.date }}</td>
                       <td class="py-4 text-gray-300">{{ reservation.time }}</td>
                       <td class="py-4 text-gray-300">{{ reservation.guests }} pers.</td>
@@ -126,6 +133,8 @@ export class ReservationsComponent {
       this.errorMessage.set('La mise à jour du statut a échoué. Aucune modification locale n’a été conservée.');
     } finally { this.updatingId.set(null); }
   }
+
+  shortReference(id: string): string { return id.split('-')[0]?.toUpperCase() || id; }
 
   statusLabel(status: ReservationStatus): string { return STATUS_LABELS[status]; }
   statusClass(status: ReservationStatus): string { return STATUS_CLASSES[status]; }

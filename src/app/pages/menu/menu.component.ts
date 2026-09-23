@@ -17,7 +17,7 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
   template: `
     <!-- Hero -->
     <div class="relative min-h-[360px] pt-28 pb-14 flex items-center justify-center text-center px-4 overflow-hidden bg-jacquier-dark">
-      <img [ngSrc]="siteSettings.image('menuHero', 'https://picsum.photos/seed/menu_hero/1920/1080').url" fill priority class="object-cover opacity-40" [alt]="siteSettings.image('menuHero', '').altText || 'Notre Menu'" referrerPolicy="no-referrer">
+      <img [ngSrc]="siteSettings.image('menuHero', '/og-image.png').url" fill priority class="object-cover opacity-40" [alt]="siteSettings.image('menuHero', '').altText || 'Notre Menu'" referrerPolicy="no-referrer">
       <div appRevealOnScroll class="relative z-10 max-w-4xl mx-auto text-white">
         <span class="block text-jacquier-gold font-bold tracking-[0.2em] mb-4 uppercase text-sm md:text-base">Saveurs d'ici et d'ailleurs</span>
         <h1 class="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight">Notre Carte</h1>
@@ -191,6 +191,47 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
         }
       </div>
     </section>
+    @if (wines().length || isLoadingWines() || wineError()) {
+      <section appRevealOnScroll class="bg-jacquier-dark px-4 py-20 text-white">
+        <div class="mx-auto max-w-7xl">
+          <div class="mb-10">
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-jacquier-gold">Cave & accords</p>
+            <h2 class="mt-2 font-serif text-4xl font-bold">Carte des vins</h2>
+          </div>
+          @if (isLoadingWines()) {
+            <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              @for (i of [0,1,2]; track i) { <div class="h-44 animate-pulse rounded-3xl bg-white/10"></div> }
+            </div>
+          } @else if (wineError()) {
+            <div class="rounded-2xl border border-red-400/20 bg-red-500/10 p-6 text-sm text-red-100">
+              {{ wineError() }}
+              <button type="button" (click)="retryWines()" class="ml-3 font-bold underline">Réessayer</button>
+            </div>
+          } @else {
+            <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+              @for (wine of wines(); track wine.id) {
+                <article class="rounded-3xl border border-white/10 bg-white/5 p-6 transition duration-700 hover:bg-white/10">
+                  <div class="flex items-start justify-between gap-4">
+                    <div>
+                      <h3 class="font-serif text-2xl font-bold">{{ wine.name }}</h3>
+                      @if (wine.origin || wine.grape || wine.year) {
+                        <p class="mt-2 text-xs uppercase tracking-wider text-jacquier-gold">
+                          {{ wine.origin }}@if (wine.grape) { · {{ wine.grape }} }@if (wine.year) { · {{ wine.year }} }
+                        </p>
+                      }
+                    </div>
+                    <p class="shrink-0 font-bold text-jacquier-gold">{{ wine.priceBottle | number:'1.0-0' }} {{ siteSettings.publicInfo().currency }}</p>
+                  </div>
+                  @if (wine.description) { <p class="mt-4 text-sm leading-relaxed text-gray-300">{{ wine.description }}</p> }
+                  @if (wine.priceGlass) { <p class="mt-4 text-xs text-gray-400">Verre · {{ wine.priceGlass | number:'1.0-0' }} {{ siteSettings.publicInfo().currency }}</p> }
+                </article>
+              }
+            </div>
+          }
+        </div>
+      </section>
+    }
+
     <section class="bg-jacquier-primary px-6 py-14 text-center text-white">
       <h2 class="mb-4 text-3xl font-serif">Le plaisir se partage à table</h2>
       <p class="mb-6">Retrouvez-nous au Jacquier pour découvrir la cuisine de la Cheffe.</p>
@@ -202,7 +243,10 @@ export class MenuComponent {
   restaurantService = inject(RestaurantService);
   readonly siteSettings = inject(SiteSettingsService);
   allDishes = this.restaurantService.getDishes(); // Readonly signal
+  wines = this.restaurantService.getWines();
   isLoading = this.restaurantService.isLoadingMenu();
+  isLoadingWines = this.restaurantService.isLoadingWines();
+  wineError = this.restaurantService.getWinesError();
   loadError = this.restaurantService.getMenuError();
   skeletonPlaceholders = Array.from({ length: 8 }, (_, i) => i);
 
@@ -249,5 +293,9 @@ export class MenuComponent {
 
   retry() {
     this.restaurantService.retryLoadDishes();
+  }
+
+  retryWines() {
+    this.restaurantService.retryLoadWines();
   }
 }

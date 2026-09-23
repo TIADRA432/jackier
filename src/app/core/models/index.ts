@@ -16,6 +16,9 @@ export interface Dish {
 export interface Wine {
   id: string;
   name: string;
+  origin?: string;
+  grape?: string;
+  year?: number;
   description: string;
   priceBottle: number;
   priceGlass?: number;
@@ -58,12 +61,6 @@ export interface TeamMember {
   displayOrder?: number;
 }
 
-export interface CateringService {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-}
 
 export interface SchoolProgram {
   id: string;
