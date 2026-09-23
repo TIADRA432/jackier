@@ -117,11 +117,16 @@ export interface FinanceReport {
 
 export interface PublicSettings {
   restaurantName?: string;
+  tagline?: string;
   address?: string;
+  neighborhood?: string;
   phone?: string;
   email?: string;
   openingHours?: string;
   currency?: string;
+  mapQuery?: string;
+  legalNoticeUrl?: string;
+  privacyPolicyUrl?: string;
   socialMedia?: Record<string, string>;
   brand?: BrandSettings;
 }

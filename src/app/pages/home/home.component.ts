@@ -24,10 +24,10 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
       <div class="relative z-10 max-w-5xl mx-auto text-white animate-fade-in-up">
         <span class="block text-jacquier-gold font-bold tracking-[0.2em] mb-4 uppercase text-sm md:text-base">Bienvenue à Conakry</span>
         <h1 class="text-6xl md:text-8xl font-serif font-bold mb-6 leading-tight">
-          Le Jacquier
+          {{ siteSettings.publicInfo().restaurantName }}
         </h1>
         <p class="text-lg md:text-2xl text-jacquier-light mb-10 font-light max-w-2xl mx-auto leading-relaxed">
-          L'élégance de la fusion franco-guinéenne dans un cadre exceptionnel à Kipé.
+          {{ siteSettings.publicInfo().tagline }}
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
           <a routerLink="/reservation" class="w-full sm:w-auto px-8 py-4 bg-jacquier-gold text-jacquier-dark rounded-xl font-bold uppercase tracking-wide hover:bg-yellow-500 transition-all shadow-lg hover:shadow-jacquier-gold/30 min-h-[44px] flex items-center justify-center">
@@ -111,7 +111,7 @@ import { NgOptimizedImage, DecimalPipe } from '@angular/common';
                 </div>
                 <h3 class="text-2xl font-serif font-bold mb-2">{{ dish.name }}</h3>
                 <p class="text-gray-300 font-light mb-4 line-clamp-2">{{ dish.description }}</p>
-                <div class="text-jacquier-gold font-bold">{{ dish.price | number:'1.0-0' }} FG</div>
+                <div class="text-jacquier-gold font-bold">{{ dish.price | number:'1.0-0' }} {{ siteSettings.publicInfo().currency }}</div>
               </div>
             }
           </div>

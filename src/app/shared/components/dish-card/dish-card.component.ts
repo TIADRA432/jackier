@@ -1,8 +1,9 @@
 
-import { Component, input, ChangeDetectionStrategy } from '@angular/core';
+import { Component, input, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Dish } from '../../../core/models';
 import { DecimalPipe, NgOptimizedImage } from '@angular/common';
 import { DishDetailComponent } from './dish-detail.component';
+import { SiteSettingsService } from '../../../core/services/site-settings.service';
 
 @Component({
   selector: 'app-dish-card',
@@ -41,7 +42,7 @@ import { DishDetailComponent } from './dish-detail.component';
               {{ dish().name }}
             </h3>
             <span class="text-xl font-bold text-jacquier-gold whitespace-nowrap bg-jacquier-cream px-3 py-1 rounded-lg">
-              {{ dish().price | number:'1.0-0' }} GNF
+              {{ dish().price | number:'1.0-0' }} {{ siteSettings.publicInfo().currency }}
             </span>
           </div>
           <p class="text-jacquier-text font-light text-sm leading-relaxed mb-6 line-clamp-3">
@@ -57,5 +58,6 @@ import { DishDetailComponent } from './dish-detail.component';
   `
 })
 export class DishCardComponent {
-  dish = input.required<Dish>();
+  readonly dish = input.required<Dish>();
+  readonly siteSettings = inject(SiteSettingsService);
 }

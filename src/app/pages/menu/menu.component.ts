@@ -60,7 +60,7 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
               <div class="flex-1 w-full">
                 <div class="flex justify-between mb-4">
                   <label for="min-price" class="text-xs font-bold uppercase text-gray-500 tracking-wider">Prix Minimum</label>
-                  <span class="text-base font-serif font-bold text-jacquier-primary">{{ minPrice() | number:'1.0-0' }} GNF</span>
+                  <span class="text-base font-serif font-bold text-jacquier-primary">{{ minPrice() | number:'1.0-0' }} {{ siteSettings.publicInfo().currency }}</span>
                 </div>
                 <input
                   id="min-price"
@@ -76,7 +76,7 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
               <div class="flex-1 w-full">
                 <div class="flex justify-between mb-4">
                   <label for="max-price" class="text-xs font-bold uppercase text-gray-500 tracking-wider">Prix Maximum</label>
-                  <span class="text-base font-serif font-bold text-jacquier-primary">{{ effectiveMaxPrice() | number:'1.0-0' }} GNF</span>
+                  <span class="text-base font-serif font-bold text-jacquier-primary">{{ effectiveMaxPrice() | number:'1.0-0' }} {{ siteSettings.publicInfo().currency }}</span>
                 </div>
                 <input
                   id="max-price"
