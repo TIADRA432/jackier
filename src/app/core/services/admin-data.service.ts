@@ -23,6 +23,8 @@ export interface DashboardReadinessCheck {
   label: string;
   complete: boolean;
   detail: string;
+  owner: 'admin' | 'client';
+  nextAction: string;
 }
 
 export interface DashboardOverview {
@@ -40,6 +42,8 @@ export interface DashboardOverview {
     completed: number;
     total: number;
     percent: number;
+    adminPending: number;
+    clientPending: number;
     checks: DashboardReadinessCheck[];
   };
 }
