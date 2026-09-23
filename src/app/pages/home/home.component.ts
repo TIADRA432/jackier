@@ -398,7 +398,7 @@ export class HomeComponent implements OnDestroy {
   readonly siteSettings = inject(SiteSettingsService);
   private readonly platformId = inject(PLATFORM_ID);
   readonly activeHeroIndex = signal(0);
-  private heroRotation?: ReturnType<typeof setInterval>;
+  private heroRotation?: number;
   isMenuLoading = this.restaurantService.isLoadingMenu();
   isGalleryLoading = this.restaurantService.isLoadingGallery();
   isSchoolLoading = this.restaurantService.isLoadingSchool();
