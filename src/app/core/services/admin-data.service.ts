@@ -125,6 +125,8 @@ export interface PublicSettings {
   openingHours?: string;
   currency?: string;
   mapQuery?: string;
+  legalNoticeUrl?: string;
+  privacyPolicyUrl?: string;
   socialMedia?: Record<string, string>;
   brand?: BrandSettings;
 }
