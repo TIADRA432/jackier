@@ -16,6 +16,9 @@ export interface Dish {
 export interface Wine {
   id: string;
   name: string;
+  origin?: string;
+  grape?: string;
+  year?: number;
   description: string;
   priceBottle: number;
   priceGlass?: number;
