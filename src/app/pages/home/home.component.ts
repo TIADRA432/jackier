@@ -136,7 +136,7 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
         <div class="flex flex-col lg:flex-row items-center gap-16">
           <div class="lg:w-1/2">
             <div class="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
-              <img ngSrc="https://picsum.photos/seed/local_food/800/600" fill class="object-cover" alt="Plat local guinéen" referrerPolicy="no-referrer">
+              <img [src]="cuisineVisual()" class="h-full w-full object-cover" alt="Cuisine du Jacquier" referrerPolicy="no-referrer">
             </div>
           </div>
           <div class="lg:w-1/2">
@@ -171,8 +171,12 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             @for (dish of seafoodDishes(); track dish.id) {
               <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10 hover:bg-white/10 transition-colors">
-                <div class="relative h-48 rounded-xl overflow-hidden mb-6">
-                  <img [ngSrc]="dish.image" fill class="object-cover" [alt]="dish.name" referrerPolicy="no-referrer">
+                <div class="relative h-48 rounded-xl overflow-hidden mb-6 bg-white/10">
+                  @if (dish.image) {
+                    <img [src]="dish.image" class="h-full w-full object-cover" [alt]="dish.name" referrerPolicy="no-referrer">
+                  } @else {
+                    <div class="flex h-full items-center justify-center px-6 text-center font-serif text-lg text-white/60">À découvrir au Jacquier</div>
+                  }
                 </div>
                 <h3 class="text-2xl font-serif font-bold mb-2">{{ dish.name }}</h3>
                 <p class="text-gray-300 font-light mb-4 line-clamp-2">{{ dish.description }}</p>
@@ -223,7 +227,7 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
             </a>
           </div>
           <div class="order-1 md:order-2 relative h-[500px] rounded-2xl overflow-hidden shadow-xl">
-            <img ngSrc="https://picsum.photos/seed/cocktail_bar/800/1000" fill class="object-cover" alt="Cocktails au bar" referrerPolicy="no-referrer">
+            <img [src]="ambianceVisual()" class="h-full w-full object-cover" alt="Ambiance du Jacquier" referrerPolicy="no-referrer">
           </div>
         </div>
       </div>
@@ -383,6 +387,14 @@ export class HomeComponent {
   teamHighlights = computed(() => this.team().slice(0, 4));
   galleryHighlights = computed(() => this.restaurantService.getGalleryImages()().slice(0, 5));
   schoolHighlights = computed(() => this.restaurantService.getSchoolPrograms()().slice(0, 3));
+  cuisineVisual = computed(() =>
+    this.restaurantService.getGalleryImages()().find(image => image.category === 'cuisine')?.imageUrl
+      || this.siteSettings.image('homeHero', 'https://picsum.photos/seed/local_food/800/600').url
+  );
+  ambianceVisual = computed(() =>
+    this.restaurantService.getGalleryImages()().find(image => image.category === 'ambiance')?.imageUrl
+      || this.siteSettings.image('homeHero', 'https://picsum.photos/seed/cocktail_bar/800/1000').url
+  );
 
   initials(name: string): string {
     return name.split(/\s+/).filter(Boolean).slice(0, 2).map(part => part[0]).join('').toUpperCase();
