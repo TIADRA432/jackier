@@ -200,14 +200,14 @@ export class CateringFormComponent {
 
   constructor(private fb: FormBuilder) {
     this.devisForm = this.fb.group({
-      name: ['', Validators.required],
-      phone: ['', [Validators.required, Validators.pattern('^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\\s\\./0-9]*$')]],
-      email: ['', [Validators.required, Validators.email]],
+      name: ['', [Validators.required, Validators.maxLength(160)]],
+      phone: ['', [Validators.required, Validators.pattern(/^\\+?[0-9 ()-]{6,30}$/)]],
+      email: ['', [Validators.required, Validators.email, Validators.maxLength(254)]],
       eventType: ['', Validators.required],
       date: ['', Validators.required],
-      guests: ['', [Validators.required, Validators.min(1)]],
-      budget: [''],
-      message: ['', Validators.required]
+      guests: ['', [Validators.required, Validators.min(1), Validators.max(5000)]],
+      budget: ['', Validators.maxLength(120)],
+      message: ['', [Validators.required, Validators.maxLength(2000)]]
     });
   }
 
@@ -224,7 +224,9 @@ export class CateringFormComponent {
         this.isSubmitted.set(true);
       } catch (err) {
         console.error('Échec de l\'envoi de la demande de devis traiteur', err);
-        this.submitError.set('Impossible d\'envoyer votre demande pour le moment. Merci de réessayer, ou contactez-nous directement par téléphone.');
+        this.submitError.set(err instanceof Error
+          ? err.message
+          : 'Impossible d\'envoyer votre demande pour le moment. Merci de réessayer, ou contactez-nous directement par téléphone.');
       } finally {
         this.isSubmitting.set(false);
       }
