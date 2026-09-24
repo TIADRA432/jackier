@@ -4,91 +4,90 @@
 - cluster-only mode — file stats not available
 
 ## Summary
-- 1252 nodes · 2641 edges · 81 communities (48 shown, 33 thin omitted)
+- 1258 nodes · 2658 edges · 80 communities (49 shown, 31 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 83 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `177bfd97`
+- Built from commit: `326ac687`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- AdminSettingsComponent
+- reservation.controller.ts
 - AdminDataService
-- admin-data.service.ts
+- AdminSettingsComponent
+- CatalogValidationError
 - AdminSchoolComponent
 - options
 - CMSComponent
-- site-settings.service.ts
+- security.middleware.ts
 - RestaurantService
-- wine.controller.ts
+- site-settings.service.ts
+- gallery.controller.ts
 - school.controller.ts
-- CatalogValidationError
-- express
+- admin-data.service.ts
 - AdminComponent
-- reservation.controller.ts
+- @angular/common
 - AdminGalleryComponent
-- media.controller.ts
+- routes/index.ts
 - menu.controller.ts
 - package.json
-- team.controller.ts
-- routes/index.ts
-- dependencies
-- catalogError
-- AdminEquipeComponent
-- pages/traiteur/traiteur.component.ts
-- supabase.ts
 - restaurant.service.ts
-- menu.component.ts
+- wine.controller.ts
+- dependencies
+- @angular/core
+- AdminEquipeComponent
 - AdminRestaurantComponent
-- AdminTraiteurComponent
+- reservation.service.ts
 - compilerOptions
 - GalleryComponent
-- catering.controller.ts
-- reservation.service.ts
+- AdminTraiteurComponent
+- team.controller.ts
 - ReservationsComponent
-- @angular/common
 - devDependencies
+- express
+- menu-catalog.ts
 - StockComponent
 - SchoolComponent
 - AdminWinesComponent
-- worker.ts
+- menu.component.ts
 - cms.component.ts
 - SeoService
 - AdminCategoriesComponent
 - HeaderComponent
+- inventory.controller.ts
 - compilerOptions
 - DashboardComponent
 - scripts
+- admin.component.ts
+- ref_node_assert
 - ref_node_fs
+- ref_node_path
 - AdminFinanceComponent
 - ReservationComponent
 - AnalyticsComponent
 - MenuComponent
 - ParallaxDirective
-- ref_node_assert
-- ref_node_path
 - ref_node_test
 - HomeComponent
 - CateringFormComponent
+- contact.component.ts
 - prepare-preview.mjs
 - DishDetailComponent
 - production-shell.test.ts
 - smoke-production.sh
 - TraiteurComponent
-- AdminLoginComponent
-- admin-access.test.ts
 - admin-gallery.test.ts
 - catering-flow.test.ts
 - content-authenticity.test.ts
 - dashboard-readiness.test.ts
-- database-security.test.ts
 - gallery-experience.test.ts
 - live-visitor-experience.test.ts
-- media-library.test.ts
+- reservation-flow.test.ts
 - school-catalog.test.ts
-- settings-control-center.test.ts
+- school-management.test.ts
+- seo.test.ts
 - staging-environment.test.ts
 - team-management.test.ts
 - wine-catalog.test.ts
@@ -123,219 +122,223 @@
 ## Import Cycles
 - None detected.
 
-## Communities (81 total, 33 thin omitted)
+## Communities (80 total, 31 thin omitted)
 
-### Community 0 - "AdminSettingsComponent"
+### Community 0 - "reservation.controller.ts"
 Cohesion: 0.07
-Nodes (15): BrandSettings, MediaReference, OpeningDay, PublicSettings, SiteMediaSlot, TodaySettings, WeekdayKey, WeeklyHours (+7 more)
+Nodes (59): ALLOWED_EVENT_TYPES, ALLOWED_STATUSES, CATERING_TRANSITIONS, CateringValidationError, CateringWorkflowStatus, cleanString(), conakryDateString(), createCateringEvent() (+51 more)
 
-### Community 2 - "admin-data.service.ts"
+### Community 2 - "AdminSettingsComponent"
+Cohesion: 0.08
+Nodes (8): MediaReference, OpeningDay, PublicSettings, SiteMediaSlot, WeekdayKey, WeeklyHours, AdminSettingsComponent, Component
+
+### Community 3 - "CatalogValidationError"
 Cohesion: 0.09
-Nodes (29): @angular/core, @angular/forms, @angular/router, adminAuthGuard(), DashboardOverview, DashboardReadinessCheck, FinanceExpense, FinanceReport (+21 more)
+Nodes (44): CatalogValidationError, isRecord(), requireKnownFields(), createMediaAsset(), createMediaTag(), EXTENSIONS, getMediaAssets(), getMediaTags() (+36 more)
 
-### Community 3 - "AdminSchoolComponent"
+### Community 4 - "AdminSchoolComponent"
 Cohesion: 0.08
 Nodes (11): SchoolLevel, SchoolProgram, SchoolProgramStatus, SchoolRegistration, SchoolRegistrationStatus, SchoolSession, SchoolSessionStatus, AdminSchoolComponent (+3 more)
 
-### Community 4 - "options"
+### Community 5 - "options"
 Cohesion: 0.05
 Nodes (43): architect, prefix, projectType, root, sourceRoot, build, serve, builder (+35 more)
 
-### Community 5 - "CMSComponent"
+### Community 6 - "CMSComponent"
 Cohesion: 0.08
 Nodes (5): MediaAsset, MediaCategory, MediaUsage, CMSComponent, Component
 
-### Community 6 - "site-settings.service.ts"
-Cohesion: 0.08
-Nodes (19): @angular/platform-browser, rxjs, routes, AppComponent, Component, authInterceptor(), SeoConfig, DEFAULT_SETTINGS (+11 more)
+### Community 7 - "security.middleware.ts"
+Cohesion: 0.07
+Nodes (29): ref_cloudflare_node, @cloudflare/workers-types, cors, express-rate-limit, helmet, ref_node_events, ref_node_net, ref_path (+21 more)
 
-### Community 8 - "wine.controller.ts"
-Cohesion: 0.13
-Nodes (30): CATEGORY_FIELDS, CategoryPayload, createCategory(), deleteCategory(), getCategories(), updateCategory(), validateCategoryPayload(), updateSchoolProgram() (+22 more)
-
-### Community 9 - "school.controller.ts"
-Cohesion: 0.12
-Nodes (31): cleanEmail(), cleanMaterials(), cleanPhone(), cleanText(), createSchoolProgram(), createSchoolRegistration(), createSchoolSession(), deleteSchoolProgram() (+23 more)
-
-### Community 10 - "CatalogValidationError"
-Cohesion: 0.15
-Nodes (27): CatalogValidationError, isRecord(), requireKnownFields(), updateSchoolRegistrationStatus(), BRAND_FIELDS, getLogs(), getSettings(), MEDIA_REFERENCE_FIELDS (+19 more)
-
-### Community 11 - "express"
+### Community 9 - "site-settings.service.ts"
 Cohesion: 0.10
-Nodes (20): cors, express, express-rate-limit, helmet, ref_node_events, ref_node_net, ref_path, ref_url (+12 more)
+Nodes (16): rxjs, AppComponent, Component, SeoConfig, DEFAULT_SETTINGS, FALLBACK_LOGO, SiteSettingsService, Injectable (+8 more)
 
-### Community 12 - "AdminComponent"
+### Community 10 - "gallery.controller.ts"
+Cohesion: 0.14
+Nodes (26): optionalImageUrl(), optionalOrder(), optionalPrice(), optionalText(), requiredText(), addExpense(), DAILY_CLOSE_FIELDS, dailyClose() (+18 more)
+
+### Community 11 - "school.controller.ts"
+Cohesion: 0.13
+Nodes (28): cleanEmail(), cleanMaterials(), cleanPhone(), cleanText(), createSchoolRegistration(), createSchoolSession(), getAdminSchoolSessions(), getPublicSchoolPrograms() (+20 more)
+
+### Community 12 - "admin-data.service.ts"
+Cohesion: 0.12
+Nodes (19): @angular/forms, BrandSettings, DashboardReadinessCheck, FinanceExpense, FinanceReport, MENU_ITEM_CATEGORIES, MenuCategory, MenuItemCategory (+11 more)
+
+### Community 13 - "AdminComponent"
 Cohesion: 0.11
 Nodes (5): AdminAuthService, Injectable, AdminComponent, Component, HostListener
 
-### Community 13 - "reservation.controller.ts"
-Cohesion: 0.15
-Nodes (25): ALLOWED_STATUSES, ALLOWED_TIMES, cleanString(), conakryNow(), createReservation(), deleteReservation(), ensureNoDuplicateReservation(), format() (+17 more)
+### Community 14 - "@angular/common"
+Cohesion: 0.14
+Nodes (14): @angular/common, @angular/router, routes, adminAuthGuard(), authInterceptor(), EMPTY_OVERVIEW, DEPARTMENTS, TeamDraft (+6 more)
 
-### Community 14 - "AdminGalleryComponent"
+### Community 15 - "AdminGalleryComponent"
 Cohesion: 0.14
 Nodes (3): GalleryMedia, AdminGalleryComponent, Component
 
-### Community 15 - "media.controller.ts"
-Cohesion: 0.14
-Nodes (24): validateUuid(), collectMediaUsage(), createMediaAsset(), createMediaTag(), deleteMediaAsset(), downloadMediaAsset(), EXTENSIONS, getMediaAssets() (+16 more)
+### Community 16 - "routes/index.ts"
+Cohesion: 0.19
+Nodes (24): catalogError(), validateUuid(), deleteCategory(), updateCategory(), deleteGalleryImage(), deleteInventoryItem(), collectMediaUsage(), deleteMediaAsset() (+16 more)
 
-### Community 16 - "menu.controller.ts"
+### Community 17 - "menu.controller.ts"
 Cohesion: 0.20
 Nodes (24): createMenuItem(), deleteMenuItem(), ensureCategoryExists(), getMenuItems(), getParam(), getPublicMenuItems(), isRecord(), MENU_FIELDS (+16 more)
 
-### Community 17 - "package.json"
+### Community 18 - "package.json"
 Cohesion: 0.08
 Nodes (23): name, private, type, version, @angular/build, @angular/cli, @angular/compiler, @angular/compiler-cli (+15 more)
 
-### Community 18 - "team.controller.ts"
-Cohesion: 0.18
-Nodes (21): optionalImageUrl(), optionalOrder(), optionalText(), requiredText(), validateCategory(), validateGalleryPayload(), createTeamMember(), getPublicTeamMembers() (+13 more)
-
-### Community 19 - "routes/index.ts"
+### Community 19 - "restaurant.service.ts"
 Cohesion: 0.14
-Nodes (21): createGalleryImage(), deleteGalleryImage(), GALLERY_CATEGORIES, GALLERY_FIELDS, GalleryCategory, GalleryRow, getGalleryImages(), toGalleryItem() (+13 more)
+Nodes (13): Dish, GalleryImage, Review, SchoolProgram, SchoolRegistrationReceipt, TeamMember, Wine, AboutComponent (+5 more)
 
-### Community 20 - "dependencies"
+### Community 20 - "wine.controller.ts"
+Cohesion: 0.18
+Nodes (21): CATEGORY_FIELDS, CategoryPayload, createCategory(), getCategories(), validateCategoryPayload(), getPublicWines(), getWines(), sortWines() (+13 more)
+
+### Community 21 - "dependencies"
 Cohesion: 0.09
 Nodes (23): dependencies, @angular/build, @angular/cli, @angular/common, @angular/compiler, @angular/compiler-cli, @angular/core, @angular/forms (+15 more)
 
-### Community 21 - "catalogError"
-Cohesion: 0.17
-Nodes (21): catalogError(), optionalPrice(), addExpense(), DAILY_CLOSE_FIELDS, dailyClose(), EXPENSE_FIELDS, getExpenses(), getReports() (+13 more)
+### Community 22 - "@angular/core"
+Cohesion: 0.14
+Nodes (11): @angular/core, CateringCtaComponent, Component, CateringGalleryComponent, Component, CateringHeroComponent, Component, CateringProcessComponent (+3 more)
 
-### Community 22 - "AdminEquipeComponent"
+### Community 23 - "AdminEquipeComponent"
 Cohesion: 0.17
 Nodes (4): AdminTeamMember, AdminEquipeComponent, emptyDraft(), Component
 
-### Community 23 - "pages/traiteur/traiteur.component.ts"
-Cohesion: 0.12
-Nodes (10): CateringCtaComponent, Component, CateringGalleryComponent, Component, CateringHeroComponent, Component, CateringProcessComponent, Component (+2 more)
-
-### Community 24 - "supabase.ts"
-Cohesion: 0.16
-Nodes (15): supabase, CATERING_STATUS_LABELS, compactActivities(), CORE_SETTINGS_FIELDS, formatActivity(), getDashboardOverview(), RESERVATION_STATUS_LABELS, AuthenticatedRequest (+7 more)
-
-### Community 25 - "restaurant.service.ts"
-Cohesion: 0.15
-Nodes (12): GalleryImage, Review, SchoolProgram, SchoolRegistrationReceipt, TeamMember, Wine, AboutComponent, Component (+4 more)
-
-### Community 26 - "menu.component.ts"
-Cohesion: 0.17
-Nodes (14): Dish, CategoryFilter, categoryFilters(), categoryKey(), filterDishes(), labels, MenuCategory, MenuFilters (+6 more)
-
-### Community 27 - "AdminRestaurantComponent"
+### Community 24 - "AdminRestaurantComponent"
 Cohesion: 0.20
 Nodes (3): MenuItem, AdminRestaurantComponent, Component
 
-### Community 28 - "AdminTraiteurComponent"
-Cohesion: 0.21
-Nodes (6): CateringEvent, CateringWorkflowStatus, AdminTraiteurComponent, LABELS, STATUSES, Component
+### Community 25 - "reservation.service.ts"
+Cohesion: 0.15
+Nodes (9): Reservation, ReservationReceipt, ReservationResult, ReservationService, Injectable, AdminLoginComponent, Component, supabaseClient (+1 more)
 
-### Community 29 - "compilerOptions"
+### Community 26 - "compilerOptions"
 Cohesion: 0.11
 Nodes (17): angularCompilerOptions, disableTypeScriptVersionCheck, compilerOptions, allowJs, experimentalDecorators, isolatedModules, jsx, lib (+9 more)
 
-### Community 30 - "GalleryComponent"
+### Community 27 - "GalleryComponent"
 Cohesion: 0.15
 Nodes (3): GalleryComponent, Component, HostListener
 
-### Community 31 - "catering.controller.ts"
-Cohesion: 0.22
-Nodes (15): ALLOWED_EVENT_TYPES, ALLOWED_STATUSES, CATERING_TRANSITIONS, cleanString(), conakryDateString(), createCateringEvent(), deleteCateringEvent(), ensureNoDuplicateCateringRequest() (+7 more)
+### Community 28 - "AdminTraiteurComponent"
+Cohesion: 0.26
+Nodes (4): CateringEvent, CateringWorkflowStatus, AdminTraiteurComponent, Component
 
-### Community 32 - "reservation.service.ts"
+### Community 29 - "team.controller.ts"
 Cohesion: 0.21
-Nodes (7): Reservation, ReservationReceipt, ReservationResult, ReservationService, Injectable, supabaseClient, environment
+Nodes (15): createTeamMember(), getPublicTeamMembers(), getTeamMembers(), nullableBio(), optionalBoolean(), optionalDepartment(), TEAM_DEPARTMENTS, TEAM_FIELDS (+7 more)
 
-### Community 33 - "ReservationsComponent"
+### Community 30 - "ReservationsComponent"
 Cohesion: 0.28
 Nodes (4): AdminReservation, ReservationWorkflowStatus, ReservationsComponent, Component
 
-### Community 34 - "@angular/common"
-Cohesion: 0.21
-Nodes (7): @angular/common, DailySpecialComponent, Component, RevealOnScrollDirective, RevealVariant, Directive, Input
-
-### Community 35 - "devDependencies"
+### Community 31 - "devDependencies"
 Cohesion: 0.15
 Nodes (13): devDependencies, @cloudflare/workers-types, concurrently, postcss, @tailwindcss/postcss, tsx, @types/cors, @types/express (+5 more)
 
-### Community 36 - "StockComponent"
+### Community 32 - "express"
+Cohesion: 0.24
+Nodes (9): express, supabase, detectImageType(), EXTENSIONS, SupportedImage, uploadMenuImage(), uploadToStorage(), uploadWineImage() (+1 more)
+
+### Community 33 - "menu-catalog.ts"
+Cohesion: 0.24
+Nodes (11): CategoryFilter, categoryFilters(), categoryKey(), filterDishes(), labels, MenuCategory, MenuFilters, normalizeSearch() (+3 more)
+
+### Community 34 - "StockComponent"
 Cohesion: 0.22
 Nodes (4): InventoryItem, emptyDraft(), StockComponent, Component
 
-### Community 37 - "SchoolComponent"
+### Community 35 - "SchoolComponent"
 Cohesion: 0.21
 Nodes (3): SchoolSession, SchoolComponent, Component
 
-### Community 39 - "worker.ts"
-Cohesion: 0.22
-Nodes (10): ref_cloudflare_node, @cloudflare/workers-types, staticAssetSecurityHeaders, router, apiHandler, app, Env, fetch() (+2 more)
+### Community 37 - "menu.component.ts"
+Cohesion: 0.20
+Nodes (6): DishCardComponent, Component, RevealOnScrollDirective, RevealVariant, Directive, Input
 
-### Community 40 - "cms.component.ts"
+### Community 38 - "cms.component.ts"
 Cohesion: 0.18
 Nodes (10): @uppy/angular, @uppy/core, @uppy/dashboard, @uppy/locales, MediaTag, CATEGORIES, EditDraft, GALLERY_CATEGORIES (+2 more)
 
-### Community 43 - "HeaderComponent"
+### Community 41 - "HeaderComponent"
 Cohesion: 0.27
 Nodes (3): HeaderComponent, Component, HostListener
 
-### Community 44 - "compilerOptions"
+### Community 42 - "inventory.controller.ts"
+Cohesion: 0.33
+Nodes (10): createInventoryItem(), getInventoryItems(), INVENTORY_FIELDS, InventoryPayload, optionalBoolean(), optionalQuantity(), toClient(), toDatabase() (+2 more)
+
+### Community 43 - "compilerOptions"
 Cohesion: 0.20
 Nodes (9): ./tsconfig.json, compilerOptions, esModuleInterop, module, moduleResolution, outDir, types, extends (+1 more)
 
-### Community 46 - "scripts"
+### Community 45 - "scripts"
 Cohesion: 0.22
 Nodes (9): scripts, build, deploy:cloudflare, dev, lint, preview, start, test (+1 more)
 
-### Community 47 - "ref_node_fs"
+### Community 46 - "admin.component.ts"
+Cohesion: 0.22
+Nodes (7): DashboardOverview, ADMIN_ROUTE_LABELS, ADMIN_SEARCH_ITEMS, AdminNotificationItem, AdminSearchItem, EMPTY_OVERVIEW, EMPTY_OVERVIEW
+
+### Community 47 - "ref_node_assert"
+Cohesion: 0.25
+Nodes (3): ref_node_assert, root, root
+
+### Community 48 - "ref_node_fs"
 Cohesion: 0.25
 Nodes (3): ref_node_fs, root, root
 
-### Community 52 - "ParallaxDirective"
+### Community 49 - "ref_node_path"
+Cohesion: 0.25
+Nodes (4): ref_node_path, root, root, root
+
+### Community 54 - "ParallaxDirective"
 Cohesion: 0.38
 Nodes (3): ParallaxDirective, Directive, Input
 
-### Community 53 - "ref_node_assert"
-Cohesion: 0.33
-Nodes (3): ref_node_assert, valid, root
-
-### Community 54 - "ref_node_path"
-Cohesion: 0.33
-Nodes (3): ref_node_path, root, root
-
 ### Community 55 - "ref_node_test"
 Cohesion: 0.33
-Nodes (3): ref_node_test, root, root
+Nodes (3): ref_node_test, valid, root
 
-### Community 58 - "prepare-preview.mjs"
+### Community 58 - "contact.component.ts"
+Cohesion: 0.40
+Nodes (3): @angular/platform-browser, ContactComponent, Component
+
+### Community 59 - "prepare-preview.mjs"
 Cohesion: 0.50
 Nodes (3): ref_node_url, previewConfiguration(), env
 
-### Community 61 - "smoke-production.sh"
+### Community 62 - "smoke-production.sh"
 Cohesion: 0.83
 Nodes (3): check_url(), require_header(), smoke-production.sh script
 
 ## Knowledge Gaps
-- **262 isolated node(s):** `MediaReference`, `ReservationWorkflowStatus`, `MediaCategory`, `MediaRow`, `MediaTag` (+257 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 524 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **33 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **263 isolated node(s):** `CateringWorkflowStatus`, `ReservationWorkflowStatus`, `ServerLogLevel`, `GalleryCategory`, `GalleryRow` (+258 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 526 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **31 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `express` connect `express` to `worker.ts`, `wine.controller.ts`, `school.controller.ts`, `CatalogValidationError`, `reservation.controller.ts`, `media.controller.ts`, `menu.controller.ts`, `package.json`, `team.controller.ts`, `routes/index.ts`, `catalogError`, `supabase.ts`, `catering.controller.ts`?**
-  _High betweenness centrality (0.286) - this node is a cross-community bridge._
-- **Why does `@angular/core` connect `admin-data.service.ts` to `reservation.service.ts`, `AdminSettingsComponent`, `@angular/common`, `AdminSchoolComponent`, `site-settings.service.ts`, `cms.component.ts`, `package.json`, `pages/traiteur/traiteur.component.ts`, `restaurant.service.ts`, `menu.component.ts`, `AdminTraiteurComponent`?**
-  _High betweenness centrality (0.195) - this node is a cross-community bridge._
-- **Why does `@angular/common` connect `@angular/common` to `reservation.service.ts`, `AdminSettingsComponent`, `admin-data.service.ts`, `AdminSchoolComponent`, `site-settings.service.ts`, `cms.component.ts`, `package.json`, `pages/traiteur/traiteur.component.ts`, `restaurant.service.ts`, `menu.component.ts`, `AdminTraiteurComponent`?**
-  _High betweenness centrality (0.146) - this node is a cross-community bridge._
-- **What connects `MediaReference`, `ReservationWorkflowStatus`, `MediaCategory` to the rest of the system?**
-  _262 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `AdminSettingsComponent` be split into smaller, more focused modules?**
-  _Cohesion score 0.06896551724137931 - nodes in this community are weakly interconnected._
+- **Why does `express` connect `express` to `reservation.controller.ts`, `CatalogValidationError`, `security.middleware.ts`, `gallery.controller.ts`, `inventory.controller.ts`, `school.controller.ts`, `routes/index.ts`, `menu.controller.ts`, `package.json`, `wine.controller.ts`, `team.controller.ts`?**
+  _High betweenness centrality (0.269) - this node is a cross-community bridge._
+- **Why does `@angular/core` connect `@angular/core` to `AdminSchoolComponent`, `menu.component.ts`, `cms.component.ts`, `site-settings.service.ts`, `admin-data.service.ts`, `@angular/common`, `admin.component.ts`, `package.json`, `restaurant.service.ts`, `reservation.service.ts`, `contact.component.ts`?**
+  _High betweenness centrality (0.208) - this node is a cross-community bridge._
+- **Why does `@angular/common` connect `@angular/common` to `AdminSchoolComponent`, `menu.component.ts`, `cms.component.ts`, `site-settings.service.ts`, `admin-data.service.ts`, `admin.component.ts`, `package.json`, `restaurant.service.ts`, `@angular/core`, `reservation.service.ts`, `contact.component.ts`?**
+  _High betweenness centrality (0.142) - this node is a cross-community bridge._
+- **What connects `CateringWorkflowStatus`, `ReservationWorkflowStatus`, `ServerLogLevel` to the rest of the system?**
+  _263 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `reservation.controller.ts` be split into smaller, more focused modules?**
+  _Cohesion score 0.06597222222222222 - nodes in this community are weakly interconnected._
 - **Should `AdminDataService` be split into smaller, more focused modules?**
   _Cohesion score 0.03636363636363636 - nodes in this community are weakly interconnected._
-- **Should `admin-data.service.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.09393939393939393 - nodes in this community are weakly interconnected._
+- **Should `AdminSettingsComponent` be split into smaller, more focused modules?**
+  _Cohesion score 0.08 - nodes in this community are weakly interconnected._
