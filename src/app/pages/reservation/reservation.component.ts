@@ -90,26 +90,35 @@ import { toSignal } from '@angular/core/rxjs-interop';
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <div class="space-y-2">
                     <label for="res-name" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Nom Complet</label>
-                    <input id="res-name" type="text" formControlName="name" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold focus:border-transparent outline-none transition-all" placeholder="Votre nom">
+                    <input id="res-name" type="text" formControlName="name" autocomplete="name"
+                      [attr.aria-invalid]="reservationForm.get('name')?.touched && reservationForm.get('name')?.invalid"
+                      [attr.aria-describedby]="reservationForm.get('name')?.touched && reservationForm.get('name')?.invalid ? 'res-name-error' : null"
+                      class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold focus:border-transparent outline-none transition-all" placeholder="Votre nom">
                     @if (reservationForm.get('name')?.touched && reservationForm.get('name')?.invalid) {
-                      <p class="text-red-500 text-xs mt-1" role="alert">Nom requis</p>
+                      <p id="res-name-error" class="text-red-500 text-xs mt-1" role="alert">Nom requis</p>
                     }
                   </div>
                   
                   <div class="space-y-2">
                     <label for="res-email" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Email</label>
-                    <input id="res-email" type="email" formControlName="email" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold focus:border-transparent outline-none transition-all" placeholder="votre@email.com">
+                    <input id="res-email" type="email" formControlName="email" autocomplete="email" inputmode="email"
+                      [attr.aria-invalid]="reservationForm.get('email')?.touched && reservationForm.get('email')?.invalid"
+                      [attr.aria-describedby]="reservationForm.get('email')?.touched && reservationForm.get('email')?.invalid ? 'res-email-error' : null"
+                      class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold focus:border-transparent outline-none transition-all" placeholder="votre@email.com">
                     @if (reservationForm.get('email')?.touched && reservationForm.get('email')?.invalid) {
-                      <p class="text-red-500 text-xs mt-1" role="alert">Email valide requis</p>
+                      <p id="res-email-error" class="text-red-500 text-xs mt-1" role="alert">Email valide requis</p>
                     }
                   </div>
                 </div>
 
                 <div class="space-y-2">
                   <label for="res-phone" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Téléphone</label>
-                  <input id="res-phone" type="tel" formControlName="phone" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold focus:border-transparent outline-none transition-all" placeholder="+224 ...">
+                  <input id="res-phone" type="tel" formControlName="phone" autocomplete="tel" inputmode="tel"
+                    [attr.aria-invalid]="reservationForm.get('phone')?.touched && reservationForm.get('phone')?.invalid"
+                    [attr.aria-describedby]="reservationForm.get('phone')?.touched && reservationForm.get('phone')?.invalid ? 'res-phone-error' : null"
+                    class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold focus:border-transparent outline-none transition-all" placeholder="+224 ...">
                   @if (reservationForm.get('phone')?.touched && reservationForm.get('phone')?.invalid) {
-                    <p class="text-red-500 text-xs mt-1" role="alert">Téléphone requis</p>
+                    <p id="res-phone-error" class="text-red-500 text-xs mt-1" role="alert">Téléphone requis</p>
                   }
                 </div>
 
@@ -117,21 +126,26 @@ import { toSignal } from '@angular/core/rxjs-interop';
                   <div class="space-y-2">
                     <label for="res-date" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Date</label>
                     <input id="res-date" type="date" formControlName="date" [min]="todayDate"
+                      [attr.aria-invalid]="reservationForm.get('date')?.touched && reservationForm.get('date')?.invalid"
+                      [attr.aria-describedby]="reservationForm.get('date')?.touched && reservationForm.get('date')?.invalid ? 'res-date-error' : null"
                       class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold outline-none transition-all">
                     @if (reservationForm.get('date')?.touched && reservationForm.get('date')?.invalid) {
-                      <p class="text-red-500 text-xs mt-1" role="alert">Date requise</p>
+                      <p id="res-date-error" class="text-red-500 text-xs mt-1" role="alert">Date requise</p>
                     }
                   </div>
                   <div class="space-y-2">
                     <label for="res-time" class="text-xs font-bold text-gray-500 uppercase tracking-wider">Heure</label>
-                    <select id="res-time" formControlName="time" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold outline-none transition-all appearance-none cursor-pointer">
+                    <select id="res-time" formControlName="time"
+                      [attr.aria-invalid]="reservationForm.get('time')?.touched && reservationForm.get('time')?.invalid"
+                      [attr.aria-describedby]="reservationForm.get('time')?.touched && reservationForm.get('time')?.invalid ? 'res-time-error' : null"
+                      class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-jacquier-gold outline-none transition-all appearance-none cursor-pointer">
                       <option value="" disabled selected>Choisir</option>
                       @for (slot of availableTimeSlots(); track slot) {
                         <option [value]="slot">{{ slot }}</option>
                       }
                     </select>
                      @if (reservationForm.get('time')?.touched && reservationForm.get('time')?.invalid) {
-                      <p class="text-red-500 text-xs mt-1" role="alert">Heure requise</p>
+                      <p id="res-time-error" class="text-red-500 text-xs mt-1" role="alert">Heure requise</p>
                     }
                     @if (selectedDate() && siteSettings.settings().weeklyHours?.enabled && availableTimeSlots().length === 0) {
                       <p class="text-amber-700 text-xs mt-1" role="status">Le restaurant est fermé ce jour-là selon les horaires configurés.</p>
