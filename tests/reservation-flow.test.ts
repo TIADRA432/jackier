@@ -42,7 +42,8 @@ test('reservation server detects duplicate pending requests', async () => {
 
   assert.match(controller, /ensureNoDuplicateReservation/);
   assert.match(controller, /\['cancelled', 'rejected'\]\.includes/);
-  assert.match(controller, /existing\.email === reservation\.email \|\| existing\.phone === reservation\.phone/);
+  assert.match(controller, /normalizeEmail\(existing\.email\) === reservationEmail/);
+  assert.match(controller, /normalizePhone\(existing\.phone\) === reservationPhone/);
   assert.match(controller, /a similar request already exists for this date and time/);
 });
 
@@ -68,7 +69,7 @@ test('reservation workflow uses only booking-specific statuses while catering ke
   assert.match(model, /status: ReservationWorkflowStatus/);
   assert.match(model, /CateringWorkflowStatus = 'pending' \| 'contacted' \| 'quoted' \| 'confirmed' \| 'completed' \| 'cancelled'/);
   assert.match(model, /export interface CateringEvent[\s\S]*status: CateringWorkflowStatus/);
-  assert.match(controller, /ALLOWED_STATUSES = new Set\(\['pending', 'confirmed', 'cancelled', 'completed'\]\)/);
+  assert.match(controller, /ALLOWED_STATUSES = new Set(?:<ReservationWorkflowStatus>)?\(\['pending', 'confirmed', 'cancelled', 'completed'\]\)/);
   assert.match(admin, /statuses: ReservationWorkflowStatus\[\] = \['pending', 'confirmed', 'completed', 'cancelled'\]/);
   assert.doesNotMatch(admin, /approved: 'Approuvée'/);
   assert.doesNotMatch(admin, /rejected: 'Refusée'/);
@@ -93,4 +94,106 @@ test('reservation admin provides explicit manual client communication tools', as
   assert.match(admin, /wa\.me/);
   assert.match(admin, /navigator\.clipboard\.writeText/);
   assert.match(admin, /Réservation #/);
+});
+
+
+test('reservation form removes expired same-day slots before submit', async () => {
+  const component = await source('src', 'app', 'pages', 'reservation', 'reservation.component.ts');
+
+  assert.match(component, /selectedDate === this\.todayDate/);
+  assert.match(component, /conakryTimeMinutes\(\)/);
+  assert.match(component, /toMinutes\(slot\) > now/);
+  assert.match(component, /selectedDate < this\.todayDate/);
+});
+
+test('reservation duplicate detection compares normalized contact values', async () => {
+  const controller = await source('src', 'controllers', 'reservation.controller.ts');
+
+  assert.match(controller, /normalizeEmail/);
+  assert.match(controller, /normalizePhone/);
+  assert.match(controller, /sameEmail/);
+  assert.match(controller, /samePhone/);
+});
+
+test('reservation receipt exposes only supported booking statuses', async () => {
+  const service = await source('src', 'app', 'core', 'services', 'reservation.service.ts');
+
+  assert.match(service, /status: 'pending' \| 'confirmed' \| 'cancelled' \| 'completed'/);
+  assert.doesNotMatch(service, /approved/);
+  assert.doesNotMatch(service, /rejected/);
+});
+
+
+test('reservation server normalizes legacy booking statuses before admin rendering', async () => {
+  const controller = await source('src', 'controllers', 'reservation.controller.ts');
+  const model = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+
+  assert.match(controller, /value === 'approved'\) return 'confirmed'/);
+  assert.match(controller, /value === 'rejected'\) return 'cancelled'/);
+  assert.match(controller, /status: normalizeReservationStatus\(row\.status\)/);
+  assert.doesNotMatch(model, /export type ReservationStatus =/);
+});
+
+test('reservation status update returns 404 when the booking no longer exists', async () => {
+  const controller = await source('src', 'controllers', 'reservation.controller.ts');
+
+  assert.match(controller, /maybeSingle\(\)/);
+  assert.match(controller, /if \(!current\) return res\.status\(404\)/);
+  assert.match(controller, /Reservation not found/);
+});
+
+
+test('reservation duplicate normalization treats local Guinea numbers consistently', async () => {
+  const controller = await source('src', 'controllers', 'reservation.controller.ts');
+
+  assert.match(controller, /digits\.startsWith\('00'\)/);
+  assert.match(controller, /digits\.length === 9/);
+  assert.match(controller, /224\$\{digits\}/);
+});
+
+test('reservation admin WhatsApp links canonicalize local Guinea numbers', async () => {
+  const admin = await source('src', 'app', 'pages', 'admin', 'reservations', 'reservations.component.ts');
+
+  assert.match(admin, /phone\.startsWith\('00'\)/);
+  assert.match(admin, /phone\.length === 9/);
+  assert.match(admin, /224\$\{phone\}/);
+  assert.match(admin, /https:\/\/wa\.me/);
+});
+
+
+test('reservation API distinguishes validation failures from operational failures', async () => {
+  const controller = await source('src', 'controllers', 'reservation.controller.ts');
+
+  assert.match(controller, /class ReservationValidationError extends Error/);
+  assert.match(controller, /error instanceof ReservationValidationError/);
+  assert.doesNotMatch(controller, /startsWith\('Invalid '\)/);
+  assert.match(controller, /reservation\.create_failed/);
+  assert.match(controller, /reservation\.status_update_failed/);
+});
+
+test('reservation visitor receives French validation guidance instead of raw backend text', async () => {
+  const service = await source('src', 'app', 'core', 'services', 'reservation.service.ts');
+
+  assert.match(service, /describeValidationError/);
+  assert.match(service, /Une demande similaire existe déjà/);
+  assert.match(service, /Ce créneau est déjà passé/);
+  assert.match(service, /Le numéro de téléphone n’est pas valide/);
+  assert.match(service, /Certaines informations du formulaire sont invalides/);
+});
+
+test('reservation form distinguishes exhausted today slots from a closed future day', async () => {
+  const component = await source('src', 'app', 'pages', 'reservation', 'reservation.component.ts');
+
+  assert.match(component, /Il n’y a plus de créneau de réservation disponible aujourd’hui/);
+  assert.match(component, /Le restaurant est fermé ce jour-là selon les horaires configurés/);
+});
+
+
+test('reservation API preserves the visitor calendar date instead of exposing a timestamp', async () => {
+  const controller = await source('src', 'controllers', 'reservation.controller.ts');
+
+  assert.match(controller, /const reservationDate =/);
+  assert.match(controller, /row\?\.data\?\.date/);
+  assert.match(controller, /row\.date\.slice\(0, 10\)/);
+  assert.match(controller, /date: reservationDate\(row\)/);
 });

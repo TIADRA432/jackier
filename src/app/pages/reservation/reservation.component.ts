@@ -147,8 +147,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
                      @if (reservationForm.get('time')?.touched && reservationForm.get('time')?.invalid) {
                       <p id="res-time-error" class="text-red-500 text-xs mt-1" role="alert">Heure requise</p>
                     }
-                    @if (selectedDate() && siteSettings.settings().weeklyHours?.enabled && availableTimeSlots().length === 0) {
-                      <p class="text-amber-700 text-xs mt-1" role="status">Le restaurant est fermé ce jour-là selon les horaires configurés.</p>
+                    @if (selectedDate() && availableTimeSlots().length === 0) {
+                      <p class="text-amber-700 text-xs mt-1" role="status">
+                        {{ selectedDate() === todayDate
+                          ? 'Il n’y a plus de créneau de réservation disponible aujourd’hui.'
+                          : 'Le restaurant est fermé ce jour-là selon les horaires configurés.' }}
+                      </p>
                     }
                   </div>
                   <div class="space-y-2">
@@ -196,7 +200,7 @@ export class ReservationComponent {
   reservationForm = this.fb.group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    phone: ['', Validators.required],
+    phone: ['', [Validators.required, Validators.pattern(/^\+?[0-9 ()-]{6,30}$/)]],
     date: ['', Validators.required],
     time: ['', Validators.required],
     guests: ['2', Validators.required]
@@ -208,24 +212,35 @@ export class ReservationComponent {
 
   readonly availableTimeSlots = computed(() => {
     const selectedDate = this.selectedDate();
-    const schedule = this.siteSettings.settings().weeklyHours;
-    if (!selectedDate || !schedule?.enabled) return this.timeSlots;
-
-    const dayKey = this.weekdayForDate(selectedDate);
-    const day = schedule.days[dayKey];
-    if (!day || day.closed || !day.open || !day.close) return [];
+    if (!selectedDate) return this.timeSlots;
+    if (selectedDate < this.todayDate) return [];
 
     const toMinutes = (time: string) => {
       const [hours, minutes] = time.split(':').map(Number);
       return (hours || 0) * 60 + (minutes || 0);
     };
-    const open = toMinutes(day.open);
-    const close = toMinutes(day.close);
 
-    return this.timeSlots.filter(slot => {
-      const value = toMinutes(slot);
-      return open < close ? value >= open && value < close : value >= open || value < close;
-    });
+    let slots = this.timeSlots;
+    const schedule = this.siteSettings.settings().weeklyHours;
+    if (schedule?.enabled) {
+      const dayKey = this.weekdayForDate(selectedDate);
+      const day = schedule.days[dayKey];
+      if (!day || day.closed || !day.open || !day.close) return [];
+
+      const open = toMinutes(day.open);
+      const close = toMinutes(day.close);
+      slots = slots.filter(slot => {
+        const value = toMinutes(slot);
+        return open < close ? value >= open && value < close : value >= open || value < close;
+      });
+    }
+
+    if (selectedDate === this.todayDate) {
+      const now = this.conakryTimeMinutes();
+      slots = slots.filter(slot => toMinutes(slot) > now);
+    }
+
+    return slots;
   });
 
   isSubmitting = signal(false);
@@ -243,6 +258,18 @@ export class ReservationComponent {
         this.reservationForm.controls.time.setValue('');
       }
     });
+  }
+
+  private conakryTimeMinutes(): number {
+    const parts = new Intl.DateTimeFormat('en-GB', {
+      timeZone: 'Africa/Conakry',
+      hour: '2-digit',
+      minute: '2-digit',
+      hourCycle: 'h23'
+    }).formatToParts(new Date());
+    const hour = Number(parts.find(part => part.type === 'hour')?.value ?? '0');
+    const minute = Number(parts.find(part => part.type === 'minute')?.value ?? '0');
+    return hour * 60 + minute;
   }
 
   private conakryDateString(): string {
