@@ -42,7 +42,8 @@ test('reservation server detects duplicate pending requests', async () => {
 
   assert.match(controller, /ensureNoDuplicateReservation/);
   assert.match(controller, /\['cancelled', 'rejected'\]\.includes/);
-  assert.match(controller, /existing\.email === reservation\.email \|\| existing\.phone === reservation\.phone/);
+  assert.match(controller, /normalizeEmail\(existing\.email\) === reservationEmail/);
+  assert.match(controller, /normalizePhone\(existing\.phone\) === reservationPhone/);
   assert.match(controller, /a similar request already exists for this date and time/);
 });
 
