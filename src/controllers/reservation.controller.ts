@@ -113,11 +113,19 @@ const normalizeReservationStatus = (value: unknown): ReservationWorkflowStatus =
     : 'pending';
 };
 
+const reservationDate = (row: any): string => {
+  const storedDate = row?.data?.date;
+  if (typeof storedDate === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(storedDate)) {
+    return storedDate;
+  }
+  return typeof row?.date === 'string' ? row.date.slice(0, 10) : '';
+};
+
 const format = (row: any) => ({
   id: row.id,
   ...(row.data || {}),
   status: normalizeReservationStatus(row.status),
-  date: row.date,
+  date: reservationDate(row),
   createdAt: row.created_at,
 });
 
