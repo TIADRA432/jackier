@@ -1,6 +1,59 @@
-import { Component, ChangeDetectionStrategy, signal } from "@angular/core";
-import { Router, RouterOutlet, RouterLink, RouterLinkActive } from "@angular/router";
+import { ChangeDetectionStrategy, Component, DestroyRef, HostListener, computed, inject, signal } from '@angular/core';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AdminAuthService } from '../../core/services/admin-auth.service';
+import { AdminDataService, DashboardOverview, SchoolRegistration } from '../../core/services/admin-data.service';
+
+interface AdminSearchItem {
+  label: string;
+  path: string;
+  group: string;
+  description: string;
+  keywords: string;
+}
+
+interface AdminNotificationItem {
+  id: string;
+  label: string;
+  detail: string;
+  path: string;
+  count: number;
+  tone: 'amber' | 'blue' | 'red';
+}
+
+const EMPTY_OVERVIEW: DashboardOverview = {
+  stats: {
+    todayReservations: 0,
+    pendingReservations: 0,
+    todayRevenue: 0,
+    monthlyRevenue: 0,
+    activeMenuItems: 0,
+    activeCatering: 0
+  },
+  revenueChart: [],
+  recentActivities: [],
+  readiness: { completed: 0, total: 9, percent: 0, adminPending: 0, clientPending: 0, checks: [] }
+};
+
+const ADMIN_SEARCH_ITEMS: AdminSearchItem[] = [
+  { label: 'Centre de Commande', path: '/admin/dashboard', group: 'Monitoring', description: 'Indicateurs, activité et préparation à la livraison', keywords: 'dashboard accueil statistiques monitoring readiness' },
+  { label: 'Restaurant & Menu', path: '/admin/restaurant', group: 'Opérations', description: 'Plats, disponibilités et suggestions', keywords: 'restaurant menu carte plats suggestions disponibilité' },
+  { label: 'Catégories du menu', path: '/admin/categories', group: 'Opérations', description: 'Organisation des catégories de la carte', keywords: 'catégories menu carte' },
+  { label: 'Carte des vins', path: '/admin/vins', group: 'Opérations', description: 'Vins, prix verre et bouteille', keywords: 'vins boissons cave bouteille verre' },
+  { label: 'Réservations', path: '/admin/reservations', group: 'Opérations', description: 'Demandes de réservation et statuts', keywords: 'réservation table clients pending confirmé' },
+  { label: 'Service Traiteur', path: '/admin/traiteur', group: 'Opérations', description: 'Demandes de devis et événements', keywords: 'traiteur événements devis catering' },
+  { label: 'École Gastronomique', path: '/admin/ecole', group: 'Opérations', description: 'Programmes, sessions, jauges et inscriptions', keywords: 'école formation programme session inscription atelier masterclass' },
+  { label: 'Stock & Inventaire', path: '/admin/stock', group: 'Opérations', description: 'Quantités, seuils et coûts', keywords: 'stock inventaire quantité seuil coût' },
+  { label: 'Finance & BI', path: '/admin/finance', group: 'Intelligence', description: 'Dépenses et clôtures', keywords: 'finance dépenses revenus clôture chiffre affaires' },
+  { label: 'Analyses Avancées', path: '/admin/analytics', group: 'Intelligence', description: 'Indicateurs opérationnels', keywords: 'analytics analyses indicateurs rapports' },
+  { label: 'Équipe & Personnel', path: '/admin/equipe', group: 'Administration', description: 'Profils internes et publication', keywords: 'équipe personnel staff profils' },
+  { label: 'CMS & Contenu', path: '/admin/cms', group: 'Administration', description: 'Médiathèque et contenus', keywords: 'cms contenu médias images' },
+  { label: 'Galerie publique', path: '/admin/galerie', group: 'Administration', description: 'Photos visibles sur le site', keywords: 'galerie photos images public' },
+  { label: 'Paramètres', path: '/admin/settings', group: 'Administration', description: 'Coordonnées, horaires et identité', keywords: 'paramètres réglages adresse téléphone horaires réseaux sociaux' }
+];
+
+const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, item.label]));
 
 @Component({
   selector: "app-admin-layout",
@@ -365,7 +418,7 @@ import { AdminAuthService } from '../../core/services/admin-auth.service';
             </div>
             <div class="flex-1 min-w-0">
               <p class="text-sm font-bold text-white truncate">Administrateur</p>
-              <p class="text-xs text-jacquier-gold truncate">Accès sécurisé</p>
+              <p class="text-xs text-jacquier-gold truncate">{{ adminEmail() || 'Accès sécurisé' }}</p>
             </div>
           </div>
           <button (click)="signOut()" class="mt-3 w-full rounded-lg border border-gray-700 px-3 py-2 text-sm text-gray-300 transition hover:border-jacquier-gold hover:text-jacquier-gold">
@@ -387,94 +440,202 @@ import { AdminAuthService } from '../../core/services/admin-auth.service';
         class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden relative"
       >
         <!-- Top Navbar -->
-        <header
-          class="h-20 bg-[#121212]/80 backdrop-blur-md border-b border-gray-800 flex items-center justify-between px-6 lg:px-10 z-30 sticky top-0"
-        >
-          <div class="flex items-center gap-4">
-            <button
-              (click)="toggleSidebar()"
-              class="md:hidden text-gray-400 hover:text-white p-2 -ml-2 rounded-lg hover:bg-gray-800 transition-colors"
-              aria-label="Ouvrir le menu de navigation"
-            >
-              <svg
-                class="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+        <header class="relative z-30 border-b border-gray-800 bg-[#121212]/95 backdrop-blur-xl">
+          <div class="flex h-20 items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+            <div class="flex min-w-0 flex-1 items-center gap-3">
+              <button
+                type="button"
+                (click)="toggleSidebar()"
+                class="md:hidden rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+                aria-label="Ouvrir le menu de navigation"
+                [attr.aria-expanded]="isSidebarOpen()"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4 6h16M4 12h16M4 18h16"
-                ></path>
-              </svg>
-            </button>
-            <div
-              class="hidden sm:flex items-center bg-[#1a1a1a] border border-gray-800 rounded-xl px-4 py-2 w-64 focus-within:border-jacquier-gold focus-within:ring-1 focus-within:ring-jacquier-gold transition-all"
-            >
-              <svg
-                class="w-5 h-5 text-gray-500 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                ></path>
-              </svg>
-              <input
-                type="text"
-                placeholder="Rechercher..."
-                class="bg-transparent border-none outline-none text-sm text-white w-full placeholder-gray-500"
-              />
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+              </button>
+
+              <div class="hidden min-w-0 lg:block">
+                <p class="text-[10px] font-bold uppercase tracking-[0.18em] text-gray-600">Administration</p>
+                <p class="truncate text-sm font-bold text-white">{{ currentSection() }}</p>
+              </div>
+
+              <div class="relative hidden w-full max-w-xl sm:block">
+                <div class="flex min-h-[44px] items-center rounded-xl border border-gray-800 bg-[#1a1a1a] px-3 transition-all focus-within:border-jacquier-gold focus-within:ring-1 focus-within:ring-jacquier-gold/40">
+                  <svg class="mr-2 h-5 w-5 shrink-0 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+                  <input
+                    id="admin-global-search"
+                    type="search"
+                    autocomplete="off"
+                    [value]="searchQuery()"
+                    (input)="onSearchInput($event)"
+                    (focus)="isSearchOpen.set(true)"
+                    (keydown)="onSearchKeydown($event)"
+                    placeholder="Rechercher un module, une action…"
+                    class="w-full border-none bg-transparent text-sm text-white outline-none placeholder:text-gray-500"
+                    aria-label="Rechercher dans l’administration"
+                    aria-controls="admin-search-results"
+                    [attr.aria-expanded]="searchResultsVisible()"
+                  />
+                  <kbd class="ml-2 hidden rounded border border-gray-700 px-1.5 py-0.5 text-[10px] text-gray-500 xl:inline">/</kbd>
+                </div>
+
+                @if (searchResultsVisible()) {
+                  <div id="admin-search-results" class="absolute left-0 right-0 top-[calc(100%+0.6rem)] overflow-hidden rounded-2xl border border-gray-700 bg-[#181818] shadow-2xl">
+                    @if (searchResults().length) {
+                      <div class="max-h-[420px] overflow-y-auto p-2 custom-scrollbar">
+                        @for (item of searchResults(); track item.path) {
+                          <button type="button" (click)="navigateTo(item.path)"
+                            class="flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-white/5 focus:bg-white/5 focus:outline-none">
+                            <span class="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-jacquier-gold/10 text-xs font-bold text-jacquier-gold">↗</span>
+                            <span class="min-w-0">
+                              <span class="block text-sm font-bold text-white">{{ item.label }}</span>
+                              <span class="mt-0.5 block text-xs text-gray-500">{{ item.group }} · {{ item.description }}</span>
+                            </span>
+                          </button>
+                        }
+                      </div>
+                    } @else {
+                      <div class="px-5 py-6 text-center">
+                        <p class="text-sm font-bold text-white">Aucun résultat</p>
+                        <p class="mt-1 text-xs text-gray-500">Essayez “réservation”, “école”, “galerie” ou “paramètres”.</p>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <div class="flex shrink-0 items-center gap-1.5 sm:gap-2">
+              <button type="button" (click)="toggleMobileSearch()"
+                class="sm:hidden rounded-xl p-2.5 text-gray-400 transition hover:bg-gray-800 hover:text-jacquier-gold"
+                aria-label="Ouvrir la recherche"
+                [attr.aria-expanded]="mobileSearchOpen()">
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+              </button>
+
+              <div class="relative">
+                <button type="button" (click)="toggleNotifications()"
+                  class="relative rounded-xl p-2.5 text-gray-400 transition hover:bg-gray-800 hover:text-jacquier-gold"
+                  aria-label="Afficher les notifications"
+                  aria-controls="admin-notifications"
+                  [attr.aria-expanded]="isNotificationsOpen()">
+                  <svg class="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                  </svg>
+                  @if (notificationCount() > 0) {
+                    <span class="absolute -right-1 -top-1 flex min-h-5 min-w-5 items-center justify-center rounded-full border-2 border-[#121212] bg-red-500 px-1 text-[10px] font-bold text-white">
+                      {{ notificationCount() > 99 ? '99+' : notificationCount() }}
+                    </span>
+                  }
+                </button>
+
+                @if (isNotificationsOpen()) {
+                  <div id="admin-notifications" class="absolute right-0 top-[calc(100%+0.75rem)] w-[min(92vw,380px)] overflow-hidden rounded-2xl border border-gray-700 bg-[#181818] shadow-2xl">
+                    <div class="flex items-center justify-between border-b border-gray-800 px-4 py-3">
+                      <div>
+                        <p class="text-sm font-bold text-white">À traiter</p>
+                        <p class="text-xs text-gray-500">Alertes issues des données réelles</p>
+                      </div>
+                      <button type="button" (click)="loadHeaderData()" [disabled]="notificationsLoading()"
+                        class="rounded-lg px-2.5 py-1.5 text-xs font-bold text-jacquier-gold hover:bg-jacquier-gold/10 disabled:opacity-50">
+                        {{ notificationsLoading() ? 'Actualisation…' : 'Actualiser' }}
+                      </button>
+                    </div>
+
+                    <div class="max-h-[420px] overflow-y-auto p-2 custom-scrollbar">
+                      @if (notificationError()) {
+                        <p class="m-2 rounded-xl bg-red-950/30 px-3 py-3 text-xs text-red-200">{{ notificationError() }}</p>
+                      }
+                      @if (!notificationsLoading() && notificationItems().length === 0 && !notificationError()) {
+                        <div class="px-4 py-8 text-center">
+                          <div class="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-300">✓</div>
+                          <p class="mt-3 text-sm font-bold text-white">Rien d’urgent</p>
+                          <p class="mt-1 text-xs text-gray-500">Aucune action opérationnelle en attente.</p>
+                        </div>
+                      }
+                      @for (item of notificationItems(); track item.id) {
+                        <button type="button" (click)="navigateTo(item.path)"
+                          class="flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-white/5">
+                          <span [class]="notificationToneClass(item.tone)">{{ item.count }}</span>
+                          <span class="min-w-0">
+                            <span class="block text-sm font-bold text-white">{{ item.label }}</span>
+                            <span class="mt-0.5 block text-xs leading-5 text-gray-500">{{ item.detail }}</span>
+                          </span>
+                        </button>
+                      }
+                    </div>
+                  </div>
+                }
+              </div>
+
+              <a routerLink="/" target="_blank" rel="noopener"
+                class="hidden items-center gap-2 rounded-xl border border-gray-700 bg-gray-800 px-3 py-2.5 text-sm font-medium text-white transition hover:bg-gray-700 lg:flex">
+                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                </svg>
+                Voir le site
+              </a>
+
+              <div class="relative">
+                <button type="button" (click)="toggleUserMenu()"
+                  class="flex min-h-[44px] items-center gap-2 rounded-xl border border-gray-800 bg-[#1a1a1a] px-2.5 transition hover:border-gray-700"
+                  aria-label="Menu administrateur"
+                  aria-controls="admin-user-menu"
+                  [attr.aria-expanded]="isUserMenuOpen()">
+                  <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-jacquier-gold text-xs font-black text-[#1a1a1a]">{{ adminInitials() }}</span>
+                  <span class="hidden max-w-40 text-left xl:block">
+                    <span class="block truncate text-xs font-bold text-white">Administrateur</span>
+                    <span class="block truncate text-[10px] text-gray-500">{{ adminEmail() || 'Session sécurisée' }}</span>
+                  </span>
+                  <svg class="hidden h-4 w-4 text-gray-500 xl:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+
+                @if (isUserMenuOpen()) {
+                  <div id="admin-user-menu" class="absolute right-0 top-[calc(100%+0.75rem)] w-64 overflow-hidden rounded-2xl border border-gray-700 bg-[#181818] p-2 shadow-2xl">
+                    <div class="border-b border-gray-800 px-3 py-3">
+                      <p class="text-sm font-bold text-white">Administrateur</p>
+                      <p class="mt-1 truncate text-xs text-gray-500">{{ adminEmail() || 'Session Supabase active' }}</p>
+                    </div>
+                    <button type="button" (click)="navigateTo('/admin/settings')" class="mt-2 w-full rounded-xl px-3 py-2.5 text-left text-sm text-gray-300 hover:bg-white/5 hover:text-white">Paramètres</button>
+                    <a routerLink="/" target="_blank" rel="noopener" class="block rounded-xl px-3 py-2.5 text-sm text-gray-300 hover:bg-white/5 hover:text-white">Voir le site public</a>
+                    <button type="button" (click)="signOut()" class="mt-1 w-full rounded-xl px-3 py-2.5 text-left text-sm font-bold text-red-300 hover:bg-red-500/10">Se déconnecter</button>
+                  </div>
+                }
+              </div>
             </div>
           </div>
 
-          <div class="flex items-center gap-4">
-            <button
-              class="relative p-2 text-gray-400 hover:text-jacquier-gold transition-colors rounded-lg hover:bg-gray-800"
-            >
-              <svg
-                class="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                ></path>
-              </svg>
-              <span
-                class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-[#121212]"
-              ></span>
-            </button>
-            <a
-              routerLink="/"
-              class="hidden sm:flex items-center gap-2 px-4 py-2 bg-gray-800 text-white rounded-xl text-sm font-medium hover:bg-gray-700 transition-colors border border-gray-700"
-            >
-              <svg
-                class="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                ></path>
-              </svg>
-              Aller au site
-            </a>
-          </div>
+          @if (mobileSearchOpen()) {
+            <div class="absolute left-0 right-0 top-full border-b border-gray-800 bg-[#121212] p-3 shadow-2xl sm:hidden">
+              <div class="flex min-h-[46px] items-center rounded-xl border border-gray-700 bg-[#1a1a1a] px-3">
+                <svg class="mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <input type="search" autocomplete="off" [value]="searchQuery()" (input)="onSearchInput($event)" (keydown)="onSearchKeydown($event)"
+                  placeholder="Rechercher dans l’administration…" class="w-full border-none bg-transparent text-sm text-white outline-none placeholder:text-gray-500" />
+                <button type="button" (click)="closeSearch()" class="rounded-lg p-2 text-gray-500 hover:text-white" aria-label="Fermer la recherche">×</button>
+              </div>
+              @if (searchQuery().trim()) {
+                <div class="mt-2 max-h-[55vh] overflow-y-auto rounded-xl border border-gray-800 bg-[#181818] p-2 custom-scrollbar">
+                  @for (item of searchResults(); track item.path) {
+                    <button type="button" (click)="navigateTo(item.path)" class="block w-full rounded-lg px-3 py-3 text-left hover:bg-white/5">
+                      <span class="block text-sm font-bold text-white">{{ item.label }}</span>
+                      <span class="mt-0.5 block text-xs text-gray-500">{{ item.description }}</span>
+                    </button>
+                  } @empty {
+                    <p class="px-3 py-5 text-center text-sm text-gray-500">Aucun résultat.</p>
+                  }
+                </div>
+              }
+            </div>
+          }
         </header>
 
         <!-- Page Content -->
@@ -540,16 +701,244 @@ import { AdminAuthService } from '../../core/services/admin-auth.service';
   ],
 })
 export class AdminComponent {
-  constructor(private readonly auth: AdminAuthService, private readonly router: Router) {}
+  private readonly adminData = inject(AdminDataService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  isSidebarOpen = signal(false);
+  readonly isSidebarOpen = signal(false);
+  readonly searchQuery = signal('');
+  readonly isSearchOpen = signal(false);
+  readonly mobileSearchOpen = signal(false);
+  readonly isNotificationsOpen = signal(false);
+  readonly isUserMenuOpen = signal(false);
+  readonly notificationsLoading = signal(true);
+  readonly notificationError = signal('');
+  readonly adminEmail = signal<string | null>(null);
+  readonly currentSection = signal('Centre de Commande');
+  readonly overview = signal<DashboardOverview>(EMPTY_OVERVIEW);
+  readonly schoolRegistrations = signal<SchoolRegistration[]>([]);
 
-  toggleSidebar() {
-    this.isSidebarOpen.update((v) => !v);
+  readonly searchResults = computed(() => {
+    const query = this.normalize(this.searchQuery());
+    if (!query) return [];
+    return ADMIN_SEARCH_ITEMS
+      .filter(item => this.normalize(`${item.label} ${item.group} ${item.description} ${item.keywords}`).includes(query))
+      .slice(0, 8);
+  });
+
+  readonly searchResultsVisible = computed(() => this.isSearchOpen() && this.searchQuery().trim().length > 0);
+
+  readonly notificationItems = computed<AdminNotificationItem[]>(() => {
+    const items: AdminNotificationItem[] = [];
+    const overview = this.overview();
+    const pendingSchool = this.schoolRegistrations().filter(item => item.status === 'pending').length;
+
+    if (overview.stats.pendingReservations > 0) {
+      items.push({
+        id: 'reservations',
+        label: 'Réservations en attente',
+        detail: 'Des demandes doivent être confirmées ou annulées.',
+        path: '/admin/reservations',
+        count: overview.stats.pendingReservations,
+        tone: 'amber'
+      });
+    }
+    if (overview.stats.activeCatering > 0) {
+      items.push({
+        id: 'catering',
+        label: 'Demandes traiteur à suivre',
+        detail: 'Événements en attente ou déjà confirmés à surveiller.',
+        path: '/admin/traiteur',
+        count: overview.stats.activeCatering,
+        tone: 'blue'
+      });
+    }
+    if (pendingSchool > 0) {
+      items.push({
+        id: 'school',
+        label: 'Inscriptions École en attente',
+        detail: 'Des participants attendent une décision de l’équipe.',
+        path: '/admin/ecole',
+        count: pendingSchool,
+        tone: 'amber'
+      });
+    }
+    if (overview.readiness.adminPending > 0) {
+      items.push({
+        id: 'readiness-admin',
+        label: 'Pré-livraison : actions admin',
+        detail: 'Des éléments techniques ou de contenu peuvent encore être complétés.',
+        path: '/admin/dashboard',
+        count: overview.readiness.adminPending,
+        tone: 'red'
+      });
+    }
+    if (overview.readiness.clientPending > 0) {
+      items.push({
+        id: 'readiness-client',
+        label: 'Informations client attendues',
+        detail: 'Des contenus nécessitent encore une validation du restaurant.',
+        path: '/admin/dashboard',
+        count: overview.readiness.clientPending,
+        tone: 'blue'
+      });
+    }
+
+    return items;
+  });
+
+  readonly notificationCount = computed(() =>
+    this.notificationItems().reduce((total, item) => total + item.count, 0)
+  );
+
+  readonly adminInitials = computed(() => {
+    const email = this.adminEmail();
+    if (!email) return 'AD';
+    const local = email.split('@')[0] || '';
+    const parts = local.split(/[._-]+/).filter(Boolean);
+    const initials = parts.slice(0, 2).map(part => part[0]?.toUpperCase()).join('');
+    return initials || local.slice(0, 2).toUpperCase() || 'AD';
+  });
+
+  constructor(private readonly auth: AdminAuthService, private readonly router: Router) {
+    this.currentSection.set(this.sectionForUrl(this.router.url));
+
+    this.router.events
+      .pipe(
+        filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe(event => {
+        this.currentSection.set(this.sectionForUrl(event.urlAfterRedirects));
+        this.isSidebarOpen.set(false);
+        this.isSearchOpen.set(false);
+        this.mobileSearchOpen.set(false);
+        this.isNotificationsOpen.set(false);
+        this.isUserMenuOpen.set(false);
+      });
+
+    void this.loadAdminIdentity();
+    void this.loadHeaderData();
+  }
+
+  toggleSidebar(): void {
+    this.isSidebarOpen.update(value => !value);
+  }
+
+  toggleMobileSearch(): void {
+    this.mobileSearchOpen.update(value => !value);
+    this.isNotificationsOpen.set(false);
+    this.isUserMenuOpen.set(false);
+  }
+
+  toggleNotifications(): void {
+    this.isNotificationsOpen.update(value => !value);
+    this.isUserMenuOpen.set(false);
+    this.isSearchOpen.set(false);
+    this.mobileSearchOpen.set(false);
+    if (this.isNotificationsOpen()) void this.loadHeaderData();
+  }
+
+  toggleUserMenu(): void {
+    this.isUserMenuOpen.update(value => !value);
+    this.isNotificationsOpen.set(false);
+    this.isSearchOpen.set(false);
+    this.mobileSearchOpen.set(false);
+  }
+
+  onSearchInput(event: Event): void {
+    const value = (event.target as HTMLInputElement | null)?.value ?? '';
+    this.searchQuery.set(value);
+    this.isSearchOpen.set(true);
+    this.isNotificationsOpen.set(false);
+    this.isUserMenuOpen.set(false);
+  }
+
+  onSearchKeydown(event: KeyboardEvent): void {
+    if (event.key === 'Escape') {
+      this.closeSearch();
+      return;
+    }
+    if (event.key === 'Enter' && this.searchResults().length) {
+      event.preventDefault();
+      void this.navigateTo(this.searchResults()[0].path);
+    }
+  }
+
+  closeSearch(): void {
+    this.searchQuery.set('');
+    this.isSearchOpen.set(false);
+    this.mobileSearchOpen.set(false);
+  }
+
+  async navigateTo(path: string): Promise<void> {
+    this.searchQuery.set('');
+    await this.router.navigateByUrl(path);
+  }
+
+  async loadHeaderData(): Promise<void> {
+    this.notificationsLoading.set(true);
+    this.notificationError.set('');
+
+    const [overviewResult, schoolResult] = await Promise.allSettled([
+      this.adminData.getDashboardOverview(),
+      this.adminData.getSchoolRegistrations()
+    ]);
+
+    if (overviewResult.status === 'fulfilled') this.overview.set(overviewResult.value);
+    if (schoolResult.status === 'fulfilled') this.schoolRegistrations.set(schoolResult.value);
+
+    if (overviewResult.status === 'rejected' || schoolResult.status === 'rejected') {
+      this.notificationError.set('Certaines alertes n’ont pas pu être actualisées.');
+    }
+    this.notificationsLoading.set(false);
+  }
+
+  notificationToneClass(tone: AdminNotificationItem['tone']): string {
+    if (tone === 'red') return 'flex h-8 min-w-8 shrink-0 items-center justify-center rounded-lg bg-red-500/10 px-2 text-xs font-bold text-red-300';
+    if (tone === 'blue') return 'flex h-8 min-w-8 shrink-0 items-center justify-center rounded-lg bg-blue-500/10 px-2 text-xs font-bold text-blue-300';
+    return 'flex h-8 min-w-8 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 px-2 text-xs font-bold text-amber-300';
+  }
+
+  @HostListener('document:keydown', ['$event'])
+  onGlobalKeydown(event: KeyboardEvent): void {
+    const target = event.target as HTMLElement | null;
+    const editing = target?.tagName === 'INPUT' || target?.tagName === 'TEXTAREA' || target?.isContentEditable;
+
+    if (event.key === '/' && !editing) {
+      event.preventDefault();
+      this.isSearchOpen.set(true);
+      this.isNotificationsOpen.set(false);
+      this.isUserMenuOpen.set(false);
+      document.getElementById('admin-global-search')?.focus();
+    }
+
+    if (event.key === 'Escape') {
+      this.isSearchOpen.set(false);
+      this.mobileSearchOpen.set(false);
+      this.isNotificationsOpen.set(false);
+      this.isUserMenuOpen.set(false);
+    }
   }
 
   async signOut(): Promise<void> {
     await this.auth.signOut();
     await this.router.navigateByUrl('/admin/login');
+  }
+
+  private async loadAdminIdentity(): Promise<void> {
+    this.adminEmail.set(await this.auth.getCurrentUserEmail());
+  }
+
+  private sectionForUrl(url: string): string {
+    const path = url.split('?')[0]?.split('#')[0] || '/admin/dashboard';
+    return ADMIN_ROUTE_LABELS.get(path) || 'Administration';
+  }
+
+  private normalize(value: string): string {
+    return value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .trim();
   }
 }
