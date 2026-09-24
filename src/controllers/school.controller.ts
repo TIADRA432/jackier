@@ -398,12 +398,12 @@ export const createSchoolRegistration = async (req: Request, res: Response) => {
       .maybeSingle();
     if (sessionError) throw sessionError;
     if (!session || session.status !== 'scheduled' || new Date(session.starts_at) <= new Date()) {
-      return res.status(409).json({ error: 'This session is no longer open for registration' });
+      return res.status(409).json({ error: 'Cette session n’est plus ouverte aux inscriptions' });
     }
 
     const program = (await getCollection('schoolPrograms')).find((item: any) => item.id === session.program_id);
     if (!program || (program.status ?? 'draft') !== 'published') {
-      return res.status(409).json({ error: 'This program is not open for registration' });
+      return res.status(409).json({ error: 'Ce programme n’est pas ouvert aux inscriptions' });
     }
 
     const { data, error } = await supabase.rpc('register_school_participant', {
@@ -416,9 +416,9 @@ export const createSchoolRegistration = async (req: Request, res: Response) => {
     });
     if (error) {
       const message = String(error.message || '');
-      if (message.includes('session_full')) return res.status(409).json({ error: 'This session is full' });
-      if (message.includes('duplicate_registration')) return res.status(409).json({ error: 'A registration already exists for this participant and session' });
-      if (message.includes('session_not_open')) return res.status(409).json({ error: 'This session is no longer open for registration' });
+      if (message.includes('session_full')) return res.status(409).json({ error: 'Cette session est complète' });
+      if (message.includes('duplicate_registration')) return res.status(409).json({ error: 'Une inscription existe déjà pour ce participant et cette session' });
+      if (message.includes('session_not_open')) return res.status(409).json({ error: 'Cette session n’est plus ouverte aux inscriptions' });
       throw error;
     }
 
@@ -471,8 +471,8 @@ export const updateSchoolRegistrationStatus = async (req: Request, res: Response
     });
     if (error) {
       const message = String(error.message || '');
-      if (message.includes('session_full')) return res.status(409).json({ error: 'The session is full; this cancelled registration cannot be reactivated' });
-      if (message.includes('registration_not_found')) return res.status(404).json({ error: 'School registration not found' });
+      if (message.includes('session_full')) return res.status(409).json({ error: 'La session est complète ; cette inscription annulée ne peut pas être réactivée' });
+      if (message.includes('registration_not_found')) return res.status(404).json({ error: 'Inscription École introuvable' });
       throw error;
     }
 
