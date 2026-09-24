@@ -236,3 +236,31 @@ test('header becomes a blurred editorial navigation after scroll', async () => {
   assert.match(header, /duration-700/);
   assert.match(header, /w-full bg-jacquier-cream/);
 });
+
+
+test('mobile navigation traps focus restores focus and closes with Escape', async () => {
+  const header = await source('src', 'app', 'shared', 'components', 'header', 'header.component.ts');
+
+  assert.match(header, /aria-hidden/);
+  assert.match(header, /attr\.inert/);
+  assert.match(header, /document:keydown\.escape/);
+  assert.match(header, /document:keydown\.tab/);
+  assert.match(header, /previousFocus/);
+  assert.match(header, /body\.style\.overflow = 'hidden'/);
+  assert.match(header, /body\.style\.overflow = ''/);
+  assert.match(header, /mobileCloseButton/);
+});
+
+test('gallery lightbox behaves as a keyboard modal and restores focus', async () => {
+  const gallery = await source('src', 'app', 'pages', 'gallery', 'gallery.component.ts');
+
+  assert.match(gallery, /role="dialog"/);
+  assert.match(gallery, /aria-modal="true"/);
+  assert.match(gallery, /tabindex="-1"/);
+  assert.match(gallery, /trapLightboxFocus/);
+  assert.match(gallery, /event\.key === 'Tab'/);
+  assert.match(gallery, /event\.key === 'Escape'/);
+  assert.match(gallery, /previousFocus/);
+  assert.match(gallery, /body\.style\.overflow = 'hidden'/);
+  assert.match(gallery, /lightboxCloseButton/);
+});
