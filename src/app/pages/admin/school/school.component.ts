@@ -98,11 +98,11 @@ interface SessionDraft {
 
             <div class="mt-6 grid gap-4 md:grid-cols-2">
               <label class="grid gap-1 text-sm text-gray-300 md:col-span-2">Titre
-                <input required maxlength="160" [(ngModel)]="programDraft().title" (ngModelChange)="patchProgram({ title: $event })" name="programTitle"
+                <input required maxlength="160" [ngModel]="programDraft().title" (ngModelChange)="patchProgram({ title: $event })" name="programTitle"
                   class="rounded-lg border border-gray-700 bg-[#121212] px-3 py-2 text-white outline-none focus:border-jacquier-gold" />
               </label>
               <label class="grid gap-1 text-sm text-gray-300">Niveau
-                <select [(ngModel)]="programDraft().level" (ngModelChange)="patchProgram({ level: $event })" name="programLevel"
+                <select [ngModel]="programDraft().level" (ngModelChange)="patchProgram({ level: $event })" name="programLevel"
                   class="rounded-lg border border-gray-700 bg-[#121212] px-3 py-2 text-white">
                   @for (level of levels; track level) { <option [value]="level">{{ level }}</option> }
                 </select>
