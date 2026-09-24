@@ -8,49 +8,49 @@ export const routes: Routes = [
     path: '',
     loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent),
     title: 'Le Jacquier – Restaurant à Kipé, Conakry',
-    data: { seo: { description: 'Découvrez Le Jacquier à Kipé, Conakry : cuisine, menu, équipe, galerie et réservation en ligne.' } }
+    data: { seo: { description: 'Découvrez Le Jacquier à Kipé, Conakry : cuisine, menu, équipe, galerie et réservation en ligne.', imageSlot: 'homeHero' } }
   },
   {
     path: 'about',
     loadComponent: () => import('./pages/about/about.component').then(m => m.AboutComponent),
     title: 'À propos – Le Jacquier',
-    data: { seo: { description: 'Découvrez l’univers du Jacquier, son équipe publique et l’identité du restaurant à Kipé, Conakry.' } }
+    data: { seo: { description: 'Découvrez l’univers du Jacquier, son équipe publique et l’identité du restaurant à Kipé, Conakry.', imageSlot: 'aboutHero' } }
   },
   {
     path: 'menu',
     loadComponent: () => import('./pages/menu/menu.component').then(m => m.MenuComponent),
     title: 'Menu & Carte des vins – Le Jacquier',
-    data: { seo: { description: 'Consultez les plats et vins actuellement publiés par Le Jacquier à Kipé, Conakry.' } }
+    data: { seo: { description: 'Consultez les plats et vins actuellement publiés par Le Jacquier à Kipé, Conakry.', imageSlot: 'menuHero' } }
   },
   {
     path: 'services-traiteur',
     loadComponent: () => import('./pages/traiteur/traiteur.component').then(m => m.TraiteurComponent),
     title: 'Service Traiteur à Conakry – Le Jacquier',
-    data: { seo: { description: 'Découvrez le service traiteur du Jacquier à Conakry et envoyez une demande pour votre événement.' } }
+    data: { seo: { description: 'Découvrez le service traiteur du Jacquier à Conakry et envoyez une demande pour votre événement.', imageSlot: 'cateringHero' } }
   },
   {
     path: 'ecole-gastronomie',
     loadComponent: () => import('./pages/school/school.component').then(m => m.SchoolComponent),
     title: 'École de Gastronomie – Le Jacquier',
-    data: { seo: { description: 'Découvrez les programmes de formation actuellement publiés par l’École de Gastronomie du Jacquier à Conakry.' } }
+    data: { seo: { description: 'Découvrez les programmes de formation actuellement publiés par l’École de Gastronomie du Jacquier à Conakry.', imageSlot: 'schoolHero' } }
   },
   {
     path: 'gallery',
     loadComponent: () => import('./pages/gallery/gallery.component').then(m => m.GalleryComponent),
     title: 'Galerie – Le Jacquier',
-    data: { seo: { description: 'Découvrez en images la cuisine, l’ambiance, l’équipe et les événements du Jacquier à Conakry.' } }
+    data: { seo: { description: 'Découvrez en images la cuisine, l’ambiance, l’équipe et les événements du Jacquier à Conakry.', imageSlot: 'galleryHero' } }
   },
   {
     path: 'reservation',
     loadComponent: () => import('./pages/reservation/reservation.component').then(m => m.ReservationComponent),
     title: 'Réserver une table – Le Jacquier',
-    data: { seo: { description: 'Envoyez votre demande de réservation au Jacquier à Kipé, Conakry, selon les créneaux disponibles.' } }
+    data: { seo: { description: 'Envoyez votre demande de réservation au Jacquier à Kipé, Conakry, selon les créneaux disponibles.', imageSlot: 'reservationHero' } }
   },
   {
     path: 'contact',
     loadComponent: () => import('./pages/contact/contact.component').then(m => m.ContactComponent),
     title: 'Contact & Accès – Le Jacquier',
-    data: { seo: { description: 'Adresse, téléphone, horaires et accès au restaurant Le Jacquier à Kipé, Conakry.' } }
+    data: { seo: { description: 'Adresse, téléphone, horaires et accès au restaurant Le Jacquier à Kipé, Conakry.', imageSlot: 'contactHero' } }
   },
   {
     path: 'admin/login',
