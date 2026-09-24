@@ -23,8 +23,9 @@ test('school programme writes whitelist and sanitize structured business fields'
   assert.match(controller, /PROGRAM_FIELDS/);
   assert.match(controller, /requireKnownFields/);
   assert.match(controller, /cleanText/);
-  assert.match(controller, /PROGRAM_LEVELS/);
+  assert.match(controller, /cleanText\(source\.level, 'level', 120, true\)/);
   assert.match(controller, /materialsIncluded/);
+  assert.doesNotMatch(controller, /PROGRAM_LEVELS/);
   assert.match(controller, /prerequisites/);
   assert.match(controller, /instructor/);
   assert.match(controller, /price/);
