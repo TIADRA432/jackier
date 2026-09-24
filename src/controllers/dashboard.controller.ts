@@ -18,6 +18,8 @@ const CATERING_STATUS_LABELS: Record<string, string> = {
   cancelled: 'annulée'
 };
 
+const CORE_SETTINGS_FIELDS = ['restaurantName', 'address', 'phone', 'email', 'openingHours'] as const;
+
 const formatActivity = (log: any) => {
   const action = String(log.action || 'ACTIVITY');
   const details = String(log.details || '');
@@ -120,12 +122,25 @@ export const getDashboardOverview = async (req: Request, res: Response) => {
     const recentActivities = compactActivities(logs.data || []);
 
     const settingsData = (settings.data?.data || {}) as Record<string, any>;
+    const missingCoreSettings = CORE_SETTINGS_FIELDS.filter(field =>
+      typeof settingsData[field] !== 'string' || !settingsData[field].trim()
+    );
+    const hasCoreSettings = missingCoreSettings.length === 0;
     const activeSchoolPrograms = (school.data || []).filter((row: any) => row.data?.active !== false).length;
     const socialMedia = settingsData.socialMedia && typeof settingsData.socialMedia === 'object' ? settingsData.socialMedia : {};
     const hasSocial = Object.values(socialMedia).some(value => typeof value === 'string' && value.trim());
     const hasLegal = Boolean(settingsData.legalNoticeUrl && settingsData.privacyPolicyUrl);
     const readinessChecks = [
-      { key: 'settings', label: 'Paramètres établissement', complete: Boolean(settings.data), detail: settings.data ? 'Configuration enregistrée' : 'Configuration globale absente', owner: 'admin', nextAction: settings.data ? 'Aucune action' : 'Enregistrer les paramètres globaux' },
+      {
+        key: 'settings',
+        label: 'Paramètres établissement',
+        complete: hasCoreSettings,
+        detail: hasCoreSettings
+          ? '5/5 champs essentiels configurés'
+          : `${CORE_SETTINGS_FIELDS.length - missingCoreSettings.length}/${CORE_SETTINGS_FIELDS.length} champs essentiels configurés`,
+        owner: 'admin',
+        nextAction: hasCoreSettings ? 'Aucune action' : 'Compléter nom, adresse, téléphone, e-mail et horaires'
+      },
       { key: 'menu', label: 'Menu public', complete: (activeDishes.count || 0) > 0, detail: `${activeDishes.count || 0} plat(s) actif(s)`, owner: 'admin', nextAction: (activeDishes.count || 0) > 0 ? 'Aucune action' : 'Publier au moins un plat validé' },
       { key: 'wines', label: 'Carte des vins', complete: (activeWines.count || 0) > 0, detail: `${activeWines.count || 0} vin(s) actif(s)`, owner: 'client', nextAction: (activeWines.count || 0) > 0 ? 'Aucune action' : 'Obtenir la carte des vins validée puis la saisir' },
       { key: 'team', label: 'Équipe publique', complete: (publicTeam.count || 0) > 0, detail: `${publicTeam.count || 0} profil(s) public(s)`, owner: 'client', nextAction: (publicTeam.count || 0) > 0 ? 'Aucune action' : 'Obtenir noms, rôles, bios et photos validés' },
