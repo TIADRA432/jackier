@@ -94,7 +94,7 @@ const STATUS_CLASSES: Record<ReservationWorkflowStatus, string> = {
                       <td class="py-4 text-right">
                         <label class="sr-only" [for]="'status-' + reservation.id">Statut de {{ reservation.name }}</label>
                         <select [id]="'status-' + reservation.id" [value]="reservation.status" (change)="updateStatus(reservation, $any($event.target).value)" [disabled]="updatingId() === reservation.id" class="rounded-lg border border-gray-700 bg-[#121212] px-2 py-1 text-xs text-white outline-none focus:border-jacquier-gold disabled:opacity-50">
-                          @for (status of statuses; track status) { <option [value]="status">{{ statusLabel(status) }}</option> }
+                          @for (status of availableStatuses(reservation); track status) { <option [value]="status">{{ statusLabel(status) }}</option> }
                         </select>
                       </td>
                     </tr>
@@ -143,6 +143,12 @@ export class ReservationsComponent {
   readonly errorMessage = signal('');
   readonly copyFeedback = signal('');
   readonly statuses: ReservationWorkflowStatus[] = ['pending', 'confirmed', 'completed', 'cancelled'];
+  private readonly transitions: Record<ReservationWorkflowStatus, ReservationWorkflowStatus[]> = {
+    pending: ['confirmed', 'cancelled'],
+    confirmed: ['completed', 'cancelled'],
+    completed: [],
+    cancelled: []
+  };
   readonly pendingCount = computed(() => this.reservations().filter(({ status }) => status === 'pending').length);
   readonly reservationsWithNotes = computed(() => this.reservations().filter(({ notes }) => Boolean(notes?.trim())).slice(0, 4));
 
@@ -207,6 +213,10 @@ export class ReservationsComponent {
     } catch {
       this.copyFeedback.set('Copie impossible. Réessayez.');
     }
+  }
+
+  availableStatuses(reservation: AdminReservation): ReservationWorkflowStatus[] {
+    return [reservation.status, ...this.transitions[reservation.status]];
   }
 
   statusLabel(status: ReservationWorkflowStatus): string { return STATUS_LABELS[status]; }

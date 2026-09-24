@@ -10,6 +10,14 @@ const MAX_BUDGET = 120;
 const MAX_GUESTS = 5_000;
 const ALLOWED_EVENT_TYPES = new Set(['mariage', 'corporate', 'anniversaire', 'prive', 'autre']);
 const ALLOWED_STATUSES = new Set(['pending', 'contacted', 'quoted', 'confirmed', 'completed', 'cancelled']);
+const CATERING_TRANSITIONS: Record<string, Set<string>> = {
+  pending: new Set(['contacted', 'cancelled']),
+  contacted: new Set(['quoted', 'cancelled']),
+  quoted: new Set(['confirmed', 'cancelled']),
+  confirmed: new Set(['completed', 'cancelled']),
+  completed: new Set(),
+  cancelled: new Set()
+};
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 const format = (row: any) => ({
@@ -136,9 +144,21 @@ export const updateCateringEvent = async (req: AuthenticatedRequest, res: Respon
       throw new Error('Invalid catering status');
     }
 
+    const { data: current, error: currentError } = await supabase
+      .from('catering_events')
+      .select('status')
+      .eq('id', id)
+      .single();
+    if (currentError) throw currentError;
+
+    const nextStatus = req.body.status;
+    if (current.status !== nextStatus && !CATERING_TRANSITIONS[current.status]?.has(nextStatus)) {
+      return res.status(409).json({ error: `Invalid catering status transition: ${current.status} -> ${nextStatus}` });
+    }
+
     const { data, error } = await supabase
       .from('catering_events')
-      .update({ status: req.body.status })
+      .update({ status: nextStatus })
       .eq('id', id)
       .select('*')
       .single();

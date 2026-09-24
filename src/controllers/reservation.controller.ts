@@ -11,6 +11,12 @@ const ALLOWED_TIMES = new Set([
   '19:00', '19:30', '20:00', '20:30', '21:00', '21:30',
 ]);
 const ALLOWED_STATUSES = new Set(['pending', 'confirmed', 'cancelled', 'completed']);
+const RESERVATION_TRANSITIONS: Record<string, Set<string>> = {
+  pending: new Set(['confirmed', 'cancelled']),
+  confirmed: new Set(['completed', 'cancelled']),
+  completed: new Set(),
+  cancelled: new Set()
+};
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const WEEKDAY_KEYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const;
 
@@ -176,7 +182,19 @@ export const updateReservationStatus = async (req: AuthenticatedRequest, res: Re
     if (!isRecord(req.body) || typeof req.body.status !== 'string' || !ALLOWED_STATUSES.has(req.body.status)) {
       return res.status(400).json({ error: 'Invalid reservation status' });
     }
-    const { data, error } = await supabase.from('reservations').update({ status: req.body.status }).eq('id', id).select('*').single();
+    const { data: current, error: currentError } = await supabase
+      .from('reservations')
+      .select('status')
+      .eq('id', id)
+      .single();
+    if (currentError) throw currentError;
+
+    const nextStatus = req.body.status;
+    if (current.status !== nextStatus && !RESERVATION_TRANSITIONS[current.status]?.has(nextStatus)) {
+      return res.status(409).json({ error: `Invalid reservation status transition: ${current.status} -> ${nextStatus}` });
+    }
+
+    const { data, error } = await supabase.from('reservations').update({ status: nextStatus }).eq('id', id).select('*').single();
     if (error) throw error;
 
     const reference = id.split('-')[0]?.toUpperCase() || id;
