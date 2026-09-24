@@ -134,6 +134,13 @@ const respond = (error: unknown, res: Response, fallback: string): Response =>
 const sortMenuItems = (items: Record<string, unknown>[]) =>
   items.sort((a, b) => Number(a.displayOrder ?? 0) - Number(b.displayOrder ?? 0));
 
+const ensureCategoryExists = async (categoryId: string): Promise<void> => {
+  const categories = await getCollection('menuCategories');
+  if (!categories.some((category: any) => category.id === categoryId)) {
+    throw new ValidationError('Unknown category id');
+  }
+};
+
 /** Public catalogue: a missing legacy value stays visible; only active === false hides a dish. */
 export const getPublicMenuItems = async (_req: Request, res: Response, next: NextFunction) => {
   try {
@@ -157,6 +164,7 @@ export const createMenuItem = async (req: Request, res: Response) => {
   try {
     const payload = validateMenuPayload(req.body, false);
     if (!payload.categoryId) throw new ValidationError('category id is required');
+    await ensureCategoryExists(String(payload.categoryId));
     res.status(201).json(await addDoc('menuItems', { ...toMenuRow(payload), active: payload.active ?? true }));
   } catch (error) {
     return respond(error, res, 'Failed to create menu item');
@@ -167,6 +175,7 @@ export const updateMenuItem = async (req: Request, res: Response) => {
   try {
     const id = validateId(req.params.id);
     const payload = validateMenuPayload(req.body, true);
+    if (payload.categoryId !== undefined) await ensureCategoryExists(String(payload.categoryId));
     res.json(await updateDoc('menuItems', id, toMenuRow(payload)));
   } catch (error) {
     return respond(error, res, 'Failed to update menu item');
