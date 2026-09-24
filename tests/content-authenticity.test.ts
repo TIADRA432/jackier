@@ -43,7 +43,8 @@ test('school page only presents programmes backed by admin data', async () => {
   assert.doesNotMatch(school, /50\+/);
   assert.doesNotMatch(school, /95%/);
   assert.match(school, /programs = this\.restaurantService\.getSchoolPrograms\(\)/);
-  assert.match(school, /Aucun programme publié actuellement/);
+  assert.match(school, /Le prochain programme sera annoncé ici/);
+  assert.doesNotMatch(school, /programmes en brouillon/);
 });
 
 test('public catering has no fictitious testimonials or guaranteed response delay', async () => {
