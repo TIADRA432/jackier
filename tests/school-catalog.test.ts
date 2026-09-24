@@ -33,6 +33,10 @@ test('school programme writes whitelist and sanitize structured business fields'
   assert.match(controller, /optionalOrder/);
   assert.match(controller, /validateUuid\(req\.params\.id, 'school program'\)/);
   assert.match(controller, /javascript\|data/);
+  assert.match(controller, /SYSTEM_TEXT_PATTERN/);
+  assert.match(controller, /npm\\s\+err!/);
+  assert.match(controller, /traceback/);
+  assert.match(controller, /git\\s\+\(\?:status/);
 });
 
 test('public school page exposes upcoming sessions capacity and a truthful registration flow', async () => {
