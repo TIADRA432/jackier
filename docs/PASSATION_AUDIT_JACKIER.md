@@ -1,5 +1,10 @@
 # Passation — audit Jackier
 
+> **Mise à jour au 24 septembre 2026.** Les sections historiques ci-dessous documentent l'évolution du projet, mais plusieurs risques mentionnés à l'époque sont désormais fermés. L'administration est aujourd'hui câblée sur les API réelles pour Dashboard, Réservations, Traiteur, École, Restaurant/Menu, Catégories, Vins, Finance, Stock, Équipe, Paramètres, Galerie/CMS et Analytics. Les flux réservation/traiteur, SEO, sécurité HTTP, smoke tests, accessibilité publique, performances visiteur, paramètres dynamiques et readiness pré-livraison ont été déployés sur `main`.
+>
+> **Reste principalement à fournir/valider côté client :** carte des vins, profils publics de l'équipe, programmes de l'École, URLs officielles des réseaux sociaux et documents/liens légaux. Les horaires temps réel sont configurés et actifs. Le favicon 404 historique est fermé : `index.html` utilise désormais le symbole de marque versionné `/brand/le-jacquier-mark.svg`. Le Tailwind CDN historique n'est plus utilisé ; Tailwind passe par le pipeline PostCSS du projet.
+
+
 **Dépôt :** `TIADRA432/jackier`
 **Branche cible :** `integration/backend-supabase`
 **HEAD au moment de cette mise à jour :** consulter `git log -1` (ce document est
