@@ -65,6 +65,14 @@ test('production smoke script has valid Bash syntax', () => {
   assert.equal(result.status, 0, result.stderr || result.stdout);
 });
 
+test('public dish cards replace broken remote images with a local fallback', async () => {
+  const component = await source('src', 'app', 'shared', 'components', 'dish-card', 'dish-card.component.ts');
+
+  assert.match(component, /\(error\)="useFallbackImage\(\$event\)"/);
+  assert.match(component, /fallbackApplied/);
+  assert.match(component, /image\.src = '\/og-image\.png'/);
+});
+
 test('Cloudflare static assets receive the same security headers as Worker responses', async () => {
   const headers = await source('public', '_headers');
   const angular = await source('angular.json');
