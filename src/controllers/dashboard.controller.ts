@@ -2,19 +2,95 @@ import { Request, Response } from 'express';
 import { supabase } from '../config/supabase';
 import { serverLog } from '../utils/server-log';
 
+const RESERVATION_STATUS_LABELS: Record<string, string> = {
+  pending: 'en attente',
+  confirmed: 'confirmée',
+  cancelled: 'annulée',
+  completed: 'terminée'
+};
+
+const CATERING_STATUS_LABELS: Record<string, string> = {
+  pending: 'en attente',
+  contacted: 'contactée',
+  quoted: 'devis envoyé',
+  confirmed: 'confirmée',
+  completed: 'terminée',
+  cancelled: 'annulée'
+};
+
+const formatActivity = (log: any) => {
+  const action = String(log.action || 'ACTIVITY');
+  const details = String(log.details || '');
+
+  if (action === 'UPDATE_RESERVATION_STATUS') {
+    const match = details.match(/Reservation #([^\s]+) changed to ([a-z_]+)/i);
+    const reference = match?.[1] || '—';
+    const status = RESERVATION_STATUS_LABELS[match?.[2] || ''] || match?.[2] || 'mise à jour';
+    return {
+      id: log.id,
+      type: 'Réservation',
+      message: `Réservation #${reference} passée au statut « ${status} ».`,
+      date: log.timestamp
+    };
+  }
+
+  if (action === 'UPDATE_CATERING_STATUS') {
+    const match = details.match(/Catering request #([^\s]+) changed to ([a-z_]+)/i);
+    const reference = match?.[1] || '—';
+    const status = CATERING_STATUS_LABELS[match?.[2] || ''] || match?.[2] || 'mise à jour';
+    return {
+      id: log.id,
+      type: 'Traiteur',
+      message: `Demande #${reference} passée au statut « ${status} ».`,
+      date: log.timestamp
+    };
+  }
+
+  if (action === 'UPDATE_SETTINGS') {
+    return {
+      id: log.id,
+      type: 'Paramètres',
+      message: 'Configuration du site mise à jour.',
+      date: log.timestamp
+    };
+  }
+
+  return {
+    id: log.id,
+    type: action.toLowerCase().replace(/_/g, ' ').replace(/^./, value => value.toUpperCase()),
+    message: details || 'Action enregistrée.',
+    date: log.timestamp
+  };
+};
+
+const compactActivities = (logs: any[]) => {
+  const activities = logs.map(formatActivity);
+  const compacted: Array<{ id: string; type: string; message: string; date: string }> = [];
+
+  for (const activity of activities) {
+    const previous = compacted[compacted.length - 1];
+    if (previous && previous.type === activity.type && previous.message === activity.message) continue;
+    compacted.push(activity);
+    if (compacted.length >= 8) break;
+  }
+
+  return compacted;
+};
+
 export const getDashboardOverview = async (req: Request, res: Response) => {
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const tomorrow = new Date(today.getTime() + 86400000);
 
-    const [reservations, pendingReservations, activeDishes, activeCatering, financeReports, logs, activeWines, publicTeam, gallery, school, settings] = await Promise.all([
+    const [reservations, pendingReservations, pendingSchoolRegistrations, activeDishes, activeCatering, financeReports, logs, activeWines, publicTeam, gallery, school, settings] = await Promise.all([
       supabase.from('reservations').select('id', { count: 'exact', head: true }).gte('date', today.toISOString()).lt('date', tomorrow.toISOString()),
       supabase.from('reservations').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
+      supabase.from('school_registrations').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
       supabase.from('menu_items').select('id', { count: 'exact', head: true }).eq('active', true),
       supabase.from('catering_events').select('id', { count: 'exact', head: true }).in('status', ['pending', 'contacted', 'quoted', 'confirmed']),
       supabase.from('finance_reports').select('*').order('date', { ascending: false }).limit(30),
-      supabase.from('logs').select('*').order('timestamp', { ascending: false }).limit(10),
+      supabase.from('logs').select('*').order('timestamp', { ascending: false }).limit(30),
       supabase.from('wine_items').select('id', { count: 'exact', head: true }).eq('active', true),
       supabase.from('team_members').select('id', { count: 'exact', head: true }).eq('active', true).eq('public_visible', true),
       supabase.from('gallery_images').select('id', { count: 'exact', head: true }),
@@ -22,7 +98,7 @@ export const getDashboardOverview = async (req: Request, res: Response) => {
       supabase.from('settings').select('data').eq('id', 'global').maybeSingle()
     ]);
 
-    const errors = [reservations, pendingReservations, activeDishes, activeCatering, financeReports, logs, activeWines, publicTeam, gallery, school, settings].filter(result => result.error);
+    const errors = [reservations, pendingReservations, pendingSchoolRegistrations, activeDishes, activeCatering, financeReports, logs, activeWines, publicTeam, gallery, school, settings].filter(result => result.error);
     if (errors.length) throw errors[0].error;
 
     let todayRevenue = 0;
@@ -41,12 +117,7 @@ export const getDashboardOverview = async (req: Request, res: Response) => {
     }
 
     const revenueChart = Object.entries(monthlyData).map(([month, total]) => ({ month, total }));
-    const recentActivities = (logs.data || []).map(log => ({
-      id: log.id,
-      type: log.action,
-      message: log.details,
-      date: log.timestamp
-    }));
+    const recentActivities = compactActivities(logs.data || []);
 
     const settingsData = (settings.data?.data || {}) as Record<string, any>;
     const activeSchoolPrograms = (school.data || []).filter((row: any) => row.data?.active !== false).length;
@@ -70,6 +141,7 @@ export const getDashboardOverview = async (req: Request, res: Response) => {
       stats: {
         todayReservations: reservations.count || 0,
         pendingReservations: pendingReservations.count || 0,
+        pendingSchoolRegistrations: pendingSchoolRegistrations.count || 0,
         todayRevenue,
         monthlyRevenue,
         activeMenuItems: activeDishes.count || 0,

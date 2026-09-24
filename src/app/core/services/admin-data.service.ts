@@ -33,6 +33,7 @@ export interface DashboardOverview {
   stats: {
     todayReservations: number;
     pendingReservations: number;
+    pendingSchoolRegistrations: number;
     todayRevenue: number;
     monthlyRevenue: number;
     activeMenuItems: number;
