@@ -61,3 +61,13 @@ test('robots and sitemap exclude admin and cover public routes', async () => {
   assert.match(sitemap, /\/services-traiteur<\/loc>/);
   assert.doesNotMatch(sitemap, /\/admin/);
 });
+
+
+test('the site uses the versioned Jacquier brand mark as favicon', async () => {
+  const index = await source('index.html');
+  const mark = await source('public', 'brand', 'le-jacquier-mark.svg');
+
+  assert.match(index, /rel="icon" type="image\/svg\+xml" href="\/brand\/le-jacquier-mark\.svg"/);
+  assert.match(mark, /<svg/);
+  assert.doesNotMatch(index, /favicon\.ico/);
+});
