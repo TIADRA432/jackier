@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { supabase } from '../config/supabase';
 import { AuthenticatedRequest } from '../middleware/auth.middleware';
+import { serverLog } from '../utils/server-log';
 
 const MAX_NAME = 160;
 const MAX_EMAIL = 254;
@@ -171,7 +172,7 @@ export const updateCateringEvent = async (req: AuthenticatedRequest, res: Respon
       user_id: req.user?.id || 'system',
       timestamp: new Date().toISOString()
     });
-    if (logError) console.warn('Unable to write catering status log:', logError.message);
+    if (logError) serverLog('warn', 'catering.audit_log_failed', logError, { cateringId: id });
 
     res.json(format(data));
   } catch (error) {

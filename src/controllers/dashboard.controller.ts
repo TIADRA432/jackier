@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { supabase } from '../config/supabase';
+import { serverLog } from '../utils/server-log';
 
 export const getDashboardOverview = async (req: Request, res: Response) => {
   try {
@@ -86,7 +87,7 @@ export const getDashboardOverview = async (req: Request, res: Response) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching dashboard overview:', error);
+    serverLog('error', 'dashboard.overview_failed', error);
     res.status(500).json({ error: 'Failed to fetch dashboard overview' });
   }
 };

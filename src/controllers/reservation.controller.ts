@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { supabase } from '../config/supabase';
 import { AuthenticatedRequest } from '../middleware/auth.middleware';
+import { serverLog } from '../utils/server-log';
 
 const MAX_NAME = 100;
 const MAX_EMAIL = 254;
@@ -204,7 +205,7 @@ export const updateReservationStatus = async (req: AuthenticatedRequest, res: Re
       user_id: req.user?.id || 'system',
       timestamp: new Date().toISOString()
     });
-    if (logError) console.warn('Unable to write reservation status log:', logError.message);
+    if (logError) serverLog('warn', 'reservation.audit_log_failed', logError, { reservationId: id });
 
     res.json(format(data));
   } catch (error) {
