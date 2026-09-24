@@ -18,6 +18,19 @@ La stratégie de pré-livraison est désormais la suivante :
 
 L'infrastructure staging gratuite déjà préparée peut être réactivée après cette validation sans recréer le schéma, mais elle reste volontairement hors du chemin critique de livraison.
 
+### État réel à présenter au restaurant
+
+Au moment de cette décision, la production contient déjà une V1 École utilisable pour une démonstration métier :
+
+- 1 programme publié : **Ateliers Grand Public & Passionnés** ;
+- 1 session planifiée du **12 au 20 novembre 2026**, au Jacquier à Kipé ;
+- capacité : **8 places** ;
+- 1 inscription actuellement **En attente** ;
+- jauge publique vérifiée : **7 places restantes sur 8** ;
+- le formulaire public affiche explicitement qu'une demande reste **En attente** jusqu'à confirmation du restaurant.
+
+Ces données servent de base à la validation client. Ne pas ajouter de nouvelles fonctions École avant retour du restaurant, sauf correction d'un bug bloquant ou de sécurité.
+
 **Dépôt :** `TIADRA432/jackier`
 **Branche cible :** `integration/backend-supabase`
 **HEAD au moment de cette mise à jour :** consulter `git log -1` (ce document est
