@@ -28,15 +28,19 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
     <section class="py-10 bg-jacquier-cream min-h-screen px-4">
       <div class="max-w-7xl mx-auto">
 
-        <nav appRevealOnScroll class="sticky top-16 z-30 -mx-4 mb-8 flex gap-3 overflow-x-auto bg-jacquier-cream/90 px-4 py-3 shadow-sm backdrop-blur-xl" aria-label="Catégories de la carte">
-          @for (filter of filters(); track filter.id) {
-            <button type="button" (click)="activeFilter.set(filter.id)" [attr.aria-pressed]="activeFilter() === filter.id"
-              class="shrink-0 rounded-full border border-jacquier-primary px-5 py-3 text-sm font-bold"
-              [class.bg-jacquier-primary]="activeFilter() === filter.id" [class.text-white]="activeFilter() === filter.id">{{ filter.label }}</button>
-          }
-        </nav>
-        <!-- Controls Container -->
-        <div appRevealOnScroll revealVariant="fade-scale" class="mb-16 space-y-10">
+        @if (showCategoryNav()) {
+          <nav appRevealOnScroll class="sticky top-16 z-30 -mx-4 mb-8 flex gap-3 overflow-x-auto bg-jacquier-cream/90 px-4 py-3 shadow-sm backdrop-blur-xl" aria-label="Catégories de la carte">
+            @for (filter of filters(); track filter.id) {
+              <button type="button" (click)="activeFilter.set(filter.id)" [attr.aria-pressed]="activeFilter() === filter.id"
+                class="shrink-0 rounded-full border border-jacquier-primary px-5 py-3 text-sm font-bold"
+                [class.bg-jacquier-primary]="activeFilter() === filter.id" [class.text-white]="activeFilter() === filter.id">{{ filter.label }}</button>
+            }
+          </nav>
+        }
+
+        <!-- Search and advanced controls are useful only once the catalogue has enough items. -->
+        @if (showAdvancedControls()) {
+          <div appRevealOnScroll revealVariant="fade-scale" class="mb-16 space-y-10">
 
           <!-- Search Bar -->
           <div class="max-w-2xl mx-auto relative">
@@ -127,6 +131,7 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
             }
           </div>
         </div>
+        }
 
         <!-- Loading skeleton -->
         @if (isLoading()) {
@@ -263,6 +268,8 @@ export class MenuComponent {
   setMaxPrice(value: number) { this.maxPrice.set(Math.max(Number(value), this.minPrice())); }
 
   filters = computed(() => categoryFilters(this.allDishes(), this.restaurantService.menuCategories()));
+  showCategoryNav = computed(() => this.filters().length > 2);
+  showAdvancedControls = computed(() => this.allDishes().length >= 6);
   filteredDishes = computed(() => filterDishes(this.allDishes(), this.restaurantService.menuCategories(), {
     query: this.searchQuery(), category: this.activeFilter(), vegetarian: this.showVegetarian(),
     spicy: this.showSpicy(), local: false, featured: false,

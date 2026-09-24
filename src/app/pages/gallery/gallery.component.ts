@@ -78,14 +78,14 @@ const CATEGORY_LABELS: Record<string, string> = {
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[250px] md:auto-rows-[300px]">
               @for (image of filteredImages(); track image.id; let i = $index) {
                 <button type="button" (click)="openLightbox(image)" appRevealOnScroll revealVariant="fade-scale" [revealDelay]="i * 70"
-                  [attr.aria-label]="'Agrandir ' + (image.title || 'cette photo')"
+                  [attr.aria-label]="'Agrandir ' + (displayTitle(image.title) || 'cette photo')"
                   [class]="'relative overflow-hidden rounded-3xl group cursor-zoom-in shadow-lg text-left transition-shadow duration-700 hover:shadow-2xl ' + layoutFor(i)">
-                  <img [ngSrc]="image.imageUrl" fill class="object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.035]" [alt]="image.title || 'Photo du restaurant Le Jacquier'" referrerPolicy="no-referrer">
+                  <img [ngSrc]="image.imageUrl" fill class="object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.035]" [alt]="displayTitle(image.title) || 'Photo du restaurant Le Jacquier'" referrerPolicy="no-referrer">
                   <div class="absolute inset-0 bg-gradient-to-t from-jacquier-dark/85 via-jacquier-dark/15 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
                     <div>
                       <span class="text-jacquier-gold text-xs font-bold tracking-widest uppercase mb-1 block">{{ categoryLabel(normalizedCategory(image.category)) }}</span>
-                      @if (image.title) {
-                        <h2 class="text-white font-serif text-xl font-bold">{{ image.title }}</h2>
+                      @if (displayTitle(image.title); as title) {
+                        <h2 class="text-white font-serif text-xl font-bold">{{ title }}</h2>
                       }
                     </div>
                   </div>
@@ -104,7 +104,7 @@ const CATEGORY_LABELS: Record<string, string> = {
     @if (selectedImage(); as selected) {
       <div #lightboxDialog class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-3 md:p-8"
         role="dialog" aria-modal="true" tabindex="-1"
-        [attr.aria-label]="'Aperçu de ' + (selected.title || 'la photo')"
+        [attr.aria-label]="'Aperçu de ' + (displayTitle(selected.title) || 'la photo')"
         (click)="closeLightbox()">
         <div class="relative flex h-full w-full max-w-7xl flex-col items-center justify-center" (click)="$event.stopPropagation()">
           <button #lightboxCloseButton type="button" (click)="closeLightbox()" aria-label="Fermer l’aperçu"
@@ -119,12 +119,12 @@ const CATEGORY_LABELS: Record<string, string> = {
               class="absolute right-0 top-1/2 z-20 -translate-y-1/2 rounded-full bg-black/55 p-3 text-2xl text-white hover:bg-white hover:text-black">›</button>
           }
 
-          <img [src]="selected.imageUrl" [alt]="selected.title || 'Photo du restaurant Le Jacquier'"
+          <img [src]="selected.imageUrl" [alt]="displayTitle(selected.title) || 'Photo du restaurant Le Jacquier'"
             class="gallery-lightbox-image max-h-[78vh] max-w-full rounded-2xl object-contain shadow-2xl" />
 
           <div class="mt-4 max-w-3xl text-center text-white">
             <p class="text-xs font-bold uppercase tracking-[0.18em] text-jacquier-gold">{{ categoryLabel(normalizedCategory(selected.category)) }}</p>
-            @if (selected.title) { <p class="mt-1 font-serif text-xl md:text-2xl">{{ selected.title }}</p> }
+            @if (displayTitle(selected.title); as title) { <p class="mt-1 font-serif text-xl md:text-2xl">{{ title }}</p> }
             <p class="mt-2 text-xs text-white/60">{{ selectedPosition() }} / {{ filteredImages().length }}</p>
           </div>
         </div>
@@ -181,6 +181,19 @@ export class GalleryComponent implements OnDestroy {
 
   categoryLabel(value: string): string {
     return CATEGORY_LABELS[value] ?? 'Restaurant';
+  }
+
+  displayTitle(value: string | null | undefined): string {
+    const title = (value || '').trim();
+    if (!title) return '';
+
+    // Hide import/file labels that are useful in the CMS but look unfinished in the public gallery.
+    const technicalName =
+      /^(?:le\s*jacquier|lejacquier)\s+\d+/i.test(title) ||
+      /^(?:img|dsc|pxl|photo)[-_ ]?\d+/i.test(title) ||
+      /\.(?:jpe?g|png|webp|gif|avif)$/i.test(title);
+
+    return technicalName ? '' : title;
   }
 
   selectCategory(category: string): void {
