@@ -465,24 +465,29 @@ export const updateSchoolRegistrationStatus = async (req: Request, res: Response
     const status = cleanText(source.status, 'status', 20, true) as string;
     if (!REGISTRATION_STATUSES.has(status)) throw new CatalogValidationError('Invalid registration status');
 
-    const { data, error } = await supabase
-      .from('school_registrations')
-      .update({ status, updated_at: new Date().toISOString() })
-      .eq('id', id)
-      .select('*')
-      .single();
-    if (error) throw error;
+    const { data, error } = await supabase.rpc('update_school_registration_status', {
+      p_registration_id: id,
+      p_status: status
+    });
+    if (error) {
+      const message = String(error.message || '');
+      if (message.includes('session_full')) return res.status(409).json({ error: 'The session is full; this cancelled registration cannot be reactivated' });
+      if (message.includes('registration_not_found')) return res.status(404).json({ error: 'School registration not found' });
+      throw error;
+    }
+
+    const updated = Array.isArray(data) ? data[0] : data;
     res.json({
-      id: data.id,
-      sessionId: data.session_id,
-      fullName: data.full_name,
-      email: data.email,
-      phone: data.phone,
-      notes: data.notes,
-      status: data.status,
-      priceSnapshot: data.price_snapshot,
-      createdAt: data.created_at,
-      updatedAt: data.updated_at
+      id: updated.id,
+      sessionId: updated.session_id,
+      fullName: updated.full_name,
+      email: updated.email,
+      phone: updated.phone,
+      notes: updated.notes,
+      status: updated.status,
+      priceSnapshot: updated.price_snapshot,
+      createdAt: updated.created_at,
+      updatedAt: updated.updated_at
     });
   } catch (error) {
     return catalogError(error, res, 'Failed to update school registration');
