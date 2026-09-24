@@ -845,6 +845,7 @@ export class AdminComponent {
         this.mobileSearchOpen.set(false);
         this.isNotificationsOpen.set(false);
         this.isUserMenuOpen.set(false);
+        void this.loadHeaderData();
       });
 
     void this.loadAdminIdentity();
