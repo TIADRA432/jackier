@@ -177,7 +177,8 @@ test('reservation page filters backend slots using configured weekly hours', asy
   const reservation = await source('src', 'app', 'pages', 'reservation', 'reservation.component.ts');
 
   assert.match(reservation, /availableTimeSlots = computed/);
-  assert.match(reservation, /weeklyHours\?\.enabled/);
+  assert.match(reservation, /const schedule = this\.siteSettings\.settings\(\)\.weeklyHours/);
+  assert.match(reservation, /schedule\?\.enabled/);
   assert.match(reservation, /day\.closed/);
   assert.match(reservation, /open < close \? value >= open && value < close : value >= open \|\| value < close/);
   assert.match(reservation, /\[min\]="todayDate"/);
