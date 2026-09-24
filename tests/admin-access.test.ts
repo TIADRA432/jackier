@@ -47,7 +47,7 @@ test('the dashboard reads its operational metrics from the protected overview en
 
   assert.match(service, /get<DashboardOverview>\(`\$\{this\.apiUrl\}\/dashboard\/overview`\)/);
   assert.match(component, /this\.adminData\.getDashboardOverview\(\)/);
-  assert.match(component, /Aucun rapport financier disponible/);
+  assert.match(component, /Aucune clôture financière enregistrée/);
   assert.match(controller, /\['pending', 'contacted', 'quoted', 'confirmed'\]/);
   assert.match(controller, /readinessChecks/);
   assert.match(controller, /activeWines/);
@@ -68,6 +68,14 @@ test('the dashboard reads its operational metrics from the protected overview en
   assert.match(component, /Action admin/);
   assert.match(component, /adminPending/);
   assert.match(component, /clientPending/);
+  assert.match(controller, /pendingSchoolRegistrations/);
+  assert.match(controller, /compactActivities/);
+  assert.match(controller, /Configuration du site mise à jour/);
+  assert.match(component, /À traiter maintenant/);
+  assert.match(component, /priorityActions/);
+  assert.match(component, /pendingReadinessChecks/);
+  assert.match(component, /Inscriptions École à confirmer/);
+  assert.match(component, /Dernières actions administratives utiles/);
 });
 
 test('admin header search notifications and identity are functional rather than decorative', async () => {
