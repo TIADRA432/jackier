@@ -44,7 +44,7 @@ test('reactivating a cancelled registration remains capacity-safe', async () => 
   const migration = await source('supabase', 'migrations', '20260924094500_atomic_school_registration_status.sql');
 
   assert.match(controller, /rpc\('update_school_registration_status'/);
-  assert.match(controller, /cannot be reactivated/);
+  assert.match(controller, /ne peut pas être réactivée/);
   assert.match(migration, /v_registration\.status = 'cancelled'/);
   assert.match(migration, /v_count >= v_session\.capacity/);
   assert.match(migration, /for update/);
