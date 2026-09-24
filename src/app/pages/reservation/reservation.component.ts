@@ -147,8 +147,12 @@ import { toSignal } from '@angular/core/rxjs-interop';
                      @if (reservationForm.get('time')?.touched && reservationForm.get('time')?.invalid) {
                       <p id="res-time-error" class="text-red-500 text-xs mt-1" role="alert">Heure requise</p>
                     }
-                    @if (selectedDate() && siteSettings.settings().weeklyHours?.enabled && availableTimeSlots().length === 0) {
-                      <p class="text-amber-700 text-xs mt-1" role="status">Le restaurant est fermé ce jour-là selon les horaires configurés.</p>
+                    @if (selectedDate() && availableTimeSlots().length === 0) {
+                      <p class="text-amber-700 text-xs mt-1" role="status">
+                        {{ selectedDate() === todayDate
+                          ? 'Il n’y a plus de créneau de réservation disponible aujourd’hui.'
+                          : 'Le restaurant est fermé ce jour-là selon les horaires configurés.' }}
+                      </p>
                     }
                   </div>
                   <div class="space-y-2">
