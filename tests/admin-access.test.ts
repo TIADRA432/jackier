@@ -79,16 +79,19 @@ test('the catering screen reads and updates only the protected catering API', as
   assert.match(component, /this\.adminData\.updateCateringStatus/);
 });
 
-test('the school screen displays real programs instead of fictitious students', async () => {
+test('the school screen manages real programs sessions and registrations', async () => {
   const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
   const component = await source('src', 'app', 'pages', 'admin', 'school', 'school.component.ts');
 
   assert.match(service, /get<SchoolProgram\[\]>\(`\$\{this\.apiUrl\}\/admin\/school`\)/);
+  assert.match(service, /get<SchoolSession\[\]>\(`\$\{this\.apiUrl\}\/admin\/school\/sessions`\)/);
+  assert.match(service, /get<SchoolRegistration\[\]>\(`\$\{this\.apiUrl\}\/admin\/school\/registrations`\)/);
   assert.match(component, /this\.adminData\.getSchoolPrograms\(\)/);
-  assert.match(component, /this\.adminData\.createSchoolProgram/);
-  assert.match(component, /this\.adminData\.updateSchoolProgram/);
-  assert.match(component, /this\.adminData\.deleteSchoolProgram/);
-  assert.match(component, /Les étudiants, inscriptions et paiements ne sont pas encore modélisés/);
+  assert.match(component, /this\.adminData\.getSchoolSessions\(\)/);
+  assert.match(component, /this\.adminData\.getSchoolRegistrations\(\)/);
+  assert.match(component, /Sessions & jauges/);
+  assert.match(component, /Inscriptions reçues/);
+  assert.match(component, /paiement en ligne, PDF\/devis, e-mails transactionnels/);
 });
 
 test('the restaurant screen creates dishes and persists editorial changes', async () => {
