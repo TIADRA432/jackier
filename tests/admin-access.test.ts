@@ -87,6 +87,7 @@ test('admin header search notifications and identity are functional rather than 
   assert.doesNotMatch(layout, /absolute top-1\.5 right-1\.5 w-2\.5 h-2\.5 bg-red-500/);
   assert.match(layout, /NavigationEnd/);
   assert.match(layout, /this\.isSidebarOpen\.set\(false\)/);
+  assert.match(layout, /NavigationEnd[\s\S]*void this\.loadHeaderData\(\)/);
   assert.match(layout, /getCurrentUserEmail/);
   assert.match(auth, /async getCurrentUserEmail\(\)/);
   assert.match(auth, /supabaseClient\.auth\.getUser\(\)/);
