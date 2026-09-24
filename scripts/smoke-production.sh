@@ -63,13 +63,13 @@ require_header '^strict-transport-security:' 'HSTS présent'
 require_header "frame-src 'self' https://maps\\.google\\.com https://www\\.google\\.com" 'Google Maps autorisé par la CSP'
 require_header "script-src 'self'([;]|$)" 'Scripts limités au même origin'
 
-if grep -Eqi '<link[^>]+rel=["'"']stylesheet["'"'][^>]+media=["'"']print["'"'][^>]+onload=' /tmp/home.html; then
+if grep -Eqi "<link[^>]+rel=[\"']stylesheet[\"'][^>]+media=[\"']print[\"'][^>]+onload=" /tmp/home.html; then
   echo "::error title=Stylesheet blocked by CSP::Le build Angular utilise encore un handler inline onload pour activer la feuille CSS, incompatible avec script-src-attr 'none'"
-  grep -Eio '<link[^>]+rel=["'"']stylesheet["'"'][^>]*>' /tmp/home.html || true
+  grep -Eio "<link[^>]+rel=[\"']stylesheet[\"'][^>]*>" /tmp/home.html || true
   exit 1
 fi
 
-if ! grep -Eqi '<link[^>]+rel=["'"']stylesheet["'"'][^>]+href=' /tmp/home.html; then
+if ! grep -Eqi "<link[^>]+rel=[\"']stylesheet[\"'][^>]+href=" /tmp/home.html; then
   echo "::error title=Production stylesheet missing::Aucune feuille CSS externe n'est référencée dans la page d'accueil"
   exit 1
 fi
