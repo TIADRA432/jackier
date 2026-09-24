@@ -13,11 +13,17 @@ test('SEO service updates canonical social metadata and restaurant JSON-LD', asy
   assert.match(service, /property: 'og:title'/);
   assert.match(service, /property: 'og:description'/);
   assert.match(service, /property: 'og:url'/);
+  assert.match(service, /property: 'og:image:alt'/);
   assert.match(service, /name: 'twitter:title'/);
+  assert.match(service, /name: 'twitter:image:alt'/);
   assert.match(service, /application\/ld\+json/);
   assert.match(service, /'@type': 'Restaurant'/);
   assert.match(service, /OpeningHoursSpecification/);
   assert.match(service, /addressCountry: 'GN'/);
+  assert.match(service, /addressLocality: 'Conakry'/);
+  assert.match(service, /hasMenu/);
+  assert.match(service, /acceptsReservations: true/);
+  assert.match(service, /ReserveAction/);
 });
 
 test('admin and not-found routes are not indexable', async () => {
@@ -60,4 +66,26 @@ test('robots and sitemap exclude admin and cover public routes', async () => {
   assert.match(sitemap, /\/reservation<\/loc>/);
   assert.match(sitemap, /\/services-traiteur<\/loc>/);
   assert.doesNotMatch(sitemap, /\/admin/);
+});
+
+
+test('the site uses the versioned Jacquier brand mark as favicon', async () => {
+  const index = await source('index.html');
+  const mark = await source('public', 'brand', 'le-jacquier-mark.svg');
+
+  assert.match(index, /rel="icon" type="image\/svg\+xml" href="\/brand\/le-jacquier-mark\.svg"/);
+  assert.match(mark, /<svg/);
+  assert.doesNotMatch(index, /favicon\.ico/);
+});
+
+
+test('public SEO routes use page-specific social imagery', async () => {
+  const routes = await source('src', 'app', 'app.routes.ts');
+  const service = await source('src', 'app', 'core', 'services', 'seo.service.ts');
+
+  for (const slot of ['homeHero','aboutHero','menuHero','cateringHero','schoolHero','galleryHero','reservationHero','contactHero']) {
+    assert.ok(routes.includes(`imageSlot: '${slot}'`), `Missing SEO image slot: ${slot}`);
+  }
+  assert.match(service, /config\.imageSlot \?\? 'homeHero'/);
+  assert.match(service, /socialImageAlt/);
 });
