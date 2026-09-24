@@ -50,6 +50,8 @@ jobs:
             rm -f graphify-out/graph.json
           fi
           graphify extract . --code-only
+          # Refresh community names and GRAPH_REPORT.md from the newly extracted graph.
+          graphify cluster-only .
 
       - name: Commit updated graph artefacts
         run: |
