@@ -9,9 +9,12 @@ const MAX_PHONE = 30;
 const MAX_MESSAGE = 2_000;
 const MAX_BUDGET = 120;
 const MAX_GUESTS = 5_000;
+class CateringValidationError extends Error {}
+
+type CateringWorkflowStatus = 'pending' | 'contacted' | 'quoted' | 'confirmed' | 'completed' | 'cancelled';
 const ALLOWED_EVENT_TYPES = new Set(['mariage', 'corporate', 'anniversaire', 'prive', 'autre']);
-const ALLOWED_STATUSES = new Set(['pending', 'contacted', 'quoted', 'confirmed', 'completed', 'cancelled']);
-const CATERING_TRANSITIONS: Record<string, Set<string>> = {
+const ALLOWED_STATUSES = new Set<CateringWorkflowStatus>(['pending', 'contacted', 'quoted', 'confirmed', 'completed', 'cancelled']);
+const CATERING_TRANSITIONS: Record<CateringWorkflowStatus, Set<CateringWorkflowStatus>> = {
   pending: new Set(['contacted', 'cancelled']),
   contacted: new Set(['quoted', 'cancelled']),
   quoted: new Set(['confirmed', 'cancelled']),
@@ -21,10 +24,27 @@ const CATERING_TRANSITIONS: Record<string, Set<string>> = {
 };
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
+const normalizeCateringStatus = (value: unknown): CateringWorkflowStatus => {
+  if (value === 'approved') return 'confirmed';
+  if (value === 'rejected') return 'cancelled';
+  return ALLOWED_STATUSES.has(value as CateringWorkflowStatus)
+    ? value as CateringWorkflowStatus
+    : 'pending';
+};
+
+const normalizePhone = (value: string): string => {
+  let digits = value.replace(/\D/g, '');
+  if (digits.startsWith('00')) digits = digits.slice(2);
+  if (digits.length === 9) digits = `224${digits}`;
+  return digits;
+};
+
+const normalizeEmail = (value: string): string => value.trim().toLowerCase();
+
 const format = (row: any) => ({
   id: row.id,
   ...(row.data || {}),
-  status: row.status,
+  status: normalizeCateringStatus(row.status),
   createdAt: row.created_at,
 });
 
@@ -34,11 +54,11 @@ const isRecord = (value: unknown): value is Record<string, unknown> =>
 const cleanString = (value: unknown, field: string, maxLength: number, required = true): string => {
   if (typeof value !== 'string') {
     if (!required && (value === undefined || value === null)) return '';
-    throw new Error(`Invalid catering ${field}`);
+    throw new CateringValidationError(`Invalid catering ${field}`);
   }
   const result = value.trim();
-  if (required && !result) throw new Error(`Invalid catering ${field}`);
-  if (result.length > maxLength) throw new Error(`Invalid catering ${field}`);
+  if (required && !result) throw new CateringValidationError(`Invalid catering ${field}`);
+  if (result.length > maxLength) throw new CateringValidationError(`Invalid catering ${field}`);
   return result;
 };
 
@@ -54,10 +74,10 @@ const conakryDateString = (): string => {
 };
 
 export const validateCateringPayload = (body: unknown) => {
-  if (!isRecord(body)) throw new Error('Invalid catering payload');
+  if (!isRecord(body)) throw new CateringValidationError('Invalid catering payload');
 
   const allowed = new Set(['name', 'phone', 'email', 'eventType', 'date', 'guests', 'budget', 'message']);
-  if (Object.keys(body).some(key => !allowed.has(key))) throw new Error('Invalid catering field');
+  if (Object.keys(body).some(key => !allowed.has(key))) throw new CateringValidationError('Invalid catering field');
 
   const name = cleanString(body.name, 'name', MAX_NAME);
   const phone = cleanString(body.phone, 'phone', MAX_PHONE);
@@ -68,15 +88,16 @@ export const validateCateringPayload = (body: unknown) => {
   const budget = cleanString(body.budget ?? '', 'budget', MAX_BUDGET, false);
   const guests = body.guests;
 
-  if (!/^\S+@\S+\.\S+$/.test(email)) throw new Error('Invalid catering email');
-  if (!ALLOWED_EVENT_TYPES.has(eventType)) throw new Error('Invalid catering event type');
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error('Invalid catering date');
+  if (!/^\S+@\S+\.\S+$/.test(email)) throw new CateringValidationError('Invalid catering email');
+  if (!/^\+?[0-9 ()-]{6,30}$/.test(phone)) throw new CateringValidationError('Invalid catering phone');
+  if (!ALLOWED_EVENT_TYPES.has(eventType)) throw new CateringValidationError('Invalid catering event type');
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new CateringValidationError('Invalid catering date');
   const parsedDate = new Date(`${date}T00:00:00Z`);
   if (Number.isNaN(parsedDate.getTime()) || parsedDate.toISOString().slice(0, 10) !== date || date < conakryDateString()) {
-    throw new Error('Invalid catering date');
+    throw new CateringValidationError('Invalid catering date');
   }
   if (typeof guests !== 'number' || !Number.isInteger(guests) || guests < 1 || guests > MAX_GUESTS) {
-    throw new Error('Invalid catering guests');
+    throw new CateringValidationError('Invalid catering guests');
   }
 
   return { name, phone, email, eventType, date, guests, budget, message };
@@ -84,14 +105,16 @@ export const validateCateringPayload = (body: unknown) => {
 
 const validateUuid = (value: string | string[] | undefined) => {
   const id = Array.isArray(value) ? value[0] : value;
-  if (!id || !UUID_PATTERN.test(id)) throw new Error('Invalid catering event id');
+  if (!id || !UUID_PATTERN.test(id)) throw new CateringValidationError('Invalid catering event id');
   return id;
 };
 
 const validationResponse = (error: unknown, fallback: string, res: Response) => {
-  const message = error instanceof Error ? error.message : '';
-  const isValidationError = message.startsWith('Invalid catering');
-  return res.status(isValidationError ? 400 : 500).json({ error: isValidationError ? message : fallback });
+  if (error instanceof CateringValidationError) {
+    return res.status(400).json({ error: error.message });
+  }
+  serverLog('error', 'catering.request_failed', error, { fallback });
+  return res.status(500).json({ error: fallback });
 };
 
 const ensureNoDuplicateCateringRequest = async (request: { date: string; email: string; phone: string; eventType: string }) => {
@@ -100,15 +123,22 @@ const ensureNoDuplicateCateringRequest = async (request: { date: string; email: 
     .select('id,status,data');
   if (error) throw error;
 
+  const requestEmail = normalizeEmail(request.email);
+  const requestPhone = normalizePhone(request.phone);
   const duplicate = (data || []).some((row: any) => {
-    if (row.status === 'cancelled') return false;
+    if (normalizeCateringStatus(row.status) === 'cancelled') return false;
     const existing = row.data || {};
+    const sameEmail = typeof existing.email === 'string' &&
+      normalizeEmail(existing.email) === requestEmail;
+    const samePhone = requestPhone.length > 0 &&
+      typeof existing.phone === 'string' &&
+      normalizePhone(existing.phone) === requestPhone;
     return existing.date === request.date &&
       existing.eventType === request.eventType &&
-      (existing.email === request.email || existing.phone === request.phone);
+      (sameEmail || samePhone);
   });
 
-  if (duplicate) throw new Error('Invalid catering duplicate request');
+  if (duplicate) throw new CateringValidationError('Invalid catering duplicate request');
 };
 
 export const getCateringEvents = async (_req: Request, res: Response) => {
@@ -141,20 +171,22 @@ export const createCateringEvent = async (req: Request, res: Response) => {
 export const updateCateringEvent = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const id = validateUuid(req.params.id);
-    if (!isRecord(req.body) || Object.keys(req.body).length !== 1 || typeof req.body.status !== 'string' || !ALLOWED_STATUSES.has(req.body.status)) {
-      throw new Error('Invalid catering status');
+    if (!isRecord(req.body) || Object.keys(req.body).length !== 1 || typeof req.body.status !== 'string' || !ALLOWED_STATUSES.has(req.body.status as CateringWorkflowStatus)) {
+      throw new CateringValidationError('Invalid catering status');
     }
 
     const { data: current, error: currentError } = await supabase
       .from('catering_events')
       .select('status')
       .eq('id', id)
-      .single();
+      .maybeSingle();
     if (currentError) throw currentError;
+    if (!current) return res.status(404).json({ error: 'Catering request not found' });
 
-    const nextStatus = req.body.status;
-    if (current.status !== nextStatus && !CATERING_TRANSITIONS[current.status]?.has(nextStatus)) {
-      return res.status(409).json({ error: `Invalid catering status transition: ${current.status} -> ${nextStatus}` });
+    const currentStatus = normalizeCateringStatus(current.status);
+    const nextStatus = req.body.status as CateringWorkflowStatus;
+    if (currentStatus !== nextStatus && !CATERING_TRANSITIONS[currentStatus].has(nextStatus)) {
+      return res.status(409).json({ error: `Invalid catering status transition: ${currentStatus} -> ${nextStatus}` });
     }
 
     const { data, error } = await supabase
