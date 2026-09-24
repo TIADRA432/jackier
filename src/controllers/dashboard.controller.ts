@@ -90,7 +90,7 @@ export const getDashboardOverview = async (req: Request, res: Response) => {
       supabase.from('reservations').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
       supabase.from('school_registrations').select('id', { count: 'exact', head: true }).eq('status', 'pending'),
       supabase.from('menu_items').select('id', { count: 'exact', head: true }).eq('active', true),
-      supabase.from('catering_events').select('id', { count: 'exact', head: true }).in('status', ['pending', 'contacted', 'quoted', 'confirmed']),
+      supabase.from('catering_events').select('id', { count: 'exact', head: true }).in('status', ['pending', 'contacted', 'quoted', 'confirmed', 'approved']),
       supabase.from('finance_reports').select('*').order('date', { ascending: false }).limit(30),
       supabase.from('logs').select('*').order('timestamp', { ascending: false }).limit(30),
       supabase.from('wine_items').select('id', { count: 'exact', head: true }).eq('active', true),
