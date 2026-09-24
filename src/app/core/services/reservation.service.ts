@@ -7,7 +7,7 @@ import { environment } from '../../../environments/environment';
 
 export interface ReservationReceipt {
   id: string;
-  status: 'pending' | 'confirmed' | 'cancelled' | 'completed' | 'approved' | 'rejected';
+  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
   name: string;
   date: string;
   time: string;
