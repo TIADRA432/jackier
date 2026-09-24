@@ -52,7 +52,7 @@ const LABELS: Record<CateringWorkflowStatus, string> = {
               <div class="flex flex-col items-start gap-3 lg:items-end">
                 <span class="text-sm font-bold text-gray-200">{{ event.budget || 'Budget non précisé' }}{{ event.budget ? ' FG' : '' }}</span>
                 <label class="sr-only" [for]="'catering-' + event.id">Statut de {{ event.name || 'la demande' }}</label>
-                <select [id]="'catering-' + event.id" [value]="event.status" (change)="updateStatus(event, $any($event.target).value)" [disabled]="updatingId() === event.id" class="rounded-lg border border-gray-700 bg-[#121212] px-2 py-1 text-xs text-white outline-none focus:border-jacquier-gold disabled:opacity-50">@for (status of statuses; track status) { <option [value]="status">{{ label(status) }}</option> }</select>
+                <select [id]="'catering-' + event.id" [value]="event.status" (change)="updateStatus(event, $any($event.target).value)" [disabled]="updatingId() === event.id" class="rounded-lg border border-gray-700 bg-[#121212] px-2 py-1 text-xs text-white outline-none focus:border-jacquier-gold disabled:opacity-50">@for (status of availableStatuses(event); track status) { <option [value]="status">{{ label(status) }}</option> }</select>
                 <div class="flex flex-wrap gap-2">
                   @if (event.phone) {
                     <a [href]="whatsappHref(event)" target="_blank" rel="noopener noreferrer"
@@ -87,6 +87,14 @@ export class AdminTraiteurComponent {
   readonly errorMessage = signal('');
   readonly copyFeedback = signal('');
   readonly statuses = STATUSES;
+  private readonly transitions: Record<CateringWorkflowStatus, CateringWorkflowStatus[]> = {
+    pending: ['contacted', 'cancelled'],
+    contacted: ['quoted', 'cancelled'],
+    quoted: ['confirmed', 'cancelled'],
+    confirmed: ['completed', 'cancelled'],
+    completed: [],
+    cancelled: []
+  };
   readonly pendingCount = computed(() => this.events().filter(event => event.status === 'pending').length);
   readonly confirmedCount = computed(() => this.events().filter(event => event.status === 'confirmed').length);
   constructor() { void this.load(); }
@@ -155,6 +163,10 @@ export class AdminTraiteurComponent {
     }).formatToParts(new Date());
     const part = (type: string) => parts.find(entry => entry.type === type)?.value ?? '';
     return `${part('year')}-${part('month')}-${part('day')}`;
+  }
+
+  availableStatuses(event: CateringEvent): CateringWorkflowStatus[] {
+    return [event.status, ...this.transitions[event.status]];
   }
 
   label(status: CateringWorkflowStatus): string { return LABELS[status]; }
