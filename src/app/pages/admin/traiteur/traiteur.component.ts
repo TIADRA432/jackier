@@ -50,7 +50,7 @@ const LABELS: Record<CateringWorkflowStatus, string> = {
                 @if (event.message) { <p class="mt-2 text-xs text-gray-500">{{ event.message }}</p> }
               </div>
               <div class="flex flex-col items-start gap-3 lg:items-end">
-                <span class="text-sm font-bold text-gray-200">{{ event.budget || 'Budget non précisé' }}{{ event.budget ? ' FG' : '' }}</span>
+                <span class="text-sm font-bold text-gray-200">{{ event.budget || 'Budget non précisé' }}{{ event.budget ? ' ' + currency() : '' }}</span>
                 <label class="sr-only" [for]="'catering-' + event.id">Statut de {{ event.name || 'la demande' }}</label>
                 <select [id]="'catering-' + event.id" [value]="event.status" (change)="updateStatus(event, $any($event.target).value)" [disabled]="updatingId() === event.id" class="rounded-lg border border-gray-700 bg-[#121212] px-2 py-1 text-xs text-white outline-none focus:border-jacquier-gold disabled:opacity-50">@for (status of availableStatuses(event); track status) { <option [value]="status">{{ label(status) }}</option> }</select>
                 <div class="flex flex-wrap gap-2">
@@ -97,6 +97,7 @@ export class AdminTraiteurComponent {
   };
   readonly pendingCount = computed(() => this.events().filter(event => event.status === 'pending').length);
   readonly confirmedCount = computed(() => this.events().filter(event => event.status === 'confirmed').length);
+  readonly currency = computed(() => this.siteSettings.publicInfo().currency);
   constructor() { void this.load(); }
   async load(): Promise<void> { this.loading.set(true); this.errorMessage.set(''); try { this.events.set(await this.adminData.getCateringEvents()); } catch { this.errorMessage.set('Impossible de charger les demandes traiteur. Vérifiez votre session administrateur puis réessayez.'); } finally { this.loading.set(false); } }
   async updateStatus(event: CateringEvent, value: string): Promise<void> {
