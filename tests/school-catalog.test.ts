@@ -6,37 +6,45 @@ import test from 'node:test';
 const root = process.cwd();
 const source = (...parts: string[]) => readFile(path.join(root, ...parts), 'utf8');
 
-test('school catalogue separates public programs from protected admin drafts', async () => {
+test('school catalogue separates published programs from protected admin drafts', async () => {
   const routes = await source('src', 'routes', 'index.ts');
   const controller = await source('src', 'controllers', 'school.controller.ts');
 
   assert.match(routes, /router\.get\('\/school', getPublicSchoolPrograms\)/);
   assert.match(routes, /router\.get\('\/admin\/school', verifyToken, requireRole\(\['ADMIN'\]\), getSchoolPrograms\)/);
-  assert.match(controller, /filter\(\(program: any\) => program\.active !== false\)/);
-  assert.match(controller, /active: payload\.active \?\? true/);
+  assert.match(controller, /PROGRAM_STATUSES/);
+  assert.match(controller, /=== 'published'/);
+  assert.match(controller, /active: status === 'published'/);
 });
 
-test('school writes whitelist validated editorial fields and resource ids', async () => {
+test('school programme writes whitelist and sanitize structured business fields', async () => {
   const controller = await source('src', 'controllers', 'school.controller.ts');
 
-  assert.match(controller, /SCHOOL_FIELDS/);
+  assert.match(controller, /PROGRAM_FIELDS/);
   assert.match(controller, /requireKnownFields/);
-  assert.match(controller, /requiredText\(source\.title/);
+  assert.match(controller, /cleanText/);
+  assert.match(controller, /PROGRAM_LEVELS/);
+  assert.match(controller, /materialsIncluded/);
+  assert.match(controller, /prerequisites/);
+  assert.match(controller, /instructor/);
+  assert.match(controller, /price/);
+  assert.match(controller, /capacity/);
   assert.match(controller, /optionalOrder/);
   assert.match(controller, /validateUuid\(req\.params\.id, 'school program'\)/);
+  assert.match(controller, /javascript\|data/);
 });
 
-test('admin school screen supports draft publication and CRUD', async () => {
-  const component = await source('src', 'app', 'pages', 'admin', 'school', 'school.component.ts');
-  const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+test('public school page exposes upcoming sessions capacity and a truthful registration flow', async () => {
+  const page = await source('src', 'app', 'pages', 'school', 'school.component.ts');
+  const service = await source('src', 'app', 'core', 'services', 'restaurant.service.ts');
 
-  assert.match(service, /get<SchoolProgram\[\]>\(`\$\{this\.apiUrl\}\/admin\/school`\)/);
-  assert.match(component, /Créer un programme/);
-  assert.match(component, /Visible sur le site public/);
-  assert.match(component, /toggleActive/);
-  assert.match(component, /createSchoolProgram/);
-  assert.match(component, /updateSchoolProgram/);
-  assert.match(component, /deleteSchoolProgram/);
+  assert.match(service, /\/school\/sessions/);
+  assert.match(service, /\/school\/registrations/);
+  assert.match(page, /place\(s\) restante\(s\)/);
+  assert.match(page, /Demander une place/);
+  assert.match(page, /statut <strong>En attente<\/strong>/);
+  assert.match(page, /Aucun paiement en ligne ni e-mail automatique n’est activé/);
+  assert.match(page, /submitSchoolRegistration/);
 });
 
 test('public school page remains truthful when no program is published', async () => {
@@ -44,7 +52,6 @@ test('public school page remains truthful when no program is published', async (
 
   assert.match(page, /Le prochain programme sera annoncé ici/);
   assert.match(page, /contactez directement Le Jacquier/);
-  assert.doesNotMatch(page, /programmes en brouillon/);
-  assert.doesNotMatch(page, /étudiants inscrits/i);
   assert.doesNotMatch(page, /certification reconnue/i);
+  assert.doesNotMatch(page, /paiement sécurisé/i);
 });
