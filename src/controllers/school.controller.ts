@@ -22,6 +22,8 @@ const SESSION_STATUSES = new Set(['scheduled', 'cancelled', 'completed']);
 
 type SchoolPayload = Record<string, string | number | boolean | string[] | null>;
 
+const SYSTEM_TEXT_PATTERN = /(?:^|\n)\s*(?:fatal:\s|error:\s|npm\s+err!|traceback\s+\(most recent call last\):|at\s+[\w.$<>]+\s*\([^\n]+:\d+:\d+\)|git\s+(?:status|commit|push|pull|checkout|switch|merge|rebase|reset)\b)/im;
+
 const cleanText = (value: unknown, field: string, maxLength: number, required = false): string | null | undefined => {
   if (value === undefined) return undefined;
   if (value === null || value === '') {
@@ -37,7 +39,11 @@ const cleanText = (value: unknown, field: string, maxLength: number, required = 
     .trim();
 
   if (!normalized || normalized.length > maxLength) throw new CatalogValidationError(`Invalid ${field}`);
-  if (/<\/?[a-z][\s\S]*>/i.test(normalized) || /(?:javascript|data):/i.test(normalized)) {
+  if (
+    /<\/?[a-z][\s\S]*>/i.test(normalized) ||
+    /(?:javascript|data):/i.test(normalized) ||
+    SYSTEM_TEXT_PATTERN.test(normalized)
+  ) {
     throw new CatalogValidationError(`Invalid ${field}`);
   }
   return normalized;
