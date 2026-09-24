@@ -26,6 +26,7 @@ const EMPTY_OVERVIEW: DashboardOverview = {
   stats: {
     todayReservations: 0,
     pendingReservations: 0,
+    pendingSchoolRegistrations: 0,
     todayRevenue: 0,
     monthlyRevenue: 0,
     activeMenuItems: 0,
