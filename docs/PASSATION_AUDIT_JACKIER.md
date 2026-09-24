@@ -5,6 +5,19 @@
 > **Reste principalement à fournir/valider côté client :** carte des vins, profils publics de l'équipe, programmes de l'École, URLs officielles des réseaux sociaux et documents/liens légaux. Les horaires temps réel sont configurés et actifs. Le favicon 404 historique est fermé : `index.html` utilise désormais le symbole de marque versionné `/brand/le-jacquier-mark.svg`. Le Tailwind CDN historique n'est plus utilisé ; Tailwind passe par le pipeline PostCSS du projet.
 
 
+## Planning de validation restaurant — décision du 24 septembre 2026
+
+La stratégie de pré-livraison est désormais la suivante :
+
+- **Pas de staging utilisé pour l'instant.** L'infrastructure gratuite Supabase/Cloudflare préparée reste dormante et ne doit pas bloquer la recette du restaurant.
+- **La V1 École est gelée au périmètre déjà livré** : catalogue structuré, statuts brouillon/publié/archivé, sessions, jauges, inscription publique, statuts d'inscription, filtres et protections anti-surbooking.
+- **Avant toute extension École**, le restaurant doit valider le besoin réel, le vocabulaire métier, les informations obligatoires, le parcours d'inscription et la façon dont l'équipe souhaite confirmer/payer/relancer les participants.
+- **Après validation restaurant seulement**, reprendre les éléments reportés : activation du staging, e-mails transactionnels, WhatsApp/SMS, génération de devis/reçus PDF, paiement en ligne, analytics avancées École/Traiteur et automatisations de relance.
+- **Pendant la phase actuelle**, ne pas inventer de nouvelles données École ni ajouter de fournisseurs externes. Les corrections autorisées restent limitées aux bugs, sécurité, cohérence UI/UX, qualité des données et stabilité des parcours existants.
+- **Critère de passage à la suite** : validation explicite du restaurant sur la V1 présentée, puis création d'un lot V1.1/V2 avec priorités métier approuvées.
+
+L'infrastructure staging gratuite déjà préparée peut être réactivée après cette validation sans recréer le schéma, mais elle reste volontairement hors du chemin critique de livraison.
+
 **Dépôt :** `TIADRA432/jackier`
 **Branche cible :** `integration/backend-supabase`
 **HEAD au moment de cette mise à jour :** consulter `git log -1` (ce document est
