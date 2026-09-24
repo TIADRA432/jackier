@@ -55,7 +55,7 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
               [src]="mapUrl()" title="Localisation du restaurant"
               class="absolute inset-0 w-full h-full grayscale contrast-125 opacity-90 hover:grayscale-0 hover:opacity-100 transition-all duration-700">
             </iframe>
-            <div class="absolute bottom-6 right-6 bg-white/90 backdrop-blur-sm p-6 rounded-2xl shadow-xl border border-white/50 max-w-xs">
+            <div class="absolute inset-x-3 bottom-3 bg-white/90 backdrop-blur-sm p-4 rounded-2xl shadow-xl border border-white/50 sm:inset-x-auto sm:bottom-6 sm:right-6 sm:max-w-xs sm:p-6">
               <h4 class="font-bold text-jacquier-dark mb-1">Repère</h4>
               <p class="text-sm text-jacquier-text font-light">{{ info().address }}</p>
             </div>
