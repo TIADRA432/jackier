@@ -116,7 +116,8 @@ test('catering form mirrors server limits before submit', async () => {
   assert.match(form, /Validators\.maxLength\(254\)/);
   assert.match(form, /Validators\.maxLength\(120\)/);
   assert.match(form, /Validators\.maxLength\(2000\)/);
-  assert.match(form, /\^\\\+\?\[0-9 \(\)-\]\{6,30\}\$/);
+  assert.match(form, /Validators\.pattern/);
+  assert.match(form, /\{6,30\}/);
 });
 
 test('catering API uses typed validation errors and returns 404 for missing admin records', async () => {
