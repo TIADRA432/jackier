@@ -89,3 +89,13 @@ test('public SEO routes use page-specific social imagery', async () => {
   assert.match(service, /config\.imageSlot \?\? 'homeHero'/);
   assert.match(service, /socialImageAlt/);
 });
+
+
+test('SEO derives canonical origin from the current public domain with a production fallback', async () => {
+  const service = await source('src', 'app', 'core', 'services', 'seo.service.ts');
+
+  assert.match(service, /DEFAULT_SITE_ORIGIN/);
+  assert.match(service, /this\.document\.location\?\.origin/);
+  assert.match(service, /this\.siteOrigin\(\)/);
+  assert.doesNotMatch(service, /const SITE_ORIGIN =/);
+});

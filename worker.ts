@@ -17,10 +17,27 @@ app.use(errorHandler);
 app.listen(3000);
 
 const apiHandler = httpServerHandler({ port: 3000 });
+const DEFAULT_PUBLIC_ORIGIN = 'https://jackier.abdourahmane591.workers.dev';
 
 interface Env {
   ASSETS: Fetcher;
 }
+
+const rewritePublicOrigin = async (response: Response, origin: string): Promise<Response> => {
+  const contentType = response.headers.get('content-type') ?? '';
+  const isTextAsset = /text\/html|text\/plain|application\/xml|text\/xml/i.test(contentType);
+  if (!isTextAsset || origin === DEFAULT_PUBLIC_ORIGIN) return response;
+
+  const body = (await response.text()).split(DEFAULT_PUBLIC_ORIGIN).join(origin);
+  const headers = new Headers(response.headers);
+  headers.delete('content-length');
+
+  return new Response(body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+};
 
 const withStaticSecurityHeaders = (response: Response): Response => {
   const headers = new Headers(response.headers);
@@ -42,7 +59,10 @@ export default {
     const url = new URL(request.url);
     if (!url.pathname.startsWith('/api')) {
       const assetResponse = await env.ASSETS.fetch(request as any);
-      if (assetResponse.status !== 404) return withStaticSecurityHeaders(assetResponse);
+      if (assetResponse.status !== 404) {
+        const rewrittenResponse = await rewritePublicOrigin(assetResponse, url.origin);
+        return withStaticSecurityHeaders(rewrittenResponse);
+      }
     }
     // `httpServerHandler` returns a Worker handler object. Calling the object
     // directly causes every API request to fail at runtime; delegate to its
