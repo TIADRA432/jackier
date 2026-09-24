@@ -27,7 +27,14 @@ const toMinutes = (value: string): number => {
   return (hours || 0) * 60 + (minutes || 0);
 };
 
-const normalizePhone = (value: string): string => value.replace(/\D/g, '');
+const normalizePhone = (value: string): string => {
+  let digits = value.replace(/\D/g, '');
+  if (digits.startsWith('00')) digits = digits.slice(2);
+  // The reservation form is for a Conakry restaurant: a 9-digit number without
+  // an explicit country code is interpreted as a Guinean local number.
+  if (digits.length === 9) digits = `224${digits}`;
+  return digits;
+};
 const normalizeEmail = (value: string): string => value.trim().toLowerCase();
 
 const conakryNow = () => {
