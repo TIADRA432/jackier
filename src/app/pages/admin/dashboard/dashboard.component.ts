@@ -17,14 +17,26 @@ const EMPTY_OVERVIEW: DashboardOverview = {
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="space-y-8 animate-fade-in pb-12">
-      <header class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+      <header class="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <div>
-          <h1 class="text-3xl font-serif font-bold text-white">Centre de Commande</h1>
-          <p class="mt-2 text-sm text-gray-400">Données opérationnelles réelles du restaurant.</p>
+          <p class="text-xs font-bold uppercase tracking-[0.18em] text-jacquier-gold">Vue opérationnelle</p>
+          <h1 class="mt-1 text-3xl font-serif font-bold text-white">Centre de Commande</h1>
+          <p class="mt-2 text-sm text-gray-400">Les données utiles pour piloter le restaurant et préparer la livraison.</p>
         </div>
-        <button type="button" (click)="load()" [disabled]="loading()" class="self-start rounded-xl border border-gray-700 px-4 py-2 text-sm font-bold text-gray-200 transition hover:border-jacquier-gold hover:text-jacquier-gold disabled:opacity-50">
-          {{ loading() ? 'Actualisation…' : 'Actualiser' }}
-        </button>
+        <div class="flex flex-wrap items-center gap-2">
+          <a routerLink="/admin/reservations" class="rounded-xl border border-gray-800 bg-[#1a1a1a] px-3 py-2 text-xs font-bold text-gray-300 transition hover:border-jacquier-gold/60 hover:text-white">
+            Réservations
+          </a>
+          <a routerLink="/admin/traiteur" class="rounded-xl border border-gray-800 bg-[#1a1a1a] px-3 py-2 text-xs font-bold text-gray-300 transition hover:border-jacquier-gold/60 hover:text-white">
+            Traiteur
+          </a>
+          <a routerLink="/admin/ecole" class="rounded-xl border border-gray-800 bg-[#1a1a1a] px-3 py-2 text-xs font-bold text-gray-300 transition hover:border-jacquier-gold/60 hover:text-white">
+            École
+          </a>
+          <button type="button" (click)="load()" [disabled]="loading()" class="rounded-xl border border-jacquier-gold/40 px-3 py-2 text-xs font-bold text-jacquier-gold transition hover:bg-jacquier-gold hover:text-jacquier-dark disabled:opacity-50">
+            {{ loading() ? 'Actualisation…' : 'Actualiser' }}
+          </button>
+        </div>
       </header>
 
       @if (errorMessage()) {
@@ -36,14 +48,32 @@ const EMPTY_OVERVIEW: DashboardOverview = {
       @if (loading()) {
         <div class="rounded-2xl border border-gray-800 bg-[#1a1a1a] p-12 text-center text-gray-400" role="status">Chargement du tableau de bord…</div>
       } @else {
-        <section class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
           @for (stat of statCards(); track stat.label) {
-            <article class="rounded-2xl border border-gray-800 bg-[#1a1a1a] p-6">
+            <article class="rounded-2xl border border-gray-800 bg-[#1a1a1a] p-5">
               <p class="text-xs font-bold uppercase tracking-widest text-gray-500">{{ stat.label }}</p>
               <p class="mt-3 text-3xl font-serif font-bold text-white">{{ stat.value }}</p>
               <p class="mt-2 text-xs text-gray-400">{{ stat.description }}</p>
             </article>
           }
+        </section>
+
+        <section aria-labelledby="admin-quick-actions" class="rounded-2xl border border-gray-800 bg-[#161616] p-4 sm:p-5">
+          <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <h2 id="admin-quick-actions" class="text-sm font-bold text-white">Actions rapides</h2>
+              <p class="mt-1 text-xs text-gray-500">Accès direct aux tâches fréquentes sans repasser par toute la navigation.</p>
+            </div>
+            <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+              @for (action of quickActions; track action.path) {
+                <a [routerLink]="action.path"
+                  class="group flex min-h-[44px] items-center gap-2 rounded-xl border border-gray-800 bg-[#1a1a1a] px-3 py-2.5 text-xs font-bold text-gray-300 transition hover:border-jacquier-gold/50 hover:text-white">
+                  <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-white/5 text-[11px] text-jacquier-gold transition group-hover:bg-jacquier-gold/10">{{ action.short }}</span>
+                  <span>{{ action.label }}</span>
+                </a>
+              }
+            </div>
+          </div>
         </section>
 
         <section class="rounded-2xl border border-jacquier-gold/30 bg-[#171717] p-6 md:p-8">
@@ -162,6 +192,12 @@ export class DashboardComponent {
   readonly loading = signal(true);
   readonly errorMessage = signal('');
   readonly copyFeedback = signal('');
+  readonly quickActions = [
+    { label: 'Carte', short: 'M', path: '/admin/restaurant' },
+    { label: 'Galerie', short: 'G', path: '/admin/galerie' },
+    { label: 'Équipe', short: 'E', path: '/admin/equipe' },
+    { label: 'Paramètres', short: 'P', path: '/admin/settings' }
+  ] as const;
   readonly maximumRevenue = computed(() => Math.max(...this.overview().revenueChart.map(({ total }) => total), 1));
   readonly statCards = computed(() => {
     const stats = this.overview().stats;

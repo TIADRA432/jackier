@@ -66,7 +66,7 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
     >
       <!-- Sidebar -->
       <aside
-        class="fixed inset-y-0 left-0 z-50 w-64 bg-[#1a1a1a] border-r border-gray-800 flex flex-col transition-transform duration-300 ease-in-out md:relative md:translate-x-0"
+        class="fixed inset-y-0 left-0 z-50 w-72 bg-[#1a1a1a] border-r border-gray-800 flex flex-col transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0"
         [class.-translate-x-full]="!isSidebarOpen()"
       >
         <!-- Logo Area -->
@@ -82,11 +82,14 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
             >
               J
             </div>
-            Le Jacquier
+            <span>
+              <span class="block">Le Jacquier</span>
+              <span class="mt-0.5 block font-sans text-[9px] font-bold tracking-[0.14em] text-gray-600">BACK OFFICE</span>
+            </span>
           </a>
           <button
             (click)="toggleSidebar()"
-            class="md:hidden text-gray-400 hover:text-white"
+            class="lg:hidden text-gray-400 hover:text-white"
             aria-label="Fermer le menu de navigation"
           >
             <svg
@@ -106,19 +109,21 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
         </div>
 
         <!-- Navigation -->
-        <nav class="flex-1 overflow-y-auto py-6 custom-scrollbar">
-          <ul class="space-y-2 px-4">
+        <nav class="flex-1 overflow-y-auto py-4 custom-scrollbar">
+          <ul class="space-y-1 px-3">
             <!-- Layer 1: Monitoring -->
             <li>
               <div
-                class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-3 px-4"
+                class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-600"
               >
                 Monitoring
               </div>
               <a
                 routerLink="/admin/dashboard"
-                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold"
-                class="flex items-center px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-colors border-l-2 border-transparent group"
+                [routerLinkActiveOptions]="{ exact: true }"
+                ariaCurrentWhenActive="page"
+                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold shadow-[inset_3px_0_0_rgba(212,175,55,0.9)]"
+                class="group flex min-h-[42px] items-center rounded-xl border-l-2 border-transparent px-3 py-2.5 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
               >
                 <svg
                   class="w-5 h-5 mr-3 group-hover:text-jacquier-gold transition-colors"
@@ -138,16 +143,17 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
             </li>
 
             <!-- Layer 2: Opérations -->
-            <li class="pt-4">
+            <li class="pt-3">
               <div
-                class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-3 px-4"
+                class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-600"
               >
                 Opérations
               </div>
               <a
                 routerLink="/admin/restaurant"
-                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold"
-                class="flex items-center px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-colors border-l-2 border-transparent group"
+                ariaCurrentWhenActive="page"
+                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold shadow-[inset_3px_0_0_rgba(212,175,55,0.9)]"
+                class="group flex min-h-[42px] items-center rounded-xl border-l-2 border-transparent px-3 py-2.5 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
               >
                 <svg
                   class="w-5 h-5 mr-3 group-hover:text-jacquier-gold transition-colors"
@@ -166,22 +172,25 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
               </a>
               <a
                 routerLink="/admin/categories"
-                routerLinkActive="text-jacquier-gold"
-                class="ml-8 mt-1 block rounded-lg px-4 py-2 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+                ariaCurrentWhenActive="page"
+                routerLinkActive="border-jacquier-gold text-jacquier-gold bg-jacquier-gold/5"
+                class="ml-9 mt-1 block rounded-lg border-l border-gray-800 px-3 py-2 text-xs text-gray-500 transition-colors hover:border-jacquier-gold/60 hover:bg-gray-800 hover:text-white"
               >
                 Catégories du menu
               </a>
               <a
                 routerLink="/admin/vins"
-                routerLinkActive="text-jacquier-gold"
-                class="ml-8 mt-1 block rounded-lg px-4 py-2 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+                ariaCurrentWhenActive="page"
+                routerLinkActive="border-jacquier-gold text-jacquier-gold bg-jacquier-gold/5"
+                class="ml-9 mt-1 block rounded-lg border-l border-gray-800 px-3 py-2 text-xs text-gray-500 transition-colors hover:border-jacquier-gold/60 hover:bg-gray-800 hover:text-white"
               >
                 Carte des vins
               </a>
               <a
                 routerLink="/admin/reservations"
-                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold"
-                class="flex items-center px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-colors border-l-2 border-transparent group mt-1"
+                ariaCurrentWhenActive="page"
+                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold shadow-[inset_3px_0_0_rgba(212,175,55,0.9)]"
+                class="group mt-1 flex min-h-[42px] items-center rounded-xl border-l-2 border-transparent px-3 py-2.5 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
               >
                 <svg
                   class="w-5 h-5 mr-3 group-hover:text-jacquier-gold transition-colors"
@@ -196,12 +205,16 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
                     d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v12a2 2 0 002 2z"
                   ></path>
                 </svg>
-                Réservations
+                <span class="min-w-0 flex-1">Réservations</span>
+                @if (overview().stats.pendingReservations > 0) {
+                  <span class="ml-2 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-300">{{ overview().stats.pendingReservations }}</span>
+                }
               </a>
               <a
                 routerLink="/admin/traiteur"
-                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold"
-                class="flex items-center px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-colors border-l-2 border-transparent group mt-1"
+                ariaCurrentWhenActive="page"
+                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold shadow-[inset_3px_0_0_rgba(212,175,55,0.9)]"
+                class="group mt-1 flex min-h-[42px] items-center rounded-xl border-l-2 border-transparent px-3 py-2.5 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
               >
                 <svg
                   class="w-5 h-5 mr-3 group-hover:text-jacquier-gold transition-colors"
@@ -216,12 +229,16 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
                     d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                   ></path>
                 </svg>
-                Service Traiteur
+                <span class="min-w-0 flex-1">Service Traiteur</span>
+                @if (overview().stats.activeCatering > 0) {
+                  <span class="ml-2 rounded-full bg-blue-500/10 px-2 py-0.5 text-[10px] font-bold text-blue-300">{{ overview().stats.activeCatering }}</span>
+                }
               </a>
               <a
                 routerLink="/admin/ecole"
-                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold"
-                class="flex items-center px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-colors border-l-2 border-transparent group mt-1"
+                ariaCurrentWhenActive="page"
+                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold shadow-[inset_3px_0_0_rgba(212,175,55,0.9)]"
+                class="group mt-1 flex min-h-[42px] items-center rounded-xl border-l-2 border-transparent px-3 py-2.5 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
               >
                 <svg
                   class="w-5 h-5 mr-3 group-hover:text-jacquier-gold transition-colors"
@@ -242,12 +259,16 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
                     d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"
                   ></path>
                 </svg>
-                École Gastronomique
+                <span class="min-w-0 flex-1">École Gastronomique</span>
+                @if (pendingSchoolCount() > 0) {
+                  <span class="ml-2 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-300">{{ pendingSchoolCount() }}</span>
+                }
               </a>
               <a
                 routerLink="/admin/stock"
-                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold"
-                class="flex items-center px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-colors border-l-2 border-transparent group mt-1"
+                ariaCurrentWhenActive="page"
+                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold shadow-[inset_3px_0_0_rgba(212,175,55,0.9)]"
+                class="group mt-1 flex min-h-[42px] items-center rounded-xl border-l-2 border-transparent px-3 py-2.5 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
               >
                 <svg
                   class="w-5 h-5 mr-3 group-hover:text-jacquier-gold transition-colors"
@@ -267,16 +288,17 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
             </li>
 
             <!-- Layer 3: Intelligence -->
-            <li class="pt-4">
+            <li class="pt-3">
               <div
-                class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-3 px-4"
+                class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-600"
               >
                 Intelligence
               </div>
               <a
                 routerLink="/admin/finance"
-                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold"
-                class="flex items-center px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-colors border-l-2 border-transparent group"
+                ariaCurrentWhenActive="page"
+                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold shadow-[inset_3px_0_0_rgba(212,175,55,0.9)]"
+                class="group flex min-h-[42px] items-center rounded-xl border-l-2 border-transparent px-3 py-2.5 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
               >
                 <svg
                   class="w-5 h-5 mr-3 group-hover:text-jacquier-gold transition-colors"
@@ -295,8 +317,9 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
               </a>
               <a
                 routerLink="/admin/analytics"
-                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold"
-                class="flex items-center px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-colors border-l-2 border-transparent group mt-1"
+                ariaCurrentWhenActive="page"
+                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold shadow-[inset_3px_0_0_rgba(212,175,55,0.9)]"
+                class="group mt-1 flex min-h-[42px] items-center rounded-xl border-l-2 border-transparent px-3 py-2.5 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
               >
                 <svg
                   class="w-5 h-5 mr-3 group-hover:text-jacquier-gold transition-colors"
@@ -316,16 +339,17 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
             </li>
 
             <!-- Layer 4: Administration -->
-            <li class="pt-4">
+            <li class="pt-3">
               <div
-                class="text-[10px] font-bold text-gray-500 uppercase tracking-[0.2em] mb-3 px-4"
+                class="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.2em] text-gray-600"
               >
                 Administration
               </div>
               <a
                 routerLink="/admin/equipe"
-                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold"
-                class="flex items-center px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-colors border-l-2 border-transparent group"
+                ariaCurrentWhenActive="page"
+                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold shadow-[inset_3px_0_0_rgba(212,175,55,0.9)]"
+                class="group flex min-h-[42px] items-center rounded-xl border-l-2 border-transparent px-3 py-2.5 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
               >
                 <svg
                   class="w-5 h-5 mr-3 group-hover:text-jacquier-gold transition-colors"
@@ -344,8 +368,9 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
               </a>
               <a
                 routerLink="/admin/cms"
-                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold"
-                class="flex items-center px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-colors border-l-2 border-transparent group mt-1"
+                ariaCurrentWhenActive="page"
+                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold shadow-[inset_3px_0_0_rgba(212,175,55,0.9)]"
+                class="group mt-1 flex min-h-[42px] items-center rounded-xl border-l-2 border-transparent px-3 py-2.5 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
               >
                 <svg
                   class="w-5 h-5 mr-3 group-hover:text-jacquier-gold transition-colors"
@@ -364,8 +389,9 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
               </a>
               <a
                 routerLink="/admin/galerie"
-                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold"
-                class="flex items-center px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-colors border-l-2 border-transparent group mt-1"
+                ariaCurrentWhenActive="page"
+                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold shadow-[inset_3px_0_0_rgba(212,175,55,0.9)]"
+                class="group mt-1 flex min-h-[42px] items-center rounded-xl border-l-2 border-transparent px-3 py-2.5 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
               >
                 <svg
                   class="w-5 h-5 mr-3 group-hover:text-jacquier-gold transition-colors"
@@ -384,8 +410,9 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
               </a>
               <a
                 routerLink="/admin/settings"
-                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold"
-                class="flex items-center px-4 py-3 rounded-xl text-gray-400 hover:text-white hover:bg-gray-800 transition-colors border-l-2 border-transparent group mt-1"
+                ariaCurrentWhenActive="page"
+                routerLinkActive="bg-jacquier-gold/10 text-jacquier-gold border-jacquier-gold shadow-[inset_3px_0_0_rgba(212,175,55,0.9)]"
+                class="group mt-1 flex min-h-[42px] items-center rounded-xl border-l-2 border-transparent px-3 py-2.5 text-sm text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
               >
                 <svg
                   class="w-5 h-5 mr-3 group-hover:text-jacquier-gold transition-colors"
@@ -430,7 +457,7 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
       <!-- Overlay for mobile -->
       @if (isSidebarOpen()) {
         <div
-          class="fixed inset-0 bg-black/50 z-40 md:hidden backdrop-blur-sm"
+          class="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm"
           (click)="toggleSidebar()"
         ></div>
       }
@@ -446,7 +473,7 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
               <button
                 type="button"
                 (click)="toggleSidebar()"
-                class="md:hidden rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
+                class="lg:hidden rounded-lg p-2 text-gray-400 transition-colors hover:bg-gray-800 hover:text-white"
                 aria-label="Ouvrir le menu de navigation"
                 [attr.aria-expanded]="isSidebarOpen()"
               >
@@ -639,7 +666,7 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
         </header>
 
         <!-- Page Content -->
-        <main class="admin-scroll-area flex-1 overflow-y-auto overflow-x-hidden p-6 lg:p-10 custom-scrollbar">
+        <main class="admin-scroll-area flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 lg:p-8 xl:p-10 custom-scrollbar">
           <router-outlet></router-outlet>
         </main>
       </div>
@@ -790,6 +817,10 @@ export class AdminComponent {
     this.notificationItems().reduce((total, item) => total + item.count, 0)
   );
 
+  readonly pendingSchoolCount = computed(() =>
+    this.schoolRegistrations().filter(item => item.status === 'pending').length
+  );
+
   readonly adminInitials = computed(() => {
     const email = this.adminEmail();
     if (!email) return 'AD';
@@ -814,6 +845,7 @@ export class AdminComponent {
         this.mobileSearchOpen.set(false);
         this.isNotificationsOpen.set(false);
         this.isUserMenuOpen.set(false);
+        void this.loadHeaderData();
       });
 
     void this.loadAdminIdentity();

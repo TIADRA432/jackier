@@ -87,6 +87,7 @@ test('admin header search notifications and identity are functional rather than 
   assert.doesNotMatch(layout, /absolute top-1\.5 right-1\.5 w-2\.5 h-2\.5 bg-red-500/);
   assert.match(layout, /NavigationEnd/);
   assert.match(layout, /this\.isSidebarOpen\.set\(false\)/);
+  assert.match(layout, /NavigationEnd[\s\S]*void this\.loadHeaderData\(\)/);
   assert.match(layout, /getCurrentUserEmail/);
   assert.match(auth, /async getCurrentUserEmail\(\)/);
   assert.match(auth, /supabaseClient\.auth\.getUser\(\)/);
@@ -269,6 +270,32 @@ test('the internal team directory uses protected data without storing sensitive 
   assert.doesNotMatch(component, /Présents Aujourd'hui/);
 });
 
+
+test('admin navigation is responsive, compact and exposes real operational counters', async () => {
+  const layout = await source('src', 'app', 'pages', 'admin', 'admin.component.ts');
+
+  assert.match(layout, /lg:relative lg:translate-x-0/);
+  assert.match(layout, /lg:hidden/);
+  assert.match(layout, /pendingSchoolCount/);
+  assert.match(layout, /overview\(\)\.stats\.pendingReservations/);
+  assert.match(layout, /overview\(\)\.stats\.activeCatering/);
+  assert.match(layout, /ariaCurrentWhenActive="page"/);
+  assert.match(layout, /BACK OFFICE/);
+  assert.match(layout, /p-4 sm:p-6 lg:p-8 xl:p-10/);
+});
+
+test('dashboard exposes compact metrics and direct actions for frequent admin tasks', async () => {
+  const component = await source('src', 'app', 'pages', 'admin', 'dashboard', 'dashboard.component.ts');
+
+  assert.match(component, /Vue opérationnelle/);
+  assert.match(component, /Actions rapides/);
+  assert.match(component, /quickActions/);
+  assert.match(component, /\/admin\/restaurant/);
+  assert.match(component, /\/admin\/galerie/);
+  assert.match(component, /\/admin\/equipe/);
+  assert.match(component, /\/admin\/settings/);
+  assert.match(component, /xl:grid-cols-5/);
+});
 
 test('admin layout keeps visible scrollbars for long pages and horizontal tables', async () => {
   const component = await source('src', 'app', 'pages', 'admin', 'admin.component.ts');
