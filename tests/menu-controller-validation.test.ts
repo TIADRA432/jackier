@@ -2,8 +2,11 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
-import { validateMenuPayload } from '../src/controllers/menu.controller.ts';
 
+process.env.SUPABASE_URL ??= 'https://example.supabase.co';
+process.env.SUPABASE_SERVICE_ROLE_KEY ??= 'test-service-role-key';
+
+const { validateMenuPayload } = await import('../src/controllers/menu.controller.ts');
 const root = process.cwd();
 
 const validCategoryId = '123e4567-e89b-42d3-a456-426614174000';
