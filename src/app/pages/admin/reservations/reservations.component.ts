@@ -191,7 +191,9 @@ export class ReservationsComponent {
   }
 
   whatsappHref(reservation: AdminReservation): string {
-    const phone = (reservation.phone ?? '').replace(/\D/g, '');
+    let phone = (reservation.phone ?? '').replace(/\D/g, '');
+    if (phone.startsWith('00')) phone = phone.slice(2);
+    if (phone.length === 9) phone = `224${phone}`;
     return `https://wa.me/${phone}?text=${encodeURIComponent(this.customerMessage(reservation))}`;
   }
 
