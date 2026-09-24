@@ -6,6 +6,7 @@ import { SiteSettingsService } from './site-settings.service';
 export interface SeoConfig {
   description: string;
   noindex?: boolean;
+  imageSlot?: 'homeHero' | 'menuHero' | 'reservationHero' | 'aboutHero' | 'contactHero' | 'schoolHero' | 'galleryHero' | 'cateringHero';
 }
 
 const SITE_ORIGIN = 'https://jackier.abdourahmane591.workers.dev';
@@ -44,12 +45,19 @@ export class SeoService {
     this.meta.updateTag({ property: 'og:title', content: pageTitle });
     this.meta.updateTag({ property: 'og:description', content: config.description });
     this.meta.updateTag({ property: 'og:url', content: canonical });
-    this.meta.updateTag({ property: 'og:image', content: this.absoluteUrl(this.siteSettings.image('homeHero', '/og-image.png').url) });
+    const imageSlot = config.imageSlot ?? 'homeHero';
+    const socialImage = this.siteSettings.image(imageSlot, '/og-image.png');
+    const socialImageUrl = this.absoluteUrl(socialImage.url);
+    const socialImageAlt = socialImage.altText?.trim() || `${pageTitle} — ${this.siteSettings.publicInfo().restaurantName}`;
+
+    this.meta.updateTag({ property: 'og:image', content: socialImageUrl });
+    this.meta.updateTag({ property: 'og:image:alt', content: socialImageAlt });
     this.meta.updateTag({ property: 'og:locale', content: 'fr_FR' });
     this.meta.updateTag({ name: 'twitter:card', content: 'summary_large_image' });
     this.meta.updateTag({ name: 'twitter:title', content: pageTitle });
     this.meta.updateTag({ name: 'twitter:description', content: config.description });
-    this.meta.updateTag({ name: 'twitter:image', content: this.absoluteUrl(this.siteSettings.image('homeHero', '/og-image.png').url) });
+    this.meta.updateTag({ name: 'twitter:image', content: socialImageUrl });
+    this.meta.updateTag({ name: 'twitter:image:alt', content: socialImageAlt });
 
     this.setCanonical(canonical);
   }
@@ -120,8 +128,22 @@ export class SeoService {
       address: {
         '@type': 'PostalAddress',
         streetAddress: info.address,
-        addressLocality: info.neighborhood || 'Conakry',
+        addressLocality: 'Conakry',
+        ...(info.neighborhood ? { addressRegion: info.neighborhood } : {}),
         addressCountry: 'GN',
+      },
+      hasMenu: `${SITE_ORIGIN}/menu`,
+      acceptsReservations: true,
+      potentialAction: {
+        '@type': 'ReserveAction',
+        target: {
+          '@type': 'EntryPoint',
+          urlTemplate: `${SITE_ORIGIN}/reservation`,
+          actionPlatform: [
+            'https://schema.org/DesktopWebPlatform',
+            'https://schema.org/MobileWebPlatform'
+          ]
+        }
       },
       ...(sameAs.length ? { sameAs } : {}),
       ...(openingHoursSpecification?.length ? { openingHoursSpecification } : {}),
