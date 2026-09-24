@@ -15,7 +15,7 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
       <div class="relative h-64 overflow-hidden bg-gray-100">
         @if (dish().image) { <img [ngSrc]="dish().image" width="400" height="300"
              class="w-full h-full object-cover transform group-hover:scale-[1.045] transition-transform duration-[1400ms] ease-out"
-             [alt]="dish().name" referrerPolicy="no-referrer"> }
+             [alt]="dish().name" referrerPolicy="no-referrer" (error)="useFallbackImage($event)"> }
         @else { <div class="flex h-full items-center justify-center text-jacquier-primary">Le Jacquier · À découvrir</div> }
         <div class="absolute inset-0 bg-gradient-to-t from-jacquier-dark/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
@@ -66,4 +66,11 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
 export class DishCardComponent {
   readonly dish = input.required<Dish>();
   readonly siteSettings = inject(SiteSettingsService);
+
+  useFallbackImage(event: Event): void {
+    const image = event.target as HTMLImageElement | null;
+    if (!image || image.dataset['fallbackApplied'] === 'true') return;
+    image.dataset['fallbackApplied'] = 'true';
+    image.src = '/og-image.png';
+  }
 }
