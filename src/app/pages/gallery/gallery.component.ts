@@ -80,7 +80,7 @@ const CATEGORY_LABELS: Record<string, string> = {
                 <button type="button" (click)="openLightbox(image)" appRevealOnScroll revealVariant="fade-scale" [revealDelay]="i * 70"
                   [attr.aria-label]="'Agrandir ' + (displayTitle(image.title) || 'cette photo')"
                   [class]="'relative overflow-hidden rounded-3xl group cursor-zoom-in shadow-lg text-left transition-shadow duration-700 hover:shadow-2xl ' + layoutFor(i)">
-                  <img [ngSrc]="image.imageUrl" fill class="object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.035]" [alt]="displayTitle(image.title) || 'Photo du restaurant Le Jacquier'" referrerPolicy="no-referrer">
+                  <img [ngSrc]="image.imageUrl" fill class="object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-[1.035]" [alt]="displayTitle(image.title) || 'Photo du restaurant Le Jacquier'" referrerPolicy="no-referrer" (error)="useFallbackImage($event)">
                   <div class="absolute inset-0 bg-gradient-to-t from-jacquier-dark/85 via-jacquier-dark/15 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
                     <div>
                       <span class="text-jacquier-gold text-xs font-bold tracking-widest uppercase mb-1 block">{{ categoryLabel(normalizedCategory(image.category)) }}</span>
@@ -120,7 +120,7 @@ const CATEGORY_LABELS: Record<string, string> = {
           }
 
           <img [src]="selected.imageUrl" [alt]="displayTitle(selected.title) || 'Photo du restaurant Le Jacquier'"
-            class="gallery-lightbox-image max-h-[78vh] max-w-full rounded-2xl object-contain shadow-2xl" />
+            class="gallery-lightbox-image max-h-[78vh] max-w-full rounded-2xl object-contain shadow-2xl" (error)="useFallbackImage($event)" />
 
           <div class="mt-4 max-w-3xl text-center text-white">
             <p class="text-xs font-bold uppercase tracking-[0.18em] text-jacquier-gold">{{ categoryLabel(normalizedCategory(selected.category)) }}</p>
@@ -264,6 +264,13 @@ export class GalleryComponent implements OnDestroy {
 
   ngOnDestroy(): void {
     this.document.body.style.overflow = '';
+  }
+
+  useFallbackImage(event: Event): void {
+    const image = event.target as HTMLImageElement | null;
+    if (!image || image.dataset['fallbackApplied'] === 'true') return;
+    image.dataset['fallbackApplied'] = 'true';
+    image.src = '/og-image.png';
   }
 
   retry(): void {
