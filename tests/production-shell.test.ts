@@ -36,20 +36,23 @@ test('compiled global motion respects reduced-motion preferences', async () => {
 
 test('production smoke test covers the complete public shell and security headers', async () => {
   const workflow = await source('.github', 'workflows', 'deploy-cloudflare.yml');
+  const smoke = await source('scripts', 'smoke-production.sh');
+
+  assert.match(workflow, /bash scripts\/smoke-production\.sh/);
 
   for (const route of ['/about', '/gallery', '/services-traiteur', '/ecole-gastronomie', '/admin/login']) {
-    assert.match(workflow, new RegExp(route.replace(/\//g, '\\/')));
+    assert.match(smoke, new RegExp(route.replace(/\//g, '\\/')));
   }
 
-  assert.match(workflow, /security-headers\.txt/);
-  assert.match(workflow, /content-security-policy/);
-  assert.match(workflow, /X-Content-Type-Options = nosniff/);
-  assert.match(workflow, /X-Frame-Options = DENY/);
-  assert.match(workflow, /HSTS présent/);
-  assert.match(workflow, /Scripts limités au même origin/);
-  assert.match(workflow, /Legacy script source still allowed/);
-  assert.match(workflow, /frame-src 'self' https:\/\/maps\.google\.com https:\/\/www\.google\.com/);
-  assert.match(workflow, /item\?\.active === false/);
+  assert.match(smoke, /security-headers\.txt/);
+  assert.match(smoke, /content-security-policy/);
+  assert.match(smoke, /X-Content-Type-Options = nosniff/);
+  assert.match(smoke, /X-Frame-Options = DENY/);
+  assert.match(smoke, /HSTS présent/);
+  assert.match(smoke, /Scripts limités au même origin/);
+  assert.match(smoke, /Legacy script source still allowed/);
+  assert.match(smoke, /frame-src 'self' https:\/\/maps\\\.google\\\.com https:\/\/www\\\.google\\\.com/);
+  assert.match(smoke, /item\?\.active === false/);
 });
 
 
