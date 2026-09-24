@@ -291,6 +291,9 @@ export const createSchoolSession = async (req: Request, res: Response) => {
     const payload = validateSessionPayload(req.body, false);
     if (new Date(payload.startsAt as string) <= new Date()) throw new CatalogValidationError('Session start must be in the future');
 
+    const program = (await getCollection('schoolPrograms')).find((item: any) => item.id === payload.programId);
+    if (!program || program.status === 'archived') throw new CatalogValidationError('Invalid school program');
+
     const { data, error } = await supabase.from('school_sessions').insert({
       program_id: payload.programId,
       starts_at: payload.startsAt,
@@ -310,6 +313,32 @@ export const updateSchoolSession = async (req: Request, res: Response) => {
   try {
     const id = validateUuid(req.params.id, 'school session');
     const payload = validateSessionPayload(req.body, true);
+
+    const { data: current, error: currentError } = await supabase
+      .from('school_sessions')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle();
+    if (currentError) throw currentError;
+    if (!current) return res.status(404).json({ error: 'School session not found' });
+
+    const nextStartsAt = String(payload.startsAt ?? current.starts_at);
+    const nextEndsAt = String(payload.endsAt ?? current.ends_at);
+    const nextCapacity = Number(payload.capacity ?? current.capacity);
+    if (new Date(nextEndsAt) <= new Date(nextStartsAt)) {
+      throw new CatalogValidationError('Session end must be after start');
+    }
+
+    const counts = await registrationCountBySession([id]);
+    if ((counts.get(id) ?? 0) > nextCapacity) {
+      return res.status(409).json({ error: 'Capacity cannot be lower than current registrations' });
+    }
+
+    if (payload.programId !== undefined) {
+      const program = (await getCollection('schoolPrograms')).find((item: any) => item.id === payload.programId);
+      if (!program || program.status === 'archived') throw new CatalogValidationError('Invalid school program');
+    }
+
     const mapped: Record<string, unknown> = {};
     if (payload.programId !== undefined) mapped.program_id = payload.programId;
     if (payload.startsAt !== undefined) mapped.starts_at = payload.startsAt;
@@ -321,12 +350,7 @@ export const updateSchoolSession = async (req: Request, res: Response) => {
 
     const { data, error } = await supabase.from('school_sessions').update(mapped).eq('id', id).select('*').single();
     if (error) throw error;
-
-    const [decorated] = await withRemainingPlaces([data]);
-    if (decorated.registeredCount > decorated.capacity) {
-      return res.status(409).json({ error: 'Capacity cannot be lower than current registrations' });
-    }
-    res.json(decorated);
+    res.json((await withRemainingPlaces([data]))[0]);
   } catch (error) {
     return catalogError(error, res, 'Failed to update school session');
   }
@@ -377,43 +401,33 @@ export const createSchoolRegistration = async (req: Request, res: Response) => {
       return res.status(409).json({ error: 'This session is no longer open for registration' });
     }
 
-    const { data: existing, error: existingError } = await supabase
-      .from('school_registrations')
-      .select('id,email,phone,status')
-      .eq('session_id', sessionId)
-      .neq('status', 'cancelled');
-    if (existingError) throw existingError;
-    if ((existing ?? []).some(item => item.email?.toLowerCase() === email || item.phone === phone)) {
-      return res.status(409).json({ error: 'A registration already exists for this participant and session' });
-    }
-
-    const activeCount = (existing ?? []).length;
-    if (activeCount >= Number(session.capacity)) {
-      return res.status(409).json({ error: 'This session is full' });
-    }
-
-    const programs = await getCollection('schoolPrograms');
-    const program = programs.find((item: any) => item.id === session.program_id);
+    const program = (await getCollection('schoolPrograms')).find((item: any) => item.id === session.program_id);
     if (!program || (program.status ?? 'draft') !== 'published') {
       return res.status(409).json({ error: 'This program is not open for registration' });
     }
 
-    const { data, error } = await supabase.from('school_registrations').insert({
-      session_id: sessionId,
-      full_name: fullName,
-      email,
-      phone,
-      notes,
-      status: 'pending',
-      price_snapshot: typeof program.price === 'number' ? program.price : null
-    }).select('*').single();
-    if (error) throw error;
+    const { data, error } = await supabase.rpc('register_school_participant', {
+      p_session_id: sessionId,
+      p_full_name: fullName,
+      p_email: email,
+      p_phone: phone,
+      p_notes: notes,
+      p_price_snapshot: typeof program.price === 'number' ? program.price : null
+    });
+    if (error) {
+      const message = String(error.message || '');
+      if (message.includes('session_full')) return res.status(409).json({ error: 'This session is full' });
+      if (message.includes('duplicate_registration')) return res.status(409).json({ error: 'A registration already exists for this participant and session' });
+      if (message.includes('session_not_open')) return res.status(409).json({ error: 'This session is no longer open for registration' });
+      throw error;
+    }
 
+    const created = Array.isArray(data) ? data[0] : data;
     res.status(201).json({
-      id: data.id,
-      sessionId: data.session_id,
-      status: data.status,
-      createdAt: data.created_at
+      id: created.id,
+      sessionId: created.session_id,
+      status: created.status,
+      createdAt: created.created_at
     });
   } catch (error) {
     return catalogError(error, res, 'Failed to create school registration');
