@@ -105,6 +105,22 @@ test('optional global settings can be intentionally cleared', async () => {
   assert.match(controller, /return result;/);
 });
 
+test('public settings preserve intentional empty values instead of restoring legacy defaults', async () => {
+  const service = await source('src', 'app', 'core', 'services', 'site-settings.service.ts');
+  const actionBar = await source('src', 'app', 'shared', 'components', 'visitor-action-bar', 'visitor-action-bar.component.ts');
+  const catering = await source('src', 'app', 'shared', 'components', 'catering-cta', 'catering-cta.component.ts');
+  const contact = await source('src', 'app', 'pages', 'contact', 'contact.component.ts');
+  const footer = await source('src', 'app', 'shared', 'components', 'footer', 'footer.component.ts');
+
+  assert.match(service, /value === undefined \? fallback : value\.trim\(\)/);
+  assert.match(service, /phone: configuredText\(current\.phone, DEFAULT_SETTINGS\.phone\)/);
+  assert.match(actionBar, /else if \(siteSettings\.publicInfo\(\)\.phone\)/);
+  assert.match(catering, /@if \(siteSettings\.publicInfo\(\)\.phone\)/);
+  assert.match(contact, /@if \(info\(\)\.phone\)/);
+  assert.match(contact, /@if \(info\(\)\.mapQuery\)/);
+  assert.match(footer, /@if \(info\(\)\.email\)/);
+});
+
 
 test('legal links are configurable validated and never rendered as placeholders', async () => {
   const controller = await source('src', 'controllers', 'settings.controller.ts');
