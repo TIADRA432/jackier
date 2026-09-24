@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
-export type ReservationStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed' | 'approved' | 'rejected';
 export type ReservationWorkflowStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed';
 export type CateringWorkflowStatus = 'pending' | 'contacted' | 'quoted' | 'confirmed' | 'completed' | 'cancelled';
 
