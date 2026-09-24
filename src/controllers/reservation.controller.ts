@@ -11,8 +11,9 @@ const ALLOWED_TIMES = new Set([
   '12:00', '12:30', '13:00', '13:30', '14:00',
   '19:00', '19:30', '20:00', '20:30', '21:00', '21:30',
 ]);
-const ALLOWED_STATUSES = new Set(['pending', 'confirmed', 'cancelled', 'completed']);
-const RESERVATION_TRANSITIONS: Record<string, Set<string>> = {
+type ReservationWorkflowStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed';
+const ALLOWED_STATUSES = new Set<ReservationWorkflowStatus>(['pending', 'confirmed', 'cancelled', 'completed']);
+const RESERVATION_TRANSITIONS: Record<ReservationWorkflowStatus, Set<ReservationWorkflowStatus>> = {
   pending: new Set(['confirmed', 'cancelled']),
   confirmed: new Set(['completed', 'cancelled']),
   completed: new Set(),
@@ -95,10 +96,18 @@ const ensureNoDuplicateReservation = async (reservation: { date: string; time: s
   }
 };
 
+const normalizeReservationStatus = (value: unknown): ReservationWorkflowStatus => {
+  if (value === 'approved') return 'confirmed';
+  if (value === 'rejected') return 'cancelled';
+  return ALLOWED_STATUSES.has(value as ReservationWorkflowStatus)
+    ? value as ReservationWorkflowStatus
+    : 'pending';
+};
+
 const format = (row: any) => ({
   id: row.id,
   ...(row.data || {}),
-  status: row.status,
+  status: normalizeReservationStatus(row.status),
   date: row.date,
   createdAt: row.created_at,
 });
@@ -197,12 +206,14 @@ export const updateReservationStatus = async (req: AuthenticatedRequest, res: Re
       .from('reservations')
       .select('status')
       .eq('id', id)
-      .single();
+      .maybeSingle();
     if (currentError) throw currentError;
+    if (!current) return res.status(404).json({ error: 'Reservation not found' });
 
-    const nextStatus = req.body.status;
-    if (current.status !== nextStatus && !RESERVATION_TRANSITIONS[current.status]?.has(nextStatus)) {
-      return res.status(409).json({ error: `Invalid reservation status transition: ${current.status} -> ${nextStatus}` });
+    const currentStatus = normalizeReservationStatus(current.status);
+    const nextStatus = req.body.status as ReservationWorkflowStatus;
+    if (currentStatus !== nextStatus && !RESERVATION_TRANSITIONS[currentStatus].has(nextStatus)) {
+      return res.status(409).json({ error: `Invalid reservation status transition: ${currentStatus} -> ${nextStatus}` });
     }
 
     const { data, error } = await supabase.from('reservations').update({ status: nextStatus }).eq('id', id).select('*').single();
