@@ -53,8 +53,10 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
           </div>
         } @else if (programs().length === 0) {
           <div class="text-center py-20 bg-white rounded-3xl shadow-lg border border-gray-100">
-            <h2 class="font-serif text-2xl font-bold text-jacquier-dark">Aucun programme publié actuellement</h2>
-            <p class="mx-auto mt-3 max-w-xl text-jacquier-text/70">L’administration peut préparer des programmes en brouillon et les publier lorsqu’ils sont validés.</p>
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-jacquier-gold">Prochaines formations</p>
+            <h2 class="mt-3 font-serif text-2xl font-bold text-jacquier-dark">Le prochain programme sera annoncé ici</h2>
+            <p class="mx-auto mt-3 max-w-xl text-jacquier-text/70">Pour connaître les prochaines sessions ou manifester votre intérêt, contactez directement Le Jacquier.</p>
+            <a routerLink="/contact" class="mt-6 inline-flex rounded-xl bg-jacquier-primary px-6 py-3 text-sm font-bold text-white">Nous contacter</a>
           </div>
         } @else {
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
