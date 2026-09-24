@@ -39,6 +39,12 @@ export class AdminAuthService {
     return !profileError && profile?.role === 'ADMIN';
   }
 
+  async getCurrentUserEmail(): Promise<string | null> {
+    const { data, error } = await supabaseClient.auth.getUser();
+    if (error || !data.user) return null;
+    return data.user.email ?? null;
+  }
+
   async getAccessToken(): Promise<string | null> {
     const { data } = await supabaseClient.auth.getSession();
     return data.session?.access_token ?? null;
