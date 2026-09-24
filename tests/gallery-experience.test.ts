@@ -27,6 +27,8 @@ test('public gallery provides category filters and an accessible lightbox', asyn
   assert.match(component, /nextImage/);
   assert.match(component, /HostListener\('document:keydown'/);
   assert.match(component, /aria-modal="true"/);
+  assert.match(component, /\(error\)="useFallbackImage\(\$event\)"/);
+  assert.match(component, /image\.src = '\/og-image\.png'/);
 });
 
 test('gallery display order migration is additive and indexed', async () => {
