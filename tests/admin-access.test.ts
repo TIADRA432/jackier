@@ -69,6 +69,28 @@ test('the dashboard reads its operational metrics from the protected overview en
   assert.match(component, /clientPending/);
 });
 
+test('admin header search notifications and identity are functional rather than decorative', async () => {
+  const layout = await source('src', 'app', 'pages', 'admin', 'admin.component.ts');
+  const auth = await source('src', 'app', 'core', 'services', 'admin-auth.service.ts');
+
+  assert.match(layout, /ADMIN_SEARCH_ITEMS/);
+  assert.match(layout, /onSearchInput\(\$event\)/);
+  assert.match(layout, /navigateTo\(item\.path\)/);
+  assert.match(layout, /Rechercher un module, une action/);
+  assert.match(layout, /this\.adminData\.getDashboardOverview\(\)/);
+  assert.match(layout, /this\.adminData\.getSchoolRegistrations\(\)/);
+  assert.match(layout, /Réservations en attente/);
+  assert.match(layout, /Inscriptions École en attente/);
+  assert.match(layout, /Informations client attendues/);
+  assert.match(layout, /notificationCount/);
+  assert.doesNotMatch(layout, /absolute top-1\.5 right-1\.5 w-2\.5 h-2\.5 bg-red-500/);
+  assert.match(layout, /NavigationEnd/);
+  assert.match(layout, /this\.isSidebarOpen\.set\(false\)/);
+  assert.match(layout, /getCurrentUserEmail/);
+  assert.match(auth, /async getCurrentUserEmail\(\)/);
+  assert.match(auth, /supabaseClient\.auth\.getUser\(\)/);
+});
+
 test('the catering screen reads and updates only the protected catering API', async () => {
   const service = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
   const component = await source('src', 'app', 'pages', 'admin', 'traiteur', 'traiteur.component.ts');
