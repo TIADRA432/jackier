@@ -133,7 +133,9 @@ export class AdminTraiteurComponent {
   }
 
   whatsappHref(event: CateringEvent): string {
-    const phone = (event.phone ?? '').replace(/\D/g, '');
+    let phone = (event.phone ?? '').replace(/\D/g, '');
+    if (phone.startsWith('00')) phone = phone.slice(2);
+    if (phone.length === 9) phone = `224${phone}`;
     return `https://wa.me/${phone}?text=${encodeURIComponent(this.customerMessage(event))}`;
   }
 
