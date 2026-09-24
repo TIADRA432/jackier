@@ -141,3 +141,21 @@ test('reservation status update returns 404 when the booking no longer exists', 
   assert.match(controller, /if \(!current\) return res\.status\(404\)/);
   assert.match(controller, /Reservation not found/);
 });
+
+
+test('reservation duplicate normalization treats local Guinea numbers consistently', async () => {
+  const controller = await source('src', 'controllers', 'reservation.controller.ts');
+
+  assert.match(controller, /digits\.startsWith\('00'\)/);
+  assert.match(controller, /digits\.length === 9/);
+  assert.match(controller, /224\$\{digits\}/);
+});
+
+test('reservation admin WhatsApp links canonicalize local Guinea numbers', async () => {
+  const admin = await source('src', 'app', 'pages', 'admin', 'reservations', 'reservations.component.ts');
+
+  assert.match(admin, /phone\.startsWith\('00'\)/);
+  assert.match(admin, /phone\.length === 9/);
+  assert.match(admin, /224\$\{phone\}/);
+  assert.match(admin, /https:\/\/wa\.me/);
+});
