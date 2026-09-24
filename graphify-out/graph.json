@@ -1285,7 +1285,7 @@
       "file_type": "code",
       "norm_label": "menucomponent",
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L242"
+      "source_location": "L247"
     },
     {
       "id": "src_app_pages_reservation_reservation_component_reservationcomponent",
@@ -6721,7 +6721,7 @@
       "file_type": "code",
       "norm_label": ".resetfilters()",
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L285"
+      "source_location": "L292"
     },
     {
       "id": "src_app_pages_menu_menu_component_menucomponent_retry",
@@ -6732,7 +6732,7 @@
       "file_type": "code",
       "norm_label": ".retry()",
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L294"
+      "source_location": "L301"
     },
     {
       "id": "src_app_pages_menu_menu_component_menucomponent_retrywines",
@@ -6743,7 +6743,7 @@
       "file_type": "code",
       "norm_label": ".retrywines()",
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L298"
+      "source_location": "L305"
     },
     {
       "id": "src_app_pages_menu_menu_component_menucomponent_setmaxprice",
@@ -6754,7 +6754,7 @@
       "file_type": "code",
       "norm_label": ".setmaxprice()",
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L263"
+      "source_location": "L268"
     },
     {
       "id": "src_app_pages_menu_menu_component_menucomponent_setminprice",
@@ -6765,7 +6765,7 @@
       "file_type": "code",
       "norm_label": ".setminprice()",
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L262"
+      "source_location": "L267"
     },
     {
       "id": "src_app_pages_reservation_reservation_component_reservationcomponent_conakrydatestring",
@@ -32659,7 +32659,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L242",
+      "source_location": "L247",
       "weight": 1.0
     },
     {
@@ -39967,7 +39967,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L262",
+      "source_location": "L267",
       "weight": 1.0
     },
     {
@@ -39978,7 +39978,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L263",
+      "source_location": "L268",
       "weight": 1.0
     },
     {
@@ -39989,7 +39989,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L285",
+      "source_location": "L292",
       "weight": 1.0
     },
     {
@@ -40000,7 +40000,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L294",
+      "source_location": "L301",
       "weight": 1.0
     },
     {
@@ -40011,7 +40011,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/menu/menu.component.ts",
-      "source_location": "L298",
+      "source_location": "L305",
       "weight": 1.0
     },
     {
@@ -41404,5 +41404,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "ec46c6f7e83c27316145f0d0cc3b317d264ad8ac"
+  "built_at_commit": "04c1e234867714fe12268116f826c580d18449ca"
 }
