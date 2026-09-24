@@ -31,6 +31,7 @@ test('catering workflow enforces sequential lifecycle server-side', async () => 
   const controller = await source('src', 'controllers', 'catering.controller.ts');
 
   assert.match(controller, /CATERING_TRANSITIONS/);
+  assert.match(controller, /Record<CateringWorkflowStatus, Set<CateringWorkflowStatus>>/);
   assert.match(controller, /pending: new Set\(\['contacted', 'cancelled'\]\)/);
   assert.match(controller, /contacted: new Set\(\['quoted', 'cancelled'\]\)/);
   assert.match(controller, /quoted: new Set\(\['confirmed', 'cancelled'\]\)/);
