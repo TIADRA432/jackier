@@ -243,7 +243,7 @@ test('header becomes a blurred editorial navigation after scroll', async () => {
   assert.match(header, /bg-white\/90/);
   assert.match(header, /backdrop-blur-xl/);
   assert.match(header, /duration-700/);
-  assert.match(header, /w-full bg-jacquier-cream/);
+  assert.match(header, /w-full max-w-md flex-col bg-jacquier-cream/);
 });
 
 
