@@ -170,7 +170,7 @@ export class DashboardComponent {
       { label: 'Réservations du jour', value: String(stats.todayReservations), description: `${stats.pendingReservations} en attente` },
       { label: 'CA mensuel', value: this.formatCurrency(stats.monthlyRevenue), description: 'Mois en cours' },
       { label: 'Articles actifs', value: String(stats.activeMenuItems), description: 'À la carte' },
-      { label: 'Événements traiteur', value: String(stats.activeCatering), description: 'En attente ou confirmés' }
+      { label: 'Événements traiteur', value: String(stats.activeCatering), description: 'Dossiers encore actifs' }
     ];
   });
 
