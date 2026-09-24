@@ -9,7 +9,7 @@ export interface SeoConfig {
   imageSlot?: 'homeHero' | 'menuHero' | 'reservationHero' | 'aboutHero' | 'contactHero' | 'schoolHero' | 'galleryHero' | 'cateringHero';
 }
 
-const SITE_ORIGIN = 'https://jackier.abdourahmane591.workers.dev';
+const DEFAULT_SITE_ORIGIN = 'https://jackier.abdourahmane591.workers.dev';
 
 @Injectable({ providedIn: 'root' })
 export class SeoService {
@@ -32,7 +32,7 @@ export class SeoService {
 
   apply(url: string, config: SeoConfig, routeTitle?: string): void {
     const cleanPath = this.cleanPath(url);
-    const canonical = `${SITE_ORIGIN}${cleanPath === '/' ? '/' : cleanPath}`;
+    const canonical = `${this.siteOrigin()}${cleanPath === '/' ? '/' : cleanPath}`;
     const pageTitle = routeTitle?.trim() || this.title.getTitle() || this.siteSettings.publicInfo().restaurantName;
     if (routeTitle?.trim()) this.title.setTitle(routeTitle);
 
@@ -69,7 +69,14 @@ export class SeoService {
 
   private absoluteUrl(value: string): string {
     if (/^https?:\/\//i.test(value)) return value;
-    return `${SITE_ORIGIN}${value.startsWith('/') ? value : `/${value}`}`;
+    return `${this.siteOrigin()}${value.startsWith('/') ? value : `/${value}`}`;
+  }
+
+  private siteOrigin(): string {
+    const origin = this.document.location?.origin;
+    return origin && /^https?:\/\//i.test(origin)
+      ? origin.replace(/\/$/, '')
+      : DEFAULT_SITE_ORIGIN;
   }
 
   private setCanonical(href: string): void {
@@ -121,7 +128,7 @@ export class SeoService {
       '@context': 'https://schema.org',
       '@type': 'Restaurant',
       name: info.restaurantName,
-      url: SITE_ORIGIN,
+      url: this.siteOrigin(),
       image: this.absoluteUrl(this.siteSettings.image('homeHero', '/og-image.png').url),
       telephone: info.phone,
       email: info.email,
@@ -132,13 +139,13 @@ export class SeoService {
         ...(info.neighborhood ? { addressRegion: info.neighborhood } : {}),
         addressCountry: 'GN',
       },
-      hasMenu: `${SITE_ORIGIN}/menu`,
+      hasMenu: `${this.siteOrigin()}/menu`,
       acceptsReservations: true,
       potentialAction: {
         '@type': 'ReserveAction',
         target: {
           '@type': 'EntryPoint',
-          urlTemplate: `${SITE_ORIGIN}/reservation`,
+          urlTemplate: `${this.siteOrigin()}/reservation`,
           actionPlatform: [
             'https://schema.org/DesktopWebPlatform',
             'https://schema.org/MobileWebPlatform'
