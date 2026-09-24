@@ -187,3 +187,13 @@ test('reservation form distinguishes exhausted today slots from a closed future 
   assert.match(component, /Il n’y a plus de créneau de réservation disponible aujourd’hui/);
   assert.match(component, /Le restaurant est fermé ce jour-là selon les horaires configurés/);
 });
+
+
+test('reservation API preserves the visitor calendar date instead of exposing a timestamp', async () => {
+  const controller = await source('src', 'controllers', 'reservation.controller.ts');
+
+  assert.match(controller, /const reservationDate =/);
+  assert.match(controller, /row\?\.data\?\.date/);
+  assert.match(controller, /row\.date\.slice\(0, 10\)/);
+  assert.match(controller, /date: reservationDate\(row\)/);
+});
