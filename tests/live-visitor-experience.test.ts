@@ -264,3 +264,43 @@ test('gallery lightbox behaves as a keyboard modal and restores focus', async ()
   assert.match(gallery, /body\.style\.overflow = 'hidden'/);
   assert.match(gallery, /lightboxCloseButton/);
 });
+
+
+test('reservation form exposes accessible validation state and useful autocomplete hints', async () => {
+  const reservation = await source('src', 'app', 'pages', 'reservation', 'reservation.component.ts');
+
+  assert.match(reservation, /autocomplete="name"/);
+  assert.match(reservation, /autocomplete="email"/);
+  assert.match(reservation, /autocomplete="tel"/);
+  assert.match(reservation, /aria-describedby/);
+  assert.match(reservation, /aria-invalid/);
+  assert.match(reservation, /res-name-error/);
+  assert.match(reservation, /res-email-error/);
+  assert.match(reservation, /res-phone-error/);
+  assert.match(reservation, /res-date-error/);
+  assert.match(reservation, /res-time-error/);
+});
+
+test('catering form connects invalid controls with announced error messages', async () => {
+  const form = await source('src', 'app', 'shared', 'components', 'catering-form', 'catering-form.component.ts');
+
+  assert.match(form, /autocomplete="name"/);
+  assert.match(form, /autocomplete="email"/);
+  assert.match(form, /autocomplete="tel"/);
+  assert.match(form, /aria-describedby/);
+  assert.match(form, /aria-invalid/);
+  assert.match(form, /catering-name-error/);
+  assert.match(form, /catering-phone-error/);
+  assert.match(form, /catering-email-error/);
+  assert.match(form, /catering-type-error/);
+  assert.match(form, /catering-date-error/);
+  assert.match(form, /catering-guests-error/);
+  assert.match(form, /catering-message-error/);
+});
+
+test('contact map is deferred to protect initial page performance', async () => {
+  const contact = await source('src', 'app', 'pages', 'contact', 'contact.component.ts');
+
+  assert.match(contact, /loading="lazy"/);
+  assert.match(contact, /referrerpolicy="no-referrer-when-downgrade"/);
+});
