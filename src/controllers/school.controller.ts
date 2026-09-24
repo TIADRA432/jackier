@@ -233,8 +233,8 @@ export const updateSchoolProgram = async (req: Request, res: Response) => {
     const existing = (await getCollection('schoolPrograms')).find((item: any) => item.id === id);
     if (!existing) return res.status(404).json({ error: 'School program not found' });
     const payload = validateSchoolPayload(req.body, true);
-    const merged = { ...existing, ...payload };
-    delete merged.id;
+    const { id: _id, createdAt: _createdAt, ...existingData } = existing;
+    const merged = { ...existingData, ...payload };
     res.json(await updateDoc('schoolPrograms', id, merged));
   } catch (error) {
     return catalogError(error, res, 'Failed to update school program');
