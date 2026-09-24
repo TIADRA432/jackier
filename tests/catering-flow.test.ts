@@ -61,7 +61,7 @@ test('catering workflow uses dedicated operational statuses', async () => {
   const admin = await source('src', 'app', 'pages', 'admin', 'traiteur', 'traiteur.component.ts');
 
   assert.match(model, /CateringWorkflowStatus = 'pending' \| 'contacted' \| 'quoted' \| 'confirmed' \| 'completed' \| 'cancelled'/);
-  assert.match(controller, /ALLOWED_STATUSES = new Set\(\['pending', 'contacted', 'quoted', 'confirmed', 'completed', 'cancelled'\]\)/);
+  assert.match(controller, /ALLOWED_STATUSES = new Set(?:<CateringWorkflowStatus>)?\(\['pending', 'contacted', 'quoted', 'confirmed', 'completed', 'cancelled'\]\)/);
   assert.match(admin, /Devis envoyé/);
   assert.match(admin, /Contacté/);
   assert.doesNotMatch(admin, /Approuvé/);
@@ -93,4 +93,57 @@ test('catering admin flags stale pending requests', async () => {
   assert.match(admin, /isPastPending\(event\)/);
   assert.match(admin, /Date dépassée alors que la demande est toujours en attente/);
   assert.match(admin, /Africa\/Conakry/);
+});
+
+
+test('catering server validates and normalizes visitor contact details', async () => {
+  const controller = await source('src', 'controllers', 'catering.controller.ts');
+
+  assert.match(controller, /Invalid catering phone/);
+  assert.match(controller, /normalizePhone/);
+  assert.match(controller, /normalizeEmail/);
+  assert.match(controller, /digits\.length === 9/);
+  assert.match(controller, /224\$\{digits\}/);
+  assert.match(controller, /sameEmail/);
+  assert.match(controller, /samePhone/);
+});
+
+test('catering form mirrors server limits before submit', async () => {
+  const form = await source('src', 'app', 'shared', 'components', 'catering-form', 'catering-form.component.ts');
+
+  assert.match(form, /Validators\.max\(5000\)/);
+  assert.match(form, /Validators\.maxLength\(160\)/);
+  assert.match(form, /Validators\.maxLength\(254\)/);
+  assert.match(form, /Validators\.maxLength\(120\)/);
+  assert.match(form, /Validators\.maxLength\(2000\)/);
+  assert.match(form, /\^\\\+\?\[0-9 \(\)-\]\{6,30\}\$/);
+});
+
+test('catering API uses typed validation errors and returns 404 for missing admin records', async () => {
+  const controller = await source('src', 'controllers', 'catering.controller.ts');
+
+  assert.match(controller, /class CateringValidationError extends Error/);
+  assert.match(controller, /error instanceof CateringValidationError/);
+  assert.match(controller, /maybeSingle\(\)/);
+  assert.match(controller, /Catering request not found/);
+  assert.doesNotMatch(controller, /message\.startsWith\('Invalid catering'\)/);
+});
+
+test('catering visitor receives stable French error messages', async () => {
+  const service = await source('src', 'app', 'core', 'services', 'restaurant.service.ts');
+  const form = await source('src', 'app', 'shared', 'components', 'catering-form', 'catering-form.component.ts');
+
+  assert.match(service, /describeCateringError/);
+  assert.match(service, /Une demande similaire existe déjà/);
+  assert.match(service, /Le numéro de téléphone n’est pas valide/);
+  assert.match(service, /Le nombre d’invités doit être compris entre 1 et 5 000/);
+  assert.match(form, /err instanceof Error/);
+});
+
+test('catering admin WhatsApp links canonicalize local Guinea numbers', async () => {
+  const admin = await source('src', 'app', 'pages', 'admin', 'traiteur', 'traiteur.component.ts');
+
+  assert.match(admin, /phone\.startsWith\('00'\)/);
+  assert.match(admin, /phone\.length === 9/);
+  assert.match(admin, /224\$\{phone\}/);
 });
