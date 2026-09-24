@@ -8,6 +8,7 @@ const root = process.cwd();
 test('Graphify workflow skips stale publish races instead of failing the branch', async () => {
   const workflow = await readFile(path.join(root, '.github', 'workflows', 'graphify.yml'), 'utf8');
 
+  assert.match(workflow, /graphify cluster-only \./);
   assert.match(workflow, /git ls-remote origin/);
   assert.match(workflow, /remote_head/);
   assert.match(workflow, /\$GITHUB_SHA/);
