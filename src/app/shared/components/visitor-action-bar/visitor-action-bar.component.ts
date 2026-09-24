@@ -11,7 +11,7 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
   template: `
     @if (!hidden()) {
       <div class="fixed inset-x-3 bottom-3 z-[70] lg:hidden" style="padding-bottom: env(safe-area-inset-bottom);">
-        @if (siteSettings.openStatus().configured) {
+        @if (showStatus()) {
           <div class="mx-auto mb-2 flex w-fit items-center gap-2 rounded-full border border-white/15 bg-jacquier-dark/90 px-3 py-1.5 text-[11px] font-bold text-white shadow-lg backdrop-blur">
             <span [class]="siteSettings.openStatus().isOpen ? 'h-2 w-2 rounded-full bg-emerald-400' : 'h-2 w-2 rounded-full bg-gray-500'"></span>
             <span>{{ siteSettings.openStatus().label }}</span>
@@ -46,6 +46,11 @@ export class VisitorActionBarComponent {
   readonly currentUrl = signal(this.router.url);
 
   readonly hidden = computed(() => this.currentUrl().startsWith('/admin'));
+  readonly showStatus = computed(() =>
+    this.siteSettings.openStatus().configured &&
+    !this.currentUrl().startsWith('/reservation') &&
+    !this.currentUrl().startsWith('/contact')
+  );
   readonly primaryPath = computed(() => this.currentUrl().startsWith('/reservation') ? '/menu' : '/reservation');
   readonly primaryLabel = computed(() => this.currentUrl().startsWith('/reservation') ? 'Voir le menu' : 'Réserver');
 
