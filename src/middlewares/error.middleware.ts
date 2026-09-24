@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
+import { serverLog } from '../utils/server-log';
 
 export const errorHandler = (err: any, _req: Request, res: Response, next: NextFunction) => {
   if (res.headersSent) return next(err);
 
-  console.error('API Error:', err);
+  serverLog('error', 'api.unhandled', err, { method: _req.method, path: _req.path });
 
   if (err?.code === 'CORS_ORIGIN_DENIED') {
     return res.status(403).json({
