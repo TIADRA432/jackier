@@ -64,7 +64,7 @@ export interface CateringEvent {
 }
 
 export type SchoolProgramStatus = 'draft' | 'published' | 'archived';
-export type SchoolLevel = 'Débutant' | 'Intermédiaire' | 'Pro';
+export type SchoolLevel = string;
 export type SchoolSessionStatus = 'scheduled' | 'cancelled' | 'completed';
 export type SchoolRegistrationStatus = 'pending' | 'confirmed' | 'paid' | 'cancelled';
 
