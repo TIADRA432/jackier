@@ -147,3 +147,10 @@ test('catering admin WhatsApp links canonicalize local Guinea numbers', async ()
   assert.match(admin, /phone\.length === 9/);
   assert.match(admin, /224\$\{phone\}/);
 });
+
+
+test('catering dashboard counts legacy approved dossiers as active confirmed work', async () => {
+  const dashboard = await source('src', 'controllers', 'dashboard.controller.ts');
+
+  assert.match(dashboard, /\['pending', 'contacted', 'quoted', 'confirmed', 'approved'\]/);
+});
