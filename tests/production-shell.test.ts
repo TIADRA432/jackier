@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
 import path from 'node:path';
 import test from 'node:test';
 
@@ -55,6 +56,14 @@ test('production smoke test covers the complete public shell and security header
   assert.match(smoke, /item\?\.active === false/);
 });
 
+
+test('production smoke script has valid Bash syntax', () => {
+  const result = spawnSync('bash', ['-n', path.join(root, 'scripts', 'smoke-production.sh')], {
+    encoding: 'utf8',
+  });
+
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+});
 
 test('Cloudflare static assets receive the same security headers as Worker responses', async () => {
   const headers = await source('public', '_headers');
