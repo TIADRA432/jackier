@@ -1,8 +1,9 @@
 
 import { Component, signal, ChangeDetectionStrategy, ElementRef, HostListener, OnDestroy, inject, viewChild } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 import { SiteSettingsService } from '../../../core/services/site-settings.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -114,10 +115,19 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
 export class HeaderComponent implements OnDestroy {
   readonly siteSettings = inject(SiteSettingsService);
   private readonly document = inject(DOCUMENT);
+  private readonly router = inject(Router);
   private readonly mobileCloseButton = viewChild<ElementRef<HTMLButtonElement>>('mobileCloseButton');
   private previousFocus: HTMLElement | null = null;
   isScrolled = signal(false);
   isMobileMenuOpen = signal(false);
+
+  constructor() {
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
+      // A route change must never leave the page locked or the mobile drawer layered over content.
+      this.isMobileMenuOpen.set(false);
+      this.document.body.style.overflow = '';
+    });
+  }
 
   navLinks = [
     { path: '/', label: 'Accueil', exact: true },
