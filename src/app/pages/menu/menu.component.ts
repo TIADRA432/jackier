@@ -29,7 +29,7 @@ import { RevealOnScrollDirective } from '../../shared/directives/reveal-on-scrol
       <div class="max-w-7xl mx-auto">
 
         @if (showCategoryNav()) {
-          <nav appRevealOnScroll class="sticky top-16 z-30 -mx-4 mb-8 flex gap-3 overflow-x-auto bg-jacquier-cream/90 px-4 py-3 shadow-sm backdrop-blur-xl" aria-label="Catégories de la carte">
+          <nav appRevealOnScroll class="sticky top-20 z-30 -mx-4 mb-8 flex gap-3 overflow-x-auto bg-jacquier-cream/95 px-4 py-3 shadow-sm backdrop-blur-xl md:top-[72px]" aria-label="Catégories de la carte">
             @for (filter of filters(); track filter.id) {
               <button type="button" (click)="activeFilter.set(filter.id)" [attr.aria-pressed]="activeFilter() === filter.id"
                 class="shrink-0 rounded-full border border-jacquier-primary px-5 py-3 text-sm font-bold"
