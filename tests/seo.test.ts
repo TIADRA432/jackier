@@ -91,6 +91,16 @@ test('public SEO routes use page-specific social imagery', async () => {
 });
 
 
+test('SEO refreshes route-specific social imagery after async site settings load', async () => {
+  const service = await source('src', 'app', 'core', 'services', 'seo.service.ts');
+
+  assert.match(service, /currentConfig = signal<SeoConfig \| null>/);
+  assert.match(service, /currentPageTitle = signal/);
+  assert.match(service, /this\.siteSettings\.settings\(\)/);
+  assert.match(service, /if \(config\) this\.updateMetadata\(url, config, pageTitle\)/);
+  assert.match(service, /private updateMetadata/);
+});
+
 test('SEO derives canonical origin from the current public domain with a production fallback', async () => {
   const service = await source('src', 'app', 'core', 'services', 'seo.service.ts');
 
