@@ -168,3 +168,30 @@ test('reloading is blocked while settings have unsaved changes', async () => {
 
   assert.match(settings, /\[disabled\]="loading\(\) \|\| saving\(\) \|\| dirty\(\)"/);
 });
+
+
+test('today publication rejects placeholder titles on both client and server', async () => {
+  const settings = await source('src', 'app', 'pages', 'admin', 'settings', 'settings.component.ts');
+  const controller = await source('src', 'controllers', 'settings.controller.ts');
+
+  assert.match(settings, /minlength="3"/);
+  assert.match(settings, /titre d’au moins 3 caractères/);
+  assert.match(controller, /title\.length < 3/);
+  assert.match(controller, /Invalid today\.title/);
+});
+
+test('structured hours can generate the public hours summary', async () => {
+  const settings = await source('src', 'app', 'pages', 'admin', 'settings', 'settings.component.ts');
+
+  assert.match(settings, /Synchroniser le texte public/);
+  assert.match(settings, /scheduleSummary\(\): string/);
+  assert.match(settings, /syncOpeningHoursFromSchedule\(\)/);
+  assert.match(settings, /openingHours: this\.scheduleSummary\(\)/);
+});
+
+test('content security policy explicitly permits the Google Maps embeds used by the site', async () => {
+  const security = await source('src', 'middlewares', 'security.middleware.ts');
+
+  assert.match(security, /frame-src 'self' https:\/\/maps\.google\.com https:\/\/www\.google\.com/);
+  assert.match(security, /frameSrc: \["'self'", 'https:\/\/maps\.google\.com', 'https:\/\/www\.google\.com'\]/);
+});
