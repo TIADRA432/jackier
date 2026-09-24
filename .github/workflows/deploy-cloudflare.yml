@@ -95,6 +95,12 @@ jobs:
           check_url "/api/settings" "API Paramètres" "/tmp/settings.json"
           check_url "/api/menu" "API Menu" "/tmp/menu.json"
           check_url "/api/gallery" "API Galerie" "/tmp/gallery.json"
+          check_url "/api/wines" "API Vins" "/tmp/wines.json"
+          check_url "/api/school" "API École" "/tmp/school.json"
+          check_url "/api/team/public" "API Équipe publique" "/tmp/team.json"
+          check_url "/menu" "Page Menu" "/tmp/menu-page.html"
+          check_url "/reservation" "Page Réservation" "/tmp/reservation-page.html"
+          check_url "/contact" "Page Contact" "/tmp/contact-page.html"
 
           node - <<'NODE'
           const fs = require('fs');
@@ -102,6 +108,9 @@ jobs:
             ['/tmp/settings.json', 'Paramètres', value => value && typeof value === 'object' && !Array.isArray(value)],
             ['/tmp/menu.json', 'Menu', Array.isArray],
             ['/tmp/gallery.json', 'Galerie', Array.isArray],
+            ['/tmp/wines.json', 'Vins', Array.isArray],
+            ['/tmp/school.json', 'École', Array.isArray],
+            ['/tmp/team.json', 'Équipe publique', Array.isArray],
           ];
 
           for (const [file, label, valid] of checks) {
@@ -111,8 +120,17 @@ jobs:
             console.log(`✓ ${label}: JSON valide`);
           }
 
-          const home = fs.readFileSync('/tmp/home.html', 'utf8');
-          if (!home.includes('<app-root')) throw new Error('Accueil: shell Angular introuvable');
-          console.log('✓ Accueil: shell Angular détecté');
+          const pages = [
+            ['/tmp/home.html', 'Accueil'],
+            ['/tmp/menu-page.html', 'Menu'],
+            ['/tmp/reservation-page.html', 'Réservation'],
+            ['/tmp/contact-page.html', 'Contact'],
+          ];
+
+          for (const [file, label] of pages) {
+            const html = fs.readFileSync(file, 'utf8');
+            if (!html.includes('<app-root')) throw new Error(`${label}: shell Angular introuvable`);
+            console.log(`✓ ${label}: shell Angular détecté`);
+          }
           NODE
 
