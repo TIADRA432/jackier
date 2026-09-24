@@ -43,9 +43,11 @@ test('production smoke test covers the complete public shell and security header
 
   assert.match(workflow, /security-headers\.txt/);
   assert.match(workflow, /content-security-policy/);
-  assert.match(workflow, /x-content-type-options: nosniff/);
-  assert.match(workflow, /x-frame-options: DENY/);
-  assert.match(workflow, /strict-transport-security/);
+  assert.match(workflow, /X-Content-Type-Options = nosniff/);
+  assert.match(workflow, /X-Frame-Options = DENY/);
+  assert.match(workflow, /HSTS présent/);
+  assert.match(workflow, /Scripts limités au même origin/);
+  assert.match(workflow, /Legacy script source still allowed/);
   assert.match(workflow, /frame-src 'self' https:\/\/maps\.google\.com https:\/\/www\.google\.com/);
   assert.match(workflow, /item\?\.active === false/);
 });
