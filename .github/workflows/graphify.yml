@@ -42,7 +42,14 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Build the code-only knowledge graph
-        run: graphify extract . --code-only
+        run: |
+          # A zero-byte/corrupt graph cannot be used for Graphify's incremental merge.
+          # Remove it so Graphify performs a clean rebuild instead of failing the workflow.
+          if test -f graphify-out/graph.json && ! python -c "import json; json.load(open('graphify-out/graph.json', encoding='utf-8'))" 2>/dev/null; then
+            echo "Existing graph.json is invalid; forcing a clean Graphify rebuild."
+            rm -f graphify-out/graph.json
+          fi
+          graphify extract . --code-only
 
       - name: Commit updated graph artefacts
         run: |
