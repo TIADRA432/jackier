@@ -63,7 +63,21 @@ jobs:
             exit 0
           fi
 
+          remote_head="$(git ls-remote origin "refs/heads/${{ github.ref_name }}" | cut -f1)"
+          if test "$remote_head" != "$GITHUB_SHA"; then
+            echo "Branch advanced from $GITHUB_SHA to $remote_head; a newer Graphify run will publish the graph."
+            exit 0
+          fi
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "chore(graphify): update knowledge graph [skip ci]"
-          git push origin "HEAD:${{ github.ref_name }}"
+
+          if ! git push origin "HEAD:${{ github.ref_name }}"; then
+            remote_head="$(git ls-remote origin "refs/heads/${{ github.ref_name }}" | cut -f1)"
+            if test "$remote_head" != "$GITHUB_SHA"; then
+              echo "Branch advanced during Graphify publish; leaving publication to the newer workflow run."
+              exit 0
+            fi
+            exit 1
+          fi
