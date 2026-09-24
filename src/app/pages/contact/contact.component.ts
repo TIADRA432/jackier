@@ -49,7 +49,7 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
             </div>
           </div>
 
-          <div class="lg:w-2/3 h-[600px] lg:h-auto bg-gray-200 rounded-3xl overflow-hidden shadow-2xl relative border border-gray-100">
+          <div class="lg:w-2/3 h-[420px] sm:h-[500px] lg:h-auto bg-gray-200 rounded-3xl overflow-hidden shadow-2xl relative border border-gray-100">
             <iframe width="100%" height="100%" frameborder="0" scrolling="no" loading="lazy"
               referrerpolicy="no-referrer-when-downgrade"
               [src]="mapUrl()" title="Localisation du restaurant"
