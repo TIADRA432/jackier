@@ -94,3 +94,30 @@ test('reservation admin provides explicit manual client communication tools', as
   assert.match(admin, /navigator\.clipboard\.writeText/);
   assert.match(admin, /Réservation #/);
 });
+
+
+test('reservation form removes expired same-day slots before submit', async () => {
+  const component = await source('src', 'app', 'pages', 'reservation', 'reservation.component.ts');
+
+  assert.match(component, /selectedDate === this\.todayDate/);
+  assert.match(component, /conakryTimeMinutes\(\)/);
+  assert.match(component, /toMinutes\(slot\) > now/);
+  assert.match(component, /selectedDate < this\.todayDate/);
+});
+
+test('reservation duplicate detection compares normalized contact values', async () => {
+  const controller = await source('src', 'controllers', 'reservation.controller.ts');
+
+  assert.match(controller, /normalizeEmail/);
+  assert.match(controller, /normalizePhone/);
+  assert.match(controller, /sameEmail/);
+  assert.match(controller, /samePhone/);
+});
+
+test('reservation receipt exposes only supported booking statuses', async () => {
+  const service = await source('src', 'app', 'core', 'services', 'reservation.service.ts');
+
+  assert.match(service, /status: 'pending' \| 'confirmed' \| 'cancelled' \| 'completed'/);
+  assert.doesNotMatch(service, /approved/);
+  assert.doesNotMatch(service, /rejected/);
+});
