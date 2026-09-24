@@ -205,7 +205,7 @@
       "file_type": "code",
       "norm_label": "contactcomponent",
       "source_file": "src/app/pages/contact/contact.component.ts",
-      "source_location": "L67"
+      "source_location": "L68"
     },
     {
       "id": "worker_env",
@@ -1045,7 +1045,7 @@
       "file_type": "code",
       "norm_label": "reservationcomponent",
       "source_file": "src/app/pages/reservation/reservation.component.ts",
-      "source_location": "L173"
+      "source_location": "L187"
     },
     {
       "id": "src_app_shared_directives_parallax_directive_parallaxdirective",
@@ -1117,7 +1117,7 @@
       "file_type": "code",
       "norm_label": "cateringformcomponent",
       "source_file": "src/app/shared/components/catering-form/catering-form.component.ts",
-      "source_location": "L175"
+      "source_location": "L189"
     },
     {
       "id": "src_app_shared_directives_reveal_on_scroll_directive_revealonscrolldirective",
@@ -2727,7 +2727,7 @@
       "file_type": "code",
       "norm_label": ".phonehref()",
       "source_file": "src/app/pages/contact/contact.component.ts",
-      "source_location": "L78"
+      "source_location": "L79"
     },
     {
       "id": "src_middlewares_error_middleware_errorhandler",
@@ -6643,7 +6643,7 @@
       "file_type": "code",
       "norm_label": ".conakrydatestring()",
       "source_file": "src/app/pages/reservation/reservation.component.ts",
-      "source_location": "L234"
+      "source_location": "L248"
     },
     {
       "id": "src_app_pages_reservation_reservation_component_reservationcomponent_constructor",
@@ -6654,7 +6654,7 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "src/app/pages/reservation/reservation.component.ts",
-      "source_location": "L224"
+      "source_location": "L238"
     },
     {
       "id": "src_app_pages_reservation_reservation_component_reservationcomponent_onsubmit",
@@ -6665,7 +6665,7 @@
       "file_type": "code",
       "norm_label": ".onsubmit()",
       "source_file": "src/app/pages/reservation/reservation.component.ts",
-      "source_location": "L257"
+      "source_location": "L271"
     },
     {
       "id": "src_app_pages_reservation_reservation_component_reservationcomponent_resetform",
@@ -6676,7 +6676,7 @@
       "file_type": "code",
       "norm_label": ".resetform()",
       "source_file": "src/app/pages/reservation/reservation.component.ts",
-      "source_location": "L296"
+      "source_location": "L310"
     },
     {
       "id": "src_app_pages_reservation_reservation_component_reservationcomponent_weekdayfordate",
@@ -6687,7 +6687,7 @@
       "file_type": "code",
       "norm_label": ".weekdayfordate()",
       "source_file": "src/app/pages/reservation/reservation.component.ts",
-      "source_location": "L247"
+      "source_location": "L261"
     },
     {
       "id": "src_app_shared_directives_parallax_directive_parallaxdirective_ngafterviewinit",
@@ -7006,7 +7006,7 @@
       "file_type": "code",
       "norm_label": ".conakrydatestring()",
       "source_file": "src/app/shared/components/catering-form/catering-form.component.ts",
-      "source_location": "L224"
+      "source_location": "L238"
     },
     {
       "id": "src_app_shared_components_catering_form_catering_form_component_cateringformcomponent_constructor",
@@ -7017,7 +7017,7 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "src/app/shared/components/catering-form/catering-form.component.ts",
-      "source_location": "L187"
+      "source_location": "L201"
     },
     {
       "id": "src_app_shared_components_catering_form_catering_form_component_cateringformcomponent_onsubmit",
@@ -7028,7 +7028,7 @@
       "file_type": "code",
       "norm_label": ".onsubmit()",
       "source_file": "src/app/shared/components/catering-form/catering-form.component.ts",
-      "source_location": "L200"
+      "source_location": "L214"
     },
     {
       "id": "src_app_shared_components_catering_form_catering_form_component_cateringformcomponent_resetform",
@@ -7039,7 +7039,7 @@
       "file_type": "code",
       "norm_label": ".resetform()",
       "source_file": "src/app/shared/components/catering-form/catering-form.component.ts",
-      "source_location": "L235"
+      "source_location": "L249"
     },
     {
       "id": "src_app_shared_directives_reveal_on_scroll_directive_revealonscrolldirective_ngafterviewinit",
@@ -31888,7 +31888,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/contact/contact.component.ts",
-      "source_location": "L67",
+      "source_location": "L68",
       "weight": 1.0
     },
     {
@@ -31965,7 +31965,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/reservation/reservation.component.ts",
-      "source_location": "L173",
+      "source_location": "L187",
       "weight": 1.0
     },
     {
@@ -32009,7 +32009,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/shared/components/catering-form/catering-form.component.ts",
-      "source_location": "L175",
+      "source_location": "L189",
       "weight": 1.0
     },
     {
@@ -38921,7 +38921,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/contact/contact.component.ts",
-      "source_location": "L78",
+      "source_location": "L79",
       "weight": 1.0
     },
     {
@@ -39163,7 +39163,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/reservation/reservation.component.ts",
-      "source_location": "L224",
+      "source_location": "L238",
       "weight": 1.0
     },
     {
@@ -39174,7 +39174,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/reservation/reservation.component.ts",
-      "source_location": "L234",
+      "source_location": "L248",
       "weight": 1.0
     },
     {
@@ -39185,7 +39185,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/reservation/reservation.component.ts",
-      "source_location": "L247",
+      "source_location": "L261",
       "weight": 1.0
     },
     {
@@ -39196,7 +39196,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/reservation/reservation.component.ts",
-      "source_location": "L257",
+      "source_location": "L271",
       "weight": 1.0
     },
     {
@@ -39207,7 +39207,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/pages/reservation/reservation.component.ts",
-      "source_location": "L296",
+      "source_location": "L310",
       "weight": 1.0
     },
     {
@@ -39273,7 +39273,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/shared/components/catering-form/catering-form.component.ts",
-      "source_location": "L187",
+      "source_location": "L201",
       "weight": 1.0
     },
     {
@@ -39284,7 +39284,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/shared/components/catering-form/catering-form.component.ts",
-      "source_location": "L200",
+      "source_location": "L214",
       "weight": 1.0
     },
     {
@@ -39295,7 +39295,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/shared/components/catering-form/catering-form.component.ts",
-      "source_location": "L224",
+      "source_location": "L238",
       "weight": 1.0
     },
     {
@@ -39306,7 +39306,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/shared/components/catering-form/catering-form.component.ts",
-      "source_location": "L235",
+      "source_location": "L249",
       "weight": 1.0
     },
     {
@@ -40545,5 +40545,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e53cf9cd397dc21762c1f0624cbd5e6a4cd64276"
+  "built_at_commit": "cba31a3c97064f2caf7c78e1e41ac9054565a2a5"
 }
