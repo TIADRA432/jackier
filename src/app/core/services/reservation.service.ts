@@ -59,8 +59,8 @@ export class ReservationService {
       return 'Trop de tentatives en peu de temps. Merci de patienter quelques minutes avant de réessayer.';
     }
 
-    // Le backend renvoie { error: "message précis" } sur les 400 (voir reservation.controller.ts) :
-    // on le remonte tel quel plutôt que de le masquer, car c'est souvent la vraie cause utile.
+    // Le backend renvoie un motif précis sur les 400. On le traduit ici en message
+    // visiteur stable, sans exposer directement les détails techniques de l'API.
     if (error.status === 400) {
       const backendMessage = (error.error && typeof error.error === 'object' && 'error' in error.error)
         ? String((error.error as { error?: unknown }).error)
