@@ -29,7 +29,7 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
               class="flex min-h-[48px] min-w-0 flex-1 items-center justify-center rounded-xl border border-white/20 px-3 text-center text-[11px] font-bold uppercase tracking-wide text-white sm:px-4 sm:text-xs sm:tracking-wider">
               WhatsApp
             </a>
-          } @else {
+          } @else if (siteSettings.publicInfo().phone) {
             <a [href]="phoneHref()"
               class="flex min-h-[48px] flex-1 items-center justify-center rounded-xl border border-white/20 px-4 text-center text-xs font-bold uppercase tracking-wider text-white">
               Appeler
