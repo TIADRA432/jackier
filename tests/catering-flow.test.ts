@@ -116,6 +116,9 @@ test('catering form mirrors server limits before submit', async () => {
   assert.match(form, /Validators\.maxLength\(254\)/);
   assert.match(form, /Validators\.maxLength\(120\)/);
   assert.match(form, /Validators\.maxLength\(2000\)/);
+  assert.match(form, /max="5000"/);
+  assert.match(form, /maxlength="120"/);
+  assert.match(form, /maxlength="2000"/);
   assert.match(form, /Validators\.pattern/);
   assert.match(form, /\{6,30\}/);
 });
@@ -154,4 +157,13 @@ test('catering dashboard counts legacy approved dossiers as active confirmed wor
   const dashboard = await source('src', 'controllers', 'dashboard.controller.ts');
 
   assert.match(dashboard, /\['pending', 'contacted', 'quoted', 'confirmed', 'approved'\]/);
+});
+
+
+test('catering admin uses configured currency instead of a hard-coded public currency', async () => {
+  const admin = await source('src', 'app', 'pages', 'admin', 'traiteur', 'traiteur.component.ts');
+
+  assert.match(admin, /readonly currency = computed\(\(\) => this\.siteSettings\.publicInfo\(\)\.currency\)/);
+  assert.match(admin, /event\.budget \? ' ' \+ currency\(\) : ''/);
+  assert.doesNotMatch(admin, /event\.budget \? ' FG'/);
 });
