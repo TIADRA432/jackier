@@ -19,7 +19,6 @@ const REGISTRATION_FIELDS = new Set(['sessionId', 'fullName', 'email', 'phone', 
 const REGISTRATION_STATUSES = new Set(['pending', 'confirmed', 'paid', 'cancelled']);
 const PROGRAM_STATUSES = new Set(['draft', 'published', 'archived']);
 const SESSION_STATUSES = new Set(['scheduled', 'cancelled', 'completed']);
-const PROGRAM_LEVELS = new Set(['Débutant', 'Intermédiaire', 'Pro']);
 
 type SchoolPayload = Record<string, string | number | boolean | string[] | null>;
 
@@ -114,9 +113,7 @@ export const validateSchoolPayload = (body: unknown, partial = false): SchoolPay
   if (materialsIncluded !== undefined) payload.materialsIncluded = materialsIncluded;
 
   if (source.level !== undefined) {
-    const level = cleanText(source.level, 'level', 40, true) as string;
-    if (!PROGRAM_LEVELS.has(level)) throw new CatalogValidationError('Invalid level');
-    payload.level = level;
+    payload.level = cleanText(source.level, 'level', 120, true) as string;
   }
 
   if (source.status !== undefined) {
