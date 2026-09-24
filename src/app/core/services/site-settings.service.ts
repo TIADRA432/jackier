@@ -10,6 +10,9 @@ const FALLBACK_LOGO: MediaReference = {
   altText: 'Logo Le Jacquier',
 };
 
+const configuredText = (value: string | undefined, fallback: string): string =>
+  value === undefined ? fallback : value.trim();
+
 const DEFAULT_SETTINGS: Required<Pick<PublicSettings,
   'restaurantName' | 'tagline' | 'address' | 'neighborhood' | 'phone' |
   'email' | 'openingHours' | 'currency' | 'mapQuery'
@@ -134,16 +137,21 @@ export class SiteSettingsService {
 
   readonly publicInfo = computed(() => {
     const current = this.settings();
+    const address = configuredText(current.address, DEFAULT_SETTINGS.address);
+    const mapQuery = current.mapQuery === undefined
+      ? (address || DEFAULT_SETTINGS.mapQuery)
+      : current.mapQuery.trim();
+
     return {
-      restaurantName: current.restaurantName?.trim() || DEFAULT_SETTINGS.restaurantName,
-      tagline: current.tagline?.trim() || DEFAULT_SETTINGS.tagline,
-      address: current.address?.trim() || DEFAULT_SETTINGS.address,
-      neighborhood: current.neighborhood?.trim() || DEFAULT_SETTINGS.neighborhood,
-      phone: current.phone?.trim() || DEFAULT_SETTINGS.phone,
-      email: current.email?.trim() || DEFAULT_SETTINGS.email,
-      openingHours: current.openingHours?.trim() || DEFAULT_SETTINGS.openingHours,
-      currency: current.currency?.trim() || DEFAULT_SETTINGS.currency,
-      mapQuery: current.mapQuery?.trim() || current.address?.trim() || DEFAULT_SETTINGS.mapQuery,
+      restaurantName: configuredText(current.restaurantName, DEFAULT_SETTINGS.restaurantName),
+      tagline: configuredText(current.tagline, DEFAULT_SETTINGS.tagline),
+      address,
+      neighborhood: configuredText(current.neighborhood, DEFAULT_SETTINGS.neighborhood),
+      phone: configuredText(current.phone, DEFAULT_SETTINGS.phone),
+      email: configuredText(current.email, DEFAULT_SETTINGS.email),
+      openingHours: configuredText(current.openingHours, DEFAULT_SETTINGS.openingHours),
+      currency: configuredText(current.currency, DEFAULT_SETTINGS.currency),
+      mapQuery,
       legalNoticeUrl: current.legalNoticeUrl?.trim() || '',
       privacyPolicyUrl: current.privacyPolicyUrl?.trim() || '',
       socialMedia: current.socialMedia ?? {},
