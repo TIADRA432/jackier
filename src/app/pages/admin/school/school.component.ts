@@ -284,14 +284,22 @@ interface SessionDraft {
               <h2 class="font-serif text-xl font-bold text-white">Inscriptions reçues</h2>
               <p class="mt-1 text-xs text-gray-500">Une place reste occupée tant que l’inscription n’est pas annulée.</p>
             </div>
-            <select [ngModel]="registrationFilter()" (ngModelChange)="registrationFilter.set($event)"
-              class="rounded-lg border border-gray-700 bg-[#121212] px-3 py-2 text-sm text-white">
-              <option value="all">Tous les statuts</option>
-              <option value="pending">En attente</option>
-              <option value="confirmed">Confirmé</option>
-              <option value="paid">Payé</option>
-              <option value="cancelled">Annulé</option>
-            </select>
+            <div class="flex flex-wrap gap-2">
+              <select [ngModel]="registrationFilter()" (ngModelChange)="registrationFilter.set($event)"
+                class="rounded-lg border border-gray-700 bg-[#121212] px-3 py-2 text-sm text-white">
+                <option value="all">Tous les statuts</option>
+                <option value="pending">En attente</option>
+                <option value="confirmed">Confirmé</option>
+                <option value="paid">Payé</option>
+                <option value="cancelled">Annulé</option>
+              </select>
+              <select [ngModel]="registrationPeriod()" (ngModelChange)="registrationPeriod.set($event)"
+                class="rounded-lg border border-gray-700 bg-[#121212] px-3 py-2 text-sm text-white">
+                <option value="all">Toutes les dates</option>
+                <option value="upcoming">Sessions à venir</option>
+                <option value="past">Sessions passées</option>
+              </select>
+            </div>
           </div>
 
           @if (!filteredRegistrations().length) {
@@ -305,6 +313,9 @@ interface SessionDraft {
                   <div>
                     <div class="flex items-center gap-2">
                       <span [class]="registrationStatusClass(registration.status)">{{ registrationStatusLabel(registration.status) }}</span>
+                      @if (needsFollowUp(registration)) {
+                        <span class="rounded-full bg-orange-500/10 px-2.5 py-1 text-[10px] font-bold text-orange-300">À relancer</span>
+                      }
                       <span class="text-xs text-gray-500">#{{ registration.id.slice(0, 8).toUpperCase() }}</span>
                     </div>
                     <h3 class="mt-3 font-serif text-lg font-bold text-white">{{ registration.fullName }}</h3>
@@ -355,6 +366,7 @@ export class AdminSchoolComponent {
   readonly editingProgramId = signal<string | null>(null);
   readonly editingSessionId = signal<string | null>(null);
   readonly registrationFilter = signal<'all' | SchoolRegistrationStatus>('all');
+  readonly registrationPeriod = signal<'all' | 'upcoming' | 'past'>('all');
 
   readonly levels: SchoolLevel[] = ['Débutant', 'Intermédiaire', 'Pro'];
   readonly tabs = [
@@ -374,7 +386,18 @@ export class AdminSchoolComponent {
   readonly pendingRegistrations = computed(() => this.registrations().filter(item => item.status === 'pending').length);
   readonly filteredRegistrations = computed(() => {
     const status = this.registrationFilter();
-    return status === 'all' ? this.registrations() : this.registrations().filter(item => item.status === status);
+    const period = this.registrationPeriod();
+    const now = Date.now();
+
+    return this.registrations().filter(item => {
+      if (status !== 'all' && item.status !== status) return false;
+      if (period === 'all') return true;
+
+      const session = this.sessions().find(value => value.id === item.sessionId);
+      if (!session) return false;
+      const isUpcoming = new Date(session.startsAt).getTime() >= now;
+      return period === 'upcoming' ? isUpcoming : !isUpcoming;
+    });
   });
 
   constructor() { void this.load(); }
@@ -646,6 +669,11 @@ export class AdminSchoolComponent {
     if (status === 'scheduled') return 'rounded-full bg-emerald-500/10 px-2.5 py-1 text-[10px] font-bold text-emerald-300';
     if (status === 'cancelled') return 'rounded-full bg-red-500/10 px-2.5 py-1 text-[10px] font-bold text-red-300';
     return 'rounded-full bg-gray-700 px-2.5 py-1 text-[10px] font-bold text-gray-300';
+  }
+
+  needsFollowUp(registration: SchoolRegistration): boolean {
+    if (registration.status !== 'pending' || !registration.createdAt) return false;
+    return Date.now() - new Date(registration.createdAt).getTime() >= 24 * 60 * 60 * 1000;
   }
 
   registrationStatusLabel(status: SchoolRegistrationStatus): string {
