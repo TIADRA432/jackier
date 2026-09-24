@@ -210,7 +210,7 @@ export const createReservation = async (req: Request, res: Response) => {
 export const updateReservationStatus = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const id = validateUuid(req.params.id);
-    if (!isRecord(req.body) || typeof req.body.status !== 'string' || !ALLOWED_STATUSES.has(req.body.status)) {
+    if (!isRecord(req.body) || typeof req.body.status !== 'string' || !ALLOWED_STATUSES.has(req.body.status as ReservationWorkflowStatus)) {
       return res.status(400).json({ error: 'Invalid reservation status' });
     }
     const { data: current, error: currentError } = await supabase
