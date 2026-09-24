@@ -5,6 +5,7 @@ import { environment } from '../../../environments/environment';
 
 export type ReservationStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed' | 'approved' | 'rejected';
 export type ReservationWorkflowStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed';
+export type CateringWorkflowStatus = 'pending' | 'contacted' | 'quoted' | 'confirmed' | 'completed' | 'cancelled';
 
 export interface AdminReservation {
   id: string;
@@ -59,7 +60,7 @@ export interface CateringEvent {
   guests?: number | string;
   budget?: string | number;
   message?: string;
-  status: ReservationStatus;
+  status: CateringWorkflowStatus;
 }
 
 export interface SchoolProgram {
@@ -272,7 +273,7 @@ export class AdminDataService {
     return firstValueFrom(this.http.get<CateringEvent[]>(`${this.apiUrl}/catering`));
   }
 
-  async updateCateringStatus(id: string, status: ReservationStatus): Promise<CateringEvent> {
+  async updateCateringStatus(id: string, status: CateringWorkflowStatus): Promise<CateringEvent> {
     return firstValueFrom(this.http.put<CateringEvent>(`${this.apiUrl}/catering/${id}`, { status }));
   }
 

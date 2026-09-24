@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { supabase } from '../config/supabase';
+import { AuthenticatedRequest } from '../middleware/auth.middleware';
 
 const MAX_NAME = 160;
 const MAX_EMAIL = 254;
@@ -8,7 +9,7 @@ const MAX_MESSAGE = 2_000;
 const MAX_BUDGET = 120;
 const MAX_GUESTS = 5_000;
 const ALLOWED_EVENT_TYPES = new Set(['mariage', 'corporate', 'anniversaire', 'prive', 'autre']);
-const ALLOWED_STATUSES = new Set(['pending', 'confirmed', 'cancelled', 'completed', 'approved', 'rejected']);
+const ALLOWED_STATUSES = new Set(['pending', 'contacted', 'quoted', 'confirmed', 'completed', 'cancelled']);
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 const format = (row: any) => ({
@@ -91,7 +92,7 @@ const ensureNoDuplicateCateringRequest = async (request: { date: string; email: 
   if (error) throw error;
 
   const duplicate = (data || []).some((row: any) => {
-    if (['cancelled', 'rejected'].includes(row.status)) return false;
+    if (row.status === 'cancelled') return false;
     const existing = row.data || {};
     return existing.date === request.date &&
       existing.eventType === request.eventType &&
@@ -128,7 +129,7 @@ export const createCateringEvent = async (req: Request, res: Response) => {
   }
 };
 
-export const updateCateringEvent = async (req: Request, res: Response) => {
+export const updateCateringEvent = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const id = validateUuid(req.params.id);
     if (!isRecord(req.body) || Object.keys(req.body).length !== 1 || typeof req.body.status !== 'string' || !ALLOWED_STATUSES.has(req.body.status)) {
@@ -142,6 +143,16 @@ export const updateCateringEvent = async (req: Request, res: Response) => {
       .select('*')
       .single();
     if (error) throw error;
+
+    const reference = id.split('-')[0]?.toUpperCase() || id;
+    const { error: logError } = await supabase.from('logs').insert({
+      action: 'UPDATE_CATERING_STATUS',
+      details: `Catering request #${reference} changed to ${req.body.status}`,
+      user_id: req.user?.id || 'system',
+      timestamp: new Date().toISOString()
+    });
+    if (logError) console.warn('Unable to write catering status log:', logError.message);
+
     res.json(format(data));
   } catch (error) {
     return validationResponse(error, 'Failed to update catering event', res);

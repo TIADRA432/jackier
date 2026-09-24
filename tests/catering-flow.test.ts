@@ -53,3 +53,44 @@ test('catering admin exposes request contacts and short reference', async () => 
   assert.match(admin, /tel:/);
   assert.match(admin, /shortReference/);
 });
+
+
+test('catering workflow uses dedicated operational statuses', async () => {
+  const model = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+  const controller = await source('src', 'controllers', 'catering.controller.ts');
+  const admin = await source('src', 'app', 'pages', 'admin', 'traiteur', 'traiteur.component.ts');
+
+  assert.match(model, /CateringWorkflowStatus = 'pending' \| 'contacted' \| 'quoted' \| 'confirmed' \| 'completed' \| 'cancelled'/);
+  assert.match(controller, /ALLOWED_STATUSES = new Set\(\['pending', 'contacted', 'quoted', 'confirmed', 'completed', 'cancelled'\]\)/);
+  assert.match(admin, /Devis envoyé/);
+  assert.match(admin, /Contacté/);
+  assert.doesNotMatch(admin, /Approuvé/);
+  assert.doesNotMatch(admin, /Refusé/);
+});
+
+test('catering status changes are auditable', async () => {
+  const controller = await source('src', 'controllers', 'catering.controller.ts');
+
+  assert.match(controller, /UPDATE_CATERING_STATUS/);
+  assert.match(controller, /Catering request #/);
+  assert.match(controller, /req\.user\?\.id \|\| 'system'/);
+});
+
+test('catering admin exposes honest manual client communication', async () => {
+  const admin = await source('src', 'app', 'pages', 'admin', 'traiteur', 'traiteur.component.ts');
+
+  assert.match(admin, /Aucune notification automatique n’est envoyée/);
+  assert.match(admin, /whatsappHref\(event\)/);
+  assert.match(admin, /emailHref\(event\)/);
+  assert.match(admin, /copyCustomerMessage\(event\)/);
+  assert.match(admin, /navigator\.clipboard\.writeText/);
+  assert.match(admin, /wa\.me/);
+});
+
+test('catering admin flags stale pending requests', async () => {
+  const admin = await source('src', 'app', 'pages', 'admin', 'traiteur', 'traiteur.component.ts');
+
+  assert.match(admin, /isPastPending\(event\)/);
+  assert.match(admin, /Date dépassée alors que la demande est toujours en attente/);
+  assert.match(admin, /Africa\/Conakry/);
+});
