@@ -28,7 +28,6 @@ export class RevealOnScrollDirective implements AfterViewInit, OnDestroy {
     }
 
     const delay = Math.max(0, Math.min(Number(this.revealDelay) || 0, 1200));
-    this.renderer.setStyle(node, 'transition-delay', `${delay}ms`);
 
     if (this.revealVariant === 'mask-left') {
       this.renderer.setStyle(node, 'clip-path', 'inset(0 100% 0 0 round 1.5rem)');
@@ -43,6 +42,10 @@ export class RevealOnScrollDirective implements AfterViewInit, OnDestroy {
       this.renderer.setStyle(node, 'transform', 'translateY(24px)');
       this.renderer.setStyle(node, 'transition', 'opacity 650ms ease, transform 650ms ease');
     }
+
+    // Apply delay after the transition shorthand: setting `transition` afterwards
+    // would otherwise reset `transition-delay` to 0s in CSS.
+    this.renderer.setStyle(node, 'transition-delay', `${delay}ms`);
 
     this.observer = new IntersectionObserver(entries => {
       if (entries.some(entry => entry.isIntersecting)) {
