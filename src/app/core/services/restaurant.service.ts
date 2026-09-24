@@ -1,6 +1,6 @@
 
 import { Injectable, signal, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { Dish, TeamMember, SchoolProgram, SchoolSession, SchoolRegistrationReceipt, Wine, GalleryImage } from '../models';
 import { environment } from '../../../environments/environment';
@@ -226,7 +226,41 @@ export class RestaurantService {
   }
 
   /** Soumet une demande de devis traiteur/événement vers /api/catering (endpoint public). */
-  async submitCateringRequest(payload: Record<string, unknown>): Promise<{ id: string; status: string; createdAt?: string }> {
-    return firstValueFrom(this.http.post<{ id: string; status: string; createdAt?: string }>(`${this.apiUrl}/catering`, payload));
+  async submitCateringRequest(payload: Record<string, unknown>): Promise<{ id: string; status: 'pending'; createdAt?: string }> {
+    try {
+      return await firstValueFrom(this.http.post<{ id: string; status: 'pending'; createdAt?: string }>(`${this.apiUrl}/catering`, payload));
+    } catch (error) {
+      throw new Error(this.describeCateringError(error));
+    }
+  }
+
+  private describeCateringError(error: unknown): string {
+    if (!(error instanceof HttpErrorResponse)) {
+      return 'Une erreur inattendue est survenue. Merci de réessayer.';
+    }
+    if (error.status === 0) {
+      return 'Impossible de contacter le serveur. Vérifiez votre connexion internet et réessayez.';
+    }
+    if (error.status === 429) {
+      return 'Trop de tentatives en peu de temps. Merci de patienter quelques minutes avant de réessayer.';
+    }
+    if (error.status === 400) {
+      const raw = (error.error && typeof error.error === 'object' && 'error' in error.error)
+        ? String((error.error as { error?: unknown }).error).toLowerCase()
+        : '';
+      if (raw.includes('duplicate request')) return 'Une demande similaire existe déjà pour cette date et ce type d’événement.';
+      if (raw.includes('catering phone')) return 'Le numéro de téléphone n’est pas valide. Exemple : +224 625 67 53 63.';
+      if (raw.includes('catering email')) return 'L’adresse e-mail n’est pas valide.';
+      if (raw.includes('catering date')) return 'La date de l’événement n’est pas valide. Choisissez une date à partir d’aujourd’hui.';
+      if (raw.includes('catering guests')) return 'Le nombre d’invités doit être compris entre 1 et 5 000.';
+      if (raw.includes('event type')) return 'Sélectionnez un type d’événement valide.';
+      if (raw.includes('catering name')) return 'Le nom complet est obligatoire.';
+      if (raw.includes('catering message')) return 'Ajoutez quelques détails sur votre événement.';
+      return 'Certaines informations du formulaire sont invalides. Merci de les vérifier.';
+    }
+    if (error.status >= 500) {
+      return 'Le serveur a rencontré un problème. Merci de réessayer dans un instant, ou contactez-nous directement.';
+    }
+    return `Impossible d’envoyer la demande de devis (code ${error.status}). Merci de réessayer.`;
   }
 }
