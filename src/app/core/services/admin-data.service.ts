@@ -4,6 +4,7 @@ import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
 export type ReservationStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed' | 'approved' | 'rejected';
+export type ReservationWorkflowStatus = 'pending' | 'confirmed' | 'cancelled' | 'completed';
 
 export interface AdminReservation {
   id: string;
@@ -14,7 +15,7 @@ export interface AdminReservation {
   time: string;
   guests: number;
   notes?: string;
-  status: ReservationStatus;
+  status: ReservationWorkflowStatus;
   createdAt?: string;
 }
 
@@ -450,7 +451,7 @@ export class AdminDataService {
     await firstValueFrom(this.http.delete(`${this.apiUrl}/team/${id}`));
   }
 
-  async updateReservationStatus(id: string, status: ReservationStatus): Promise<AdminReservation> {
+  async updateReservationStatus(id: string, status: ReservationWorkflowStatus): Promise<AdminReservation> {
     return firstValueFrom(this.http.put<AdminReservation>(`${this.apiUrl}/reservations/${id}/status`, { status }));
   }
 }
