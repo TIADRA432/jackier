@@ -949,7 +949,7 @@
       "file_type": "code",
       "norm_label": "seoservice",
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L14"
+      "source_location": "L15"
     },
     {
       "id": "src_app_pages_admin_dashboard_dashboard_component_dashboardcomponent",
@@ -6522,7 +6522,7 @@
       "file_type": "code",
       "norm_label": ".absoluteurl()",
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L62"
+      "source_location": "L70"
     },
     {
       "id": "src_app_core_services_seo_service_seoservice_apply",
@@ -6533,7 +6533,7 @@
       "file_type": "code",
       "norm_label": ".apply()",
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L32"
+      "source_location": "L33"
     },
     {
       "id": "src_app_core_services_seo_service_seoservice_cleanpath",
@@ -6544,7 +6544,7 @@
       "file_type": "code",
       "norm_label": ".cleanpath()",
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L57"
+      "source_location": "L65"
     },
     {
       "id": "src_app_core_services_seo_service_seoservice_constructor",
@@ -6555,7 +6555,7 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L22"
+      "source_location": "L23"
     },
     {
       "id": "src_app_core_services_seo_service_seoservice_setcanonical",
@@ -6566,7 +6566,7 @@
       "file_type": "code",
       "norm_label": ".setcanonical()",
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L67"
+      "source_location": "L75"
     },
     {
       "id": "src_app_core_services_seo_service_seoservice_updaterestaurantstructureddata",
@@ -6577,7 +6577,7 @@
       "file_type": "code",
       "norm_label": ".updaterestaurantstructureddata()",
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L77"
+      "source_location": "L85"
     },
     {
       "id": "src_app_pages_admin_dashboard_dashboard_component_dashboardcomponent_chartheight",
@@ -13352,7 +13352,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L33",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -13364,7 +13364,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L47",
+      "source_location": "L50",
       "weight": 1.0
     },
     {
@@ -13376,7 +13376,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L54",
+      "source_location": "L62",
       "weight": 1.0
     },
     {
@@ -13388,7 +13388,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L28",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -13400,7 +13400,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L117",
+      "source_location": "L125",
       "weight": 1.0
     },
     {
@@ -18956,7 +18956,7 @@
       "confidence_score": 1.0,
       "context": "decorator",
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L13",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -31553,7 +31553,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L14",
+      "source_location": "L15",
       "weight": 1.0
     },
     {
@@ -36661,7 +36661,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L22",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -36672,7 +36672,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L32",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -36683,7 +36683,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L57",
+      "source_location": "L65",
       "weight": 1.0
     },
     {
@@ -36694,7 +36694,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L62",
+      "source_location": "L70",
       "weight": 1.0
     },
     {
@@ -36705,7 +36705,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L67",
+      "source_location": "L75",
       "weight": 1.0
     },
     {
@@ -36716,7 +36716,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/app/core/services/seo.service.ts",
-      "source_location": "L77",
+      "source_location": "L85",
       "weight": 1.0
     },
     {
@@ -40793,5 +40793,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "d4984792403221dae55548d554041e6c680163a3"
+  "built_at_commit": "acc79b1ef5f5f710634b22163064070e002f08cb"
 }
