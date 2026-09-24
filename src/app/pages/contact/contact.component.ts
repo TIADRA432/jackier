@@ -50,7 +50,8 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
           </div>
 
           <div class="lg:w-2/3 h-[600px] lg:h-auto bg-gray-200 rounded-3xl overflow-hidden shadow-2xl relative border border-gray-100">
-            <iframe width="100%" height="100%" frameborder="0" scrolling="no"
+            <iframe width="100%" height="100%" frameborder="0" scrolling="no" loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
               [src]="mapUrl()" title="Localisation du restaurant"
               class="absolute inset-0 w-full h-full grayscale contrast-125 opacity-90 hover:grayscale-0 hover:opacity-100 transition-all duration-700">
             </iframe>

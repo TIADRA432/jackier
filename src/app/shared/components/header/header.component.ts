@@ -1,6 +1,7 @@
 
-import { Component, signal, ChangeDetectionStrategy, HostListener, inject } from '@angular/core';
+import { Component, signal, ChangeDetectionStrategy, ElementRef, HostListener, OnDestroy, inject, viewChild } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { DOCUMENT } from '@angular/common';
 import { SiteSettingsService } from '../../../core/services/site-settings.service';
 
 @Component({
@@ -41,8 +42,9 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
         </nav>
 
         <!-- Mobile Menu Button -->
-        <button class="lg:hidden focus:outline-none p-2 -mr-2" (click)="toggleMobileMenu()"
-                aria-label="Ouvrir le menu" [attr.aria-expanded]="isMobileMenuOpen()" aria-controls="mobile-nav-panel">
+        <button class="lg:hidden rounded-lg p-2 -mr-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacquier-gold focus-visible:ring-offset-2" (click)="toggleMobileMenu()"
+                [attr.aria-label]="isMobileMenuOpen() ? 'Fermer le menu' : 'Ouvrir le menu'"
+                [attr.aria-expanded]="isMobileMenuOpen()" aria-controls="mobile-nav-panel">
           <div class="w-6 h-5 relative flex flex-col justify-between" aria-hidden="true">
             <span class="w-full h-[2px] rounded-full transition-all duration-300"
                   [class.bg-white]="!isScrolled() && !isMobileMenuOpen()"
@@ -72,13 +74,16 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
       </div>
 
       <!-- Mobile Nav Panel -->
-      <nav id="mobile-nav-panel" aria-label="Navigation mobile" class="fixed top-0 right-0 h-full w-full bg-jacquier-cream z-50 transform transition-transform duration-700 ease-[cubic-bezier(.22,.61,.36,1)] lg:hidden flex flex-col shadow-2xl"
+      <nav id="mobile-nav-panel" aria-label="Navigation mobile"
+           [attr.aria-hidden]="!isMobileMenuOpen()"
+           [attr.inert]="isMobileMenuOpen() ? null : ''"
+           class="fixed top-0 right-0 h-full w-full bg-jacquier-cream z-50 transform transition-transform duration-700 ease-[cubic-bezier(.22,.61,.36,1)] lg:hidden flex flex-col shadow-2xl"
            [class.translate-x-0]="isMobileMenuOpen()"
            [class.translate-x-full]="!isMobileMenuOpen()">
         
         <div class="p-6 flex justify-between items-center border-b border-gray-100">
           <span class="text-xl font-serif font-bold text-jacquier-primary uppercase tracking-widest">Menu</span>
-          <button class="p-2 -mr-2 text-gray-500 hover:text-jacquier-primary transition-colors" (click)="closeMobileMenu()" aria-label="Fermer le menu">
+          <button #mobileCloseButton class="rounded-lg p-2 -mr-2 text-gray-500 hover:text-jacquier-primary transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacquier-gold" (click)="closeMobileMenu()" aria-label="Fermer le menu">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
           </button>
         </div>
@@ -106,8 +111,11 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
     </header>
   `
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnDestroy {
   readonly siteSettings = inject(SiteSettingsService);
+  private readonly document = inject(DOCUMENT);
+  private readonly mobileCloseButton = viewChild<ElementRef<HTMLButtonElement>>('mobileCloseButton');
+  private previousFocus: HTMLElement | null = null;
   isScrolled = signal(false);
   isMobileMenuOpen = signal(false);
 
@@ -127,10 +135,51 @@ export class HeaderComponent {
   }
 
   toggleMobileMenu() {
-    this.isMobileMenuOpen.update(v => !v);
+    if (this.isMobileMenuOpen()) this.closeMobileMenu();
+    else this.openMobileMenu();
+  }
+
+  openMobileMenu() {
+    this.previousFocus = this.document.activeElement instanceof HTMLElement ? this.document.activeElement : null;
+    this.isMobileMenuOpen.set(true);
+    this.document.body.style.overflow = 'hidden';
+    queueMicrotask(() => this.mobileCloseButton()?.nativeElement.focus());
   }
 
   closeMobileMenu() {
+    if (!this.isMobileMenuOpen()) return;
     this.isMobileMenuOpen.set(false);
+    this.document.body.style.overflow = '';
+    queueMicrotask(() => this.previousFocus?.focus());
+  }
+
+  @HostListener('document:keydown.escape')
+  onEscape(): void {
+    if (this.isMobileMenuOpen()) this.closeMobileMenu();
+  }
+
+  @HostListener('document:keydown.tab', ['$event'])
+  trapMobileFocus(event: KeyboardEvent): void {
+    if (!this.isMobileMenuOpen()) return;
+    const panel = this.document.getElementById('mobile-nav-panel');
+    if (!panel) return;
+    const focusable = Array.from(panel.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    )).filter(element => !element.hasAttribute('disabled'));
+    if (!focusable.length) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && this.document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && this.document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.document.body.style.overflow = '';
   }
 }

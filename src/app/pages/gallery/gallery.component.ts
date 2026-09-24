@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, HostListener, computed, inject, signal } from '@angular/core';
-import { NgOptimizedImage } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, OnDestroy, computed, inject, signal, viewChild } from '@angular/core';
+import { DOCUMENT, NgOptimizedImage } from '@angular/common';
 import { RestaurantService } from '../../core/services/restaurant.service';
 import { SiteSettingsService } from '../../core/services/site-settings.service';
 import type { GalleryImage } from '../../core/models';
@@ -102,11 +102,12 @@ const CATEGORY_LABELS: Record<string, string> = {
     </section>
 
     @if (selectedImage(); as selected) {
-      <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-3 md:p-8"
-        role="dialog" aria-modal="true" [attr.aria-label]="'Aperçu de ' + (selected.title || 'la photo')"
+      <div #lightboxDialog class="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-3 md:p-8"
+        role="dialog" aria-modal="true" tabindex="-1"
+        [attr.aria-label]="'Aperçu de ' + (selected.title || 'la photo')"
         (click)="closeLightbox()">
         <div class="relative flex h-full w-full max-w-7xl flex-col items-center justify-center" (click)="$event.stopPropagation()">
-          <button type="button" (click)="closeLightbox()" aria-label="Fermer l’aperçu"
+          <button #lightboxCloseButton type="button" (click)="closeLightbox()" aria-label="Fermer l’aperçu"
             class="absolute right-0 top-0 z-20 rounded-full border border-white/30 bg-black/50 px-4 py-2 text-sm font-bold text-white hover:bg-white hover:text-black">
             Fermer
           </button>
@@ -136,8 +137,12 @@ const CATEGORY_LABELS: Record<string, string> = {
     @media (prefers-reduced-motion: reduce) { .gallery-lightbox-image { animation: none; } }
   `]
 })
-export class GalleryComponent {
+export class GalleryComponent implements OnDestroy {
   private readonly restaurantService = inject(RestaurantService);
+  private readonly document = inject(DOCUMENT);
+  private readonly lightboxDialog = viewChild<ElementRef<HTMLElement>>('lightboxDialog');
+  private readonly lightboxCloseButton = viewChild<ElementRef<HTMLButtonElement>>('lightboxCloseButton');
+  private previousFocus: HTMLElement | null = null;
   readonly siteSettings = inject(SiteSettingsService);
 
   readonly images = this.restaurantService.getGalleryImages();
@@ -184,11 +189,17 @@ export class GalleryComponent {
   }
 
   openLightbox(image: GalleryImage): void {
+    this.previousFocus = this.document.activeElement instanceof HTMLElement ? this.document.activeElement : null;
     this.selectedImage.set(image);
+    this.document.body.style.overflow = 'hidden';
+    queueMicrotask(() => this.lightboxCloseButton()?.nativeElement.focus());
   }
 
   closeLightbox(): void {
+    if (!this.selectedImage()) return;
     this.selectedImage.set(null);
+    this.document.body.style.overflow = '';
+    queueMicrotask(() => this.previousFocus?.focus());
   }
 
   nextImage(): void {
@@ -210,9 +221,36 @@ export class GalleryComponent {
   @HostListener('document:keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {
     if (!this.selectedImage()) return;
-    if (event.key === 'Escape') this.closeLightbox();
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      this.closeLightbox();
+      return;
+    }
     if (event.key === 'ArrowRight') this.nextImage();
     if (event.key === 'ArrowLeft') this.previousImage();
+    if (event.key === 'Tab') this.trapLightboxFocus(event);
+  }
+
+  private trapLightboxFocus(event: KeyboardEvent): void {
+    const root = this.lightboxDialog()?.nativeElement;
+    if (!root) return;
+    const focusable = Array.from(root.querySelectorAll<HTMLElement>(
+      'button:not([disabled]), a[href], [tabindex]:not([tabindex="-1"])'
+    ));
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && this.document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && this.document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.document.body.style.overflow = '';
   }
 
   retry(): void {
