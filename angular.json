@@ -24,6 +24,9 @@
                 "input": "public",
                 "output": "/"
               }
+            ],
+            "styles": [
+              "src/styles.css"
             ]
           },
           "configurations": {

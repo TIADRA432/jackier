@@ -240,7 +240,7 @@ const TODAY_CTA_OPTIONS: Array<{ path: TodaySettings['ctaPath']; label: string }
 
                 <label class="text-sm text-gray-300 md:col-span-2">Titre
                   <input [ngModel]="settings.today?.title" (ngModelChange)="patchToday('title', $event)"
-                    name="today-title" maxlength="140" placeholder="Ce soir : dîner autour des saveurs de Guinée"
+                    name="today-title" minlength="3" maxlength="140" placeholder="Ce soir : dîner autour des saveurs de Guinée"
                     class="mt-2 w-full rounded-xl bg-gray-900 px-4 py-3 text-white" />
                 </label>
 
@@ -367,6 +367,10 @@ const TODAY_CTA_OPTIONS: Array<{ path: TodaySettings['ctaPath']; label: string }
                 class="rounded-xl border border-gray-700 px-4 py-3 text-xs font-bold text-gray-300 hover:border-jacquier-gold hover:text-jacquier-gold">
                 Copier lundi sur toute la semaine
               </button>
+              <button type="button" (click)="syncOpeningHoursFromSchedule()"
+                class="rounded-xl border border-gray-700 px-4 py-3 text-xs font-bold text-gray-300 hover:border-jacquier-gold hover:text-jacquier-gold">
+                Synchroniser le texte public
+              </button>
               <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-gray-700 bg-black/20 px-4 py-3 text-sm text-gray-300">
                 <input type="checkbox" [ngModel]="settings.weeklyHours?.enabled" (ngModelChange)="patchWeeklyEnabled($event)"
                   name="weekly-hours-enabled" class="h-4 w-4 accent-yellow-500" />
@@ -405,6 +409,9 @@ const TODAY_CTA_OPTIONS: Array<{ path: TodaySettings['ctaPath']; label: string }
             <div class="rounded-xl border border-gray-800 bg-black/20 p-4">
               <p class="text-xs uppercase tracking-wider text-gray-500">Texte public</p>
               <p class="mt-2 text-sm font-bold text-white">{{ settings.openingHours || 'Horaires non renseignés' }}</p>
+              @if (settings.weeklyHours?.enabled) {
+                <p class="mt-2 text-xs text-gray-500">Résumé calculé : {{ scheduleSummary() }}</p>
+              }
             </div>
             <div class="rounded-xl border border-gray-800 bg-black/20 p-4">
               <p class="text-xs uppercase tracking-wider text-gray-500">Comportement</p>
@@ -718,7 +725,8 @@ export class AdminSettingsComponent {
     }
 
     if (this.settings.today?.enabled) {
-      if (!this.settings.today.title?.trim()) issues.push('“Aujourd’hui au Jacquier” : ajoutez un titre avant publication.');
+      const todayTitle = this.settings.today.title?.trim() ?? '';
+      if (todayTitle.length < 3) issues.push('“Aujourd’hui au Jacquier” : utilisez un titre d’au moins 3 caractères avant publication.');
       if (!this.settings.today.ctaLabel?.trim()) issues.push('“Aujourd’hui au Jacquier” : ajoutez le libellé du bouton.');
       const featuredId = this.settings.today.featuredDishId?.trim();
       if (featuredId && !this.menuItems().some(item => item.id === featuredId && item.active !== false)) {
@@ -755,6 +763,34 @@ export class AdminSettingsComponent {
       }
     };
     this.markDirty();
+  }
+
+  scheduleSummary(): string {
+    const weekly = this.ensureWeeklyHours();
+    const labels: Record<WeekdayKey, string> = {
+      monday: 'Lun.',
+      tuesday: 'Mar.',
+      wednesday: 'Mer.',
+      thursday: 'Jeu.',
+      friday: 'Ven.',
+      saturday: 'Sam.',
+      sunday: 'Dim.'
+    };
+
+    return WEEKDAYS
+      .map(({ key }) => {
+        const day = weekly.days[key];
+        return day.closed
+          ? `${labels[key]} fermé`
+          : `${labels[key]} ${day.open}–${day.close}`;
+      })
+      .join(' · ');
+  }
+
+  syncOpeningHoursFromSchedule(): void {
+    this.settings = { ...this.settings, openingHours: this.scheduleSummary() };
+    this.markDirty();
+    this.successMessage.set('Le résumé public des horaires a été synchronisé avec le planning détaillé.');
   }
 
   patchDay<K extends keyof OpeningDay>(day: WeekdayKey, key: K, value: OpeningDay[K]): void {

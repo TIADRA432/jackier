@@ -107,6 +107,12 @@ const validateToday = (value: unknown) => {
   if (ctaPath && !TODAY_CTA_PATHS.has(ctaPath)) {
     throw new CatalogValidationError('Invalid today.ctaPath');
   }
+  if (source.enabled && title.length < 3) {
+    throw new CatalogValidationError('Invalid today.title');
+  }
+  if (source.enabled && !ctaLabel) {
+    throw new CatalogValidationError('Invalid today.ctaLabel');
+  }
 
   let featuredDishId: string | undefined;
   if (source.featuredDishId !== undefined && source.featuredDishId !== '') {
