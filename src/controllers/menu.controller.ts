@@ -33,6 +33,12 @@ const optionalNullableText = (value: unknown, field: string, maxLength: number):
   return requiredText(value, field, maxLength);
 };
 
+const optionalUuid = (value: unknown, field: string): string | undefined => {
+  const id = optionalText(value, field, 64);
+  if (id !== undefined && !UUID_PATTERN.test(id)) throw new ValidationError(`Invalid ${field}`);
+  return id;
+};
+
 const optionalBoolean = (value: unknown, field: string): boolean | undefined => {
   if (value === undefined) return undefined;
   if (typeof value !== 'boolean') throw new ValidationError(`Invalid ${field}`);
@@ -84,7 +90,7 @@ export const validateMenuPayload = (body: unknown, partial: boolean): MenuPayloa
   const result: MenuPayload = {};
   const name = partial ? optionalText(body.name, 'name', 120) : requiredText(body.name, 'name', 120);
   const category = partial ? optionalText(body.category, 'category', 80) : requiredText(body.category, 'category', 80);
-  const categoryId = optionalText(body.categoryId, 'category id', 64);
+  const categoryId = optionalUuid(body.categoryId, 'category id');
   const price = optionalPrice(body.price);
 
   if (!partial && price === undefined) throw new ValidationError('price is required');
@@ -128,6 +134,13 @@ const respond = (error: unknown, res: Response, fallback: string): Response =>
 const sortMenuItems = (items: Record<string, unknown>[]) =>
   items.sort((a, b) => Number(a.displayOrder ?? 0) - Number(b.displayOrder ?? 0));
 
+const ensureCategoryExists = async (categoryId: string): Promise<void> => {
+  const categories = await getCollection('menuCategories');
+  if (!categories.some((category: any) => category.id === categoryId)) {
+    throw new ValidationError('Unknown category id');
+  }
+};
+
 /** Public catalogue: a missing legacy value stays visible; only active === false hides a dish. */
 export const getPublicMenuItems = async (_req: Request, res: Response, next: NextFunction) => {
   try {
@@ -151,6 +164,7 @@ export const createMenuItem = async (req: Request, res: Response) => {
   try {
     const payload = validateMenuPayload(req.body, false);
     if (!payload.categoryId) throw new ValidationError('category id is required');
+    await ensureCategoryExists(String(payload.categoryId));
     res.status(201).json(await addDoc('menuItems', { ...toMenuRow(payload), active: payload.active ?? true }));
   } catch (error) {
     return respond(error, res, 'Failed to create menu item');
@@ -161,6 +175,7 @@ export const updateMenuItem = async (req: Request, res: Response) => {
   try {
     const id = validateId(req.params.id);
     const payload = validateMenuPayload(req.body, true);
+    if (payload.categoryId !== undefined) await ensureCategoryExists(String(payload.categoryId));
     res.json(await updateDoc('menuItems', id, toMenuRow(payload)));
   } catch (error) {
     return respond(error, res, 'Failed to update menu item');

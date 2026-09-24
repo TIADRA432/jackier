@@ -1,8 +1,9 @@
 
 import { Component, signal, ChangeDetectionStrategy, ElementRef, HostListener, OnDestroy, inject, viewChild } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { DOCUMENT } from '@angular/common';
 import { SiteSettingsService } from '../../../core/services/site-settings.service';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-header',
@@ -12,9 +13,9 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
   template: `
     <header
       [class]="isScrolled() || isMobileMenuOpen()
-        ? 'fixed w-full z-50 border-b border-white/40 bg-white/90 py-2 shadow-[0_10px_35px_rgba(0,0,0,0.08)] backdrop-blur-xl transition-all duration-700'
-        : 'fixed w-full z-50 border-b border-transparent bg-transparent py-6 transition-all duration-700'">
-      <div class="max-w-7xl mx-auto px-6 flex justify-between items-center">
+        ? 'fixed inset-x-0 top-0 z-[80] border-b border-white/40 bg-white/90 py-2 shadow-[0_10px_35px_rgba(0,0,0,0.08)] backdrop-blur-xl transition-all duration-700'
+        : 'fixed inset-x-0 top-0 z-[80] border-b border-transparent bg-transparent py-6 transition-all duration-700'">
+      <div class="relative z-[90] max-w-7xl mx-auto px-4 sm:px-6 flex justify-between items-center">
         <!-- Logo -->
         <a routerLink="/" class="inline-flex h-11 items-center transition-all duration-500"
            [class.text-jacquier-gold]="!isScrolled() && !isMobileMenuOpen()"
@@ -42,7 +43,7 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
         </nav>
 
         <!-- Mobile Menu Button -->
-        <button class="xl:hidden rounded-lg p-2 -mr-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacquier-gold focus-visible:ring-offset-2" (click)="toggleMobileMenu()"
+        <button class="xl:hidden relative z-[95] rounded-lg p-3 -mr-2 bg-black/20 backdrop-blur-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacquier-gold focus-visible:ring-offset-2" (click)="toggleMobileMenu()"
                 [attr.aria-label]="isMobileMenuOpen() ? 'Fermer le menu' : 'Ouvrir le menu'"
                 [attr.aria-expanded]="isMobileMenuOpen()" aria-controls="mobile-nav-panel">
           <div class="w-6 h-5 relative flex flex-col justify-between" aria-hidden="true">
@@ -65,7 +66,7 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
       </div>
 
       <!-- Mobile Nav Overlay -->
-      <div class="fixed inset-0 bg-jacquier-dark/50 backdrop-blur-sm z-40 transition-opacity duration-300 xl:hidden"
+      <div class="fixed inset-0 bg-jacquier-dark/50 backdrop-blur-sm z-[80] transition-opacity duration-300 xl:hidden"
            [class.opacity-100]="isMobileMenuOpen()"
            [class.opacity-0]="!isMobileMenuOpen()"
            [class.pointer-events-auto]="isMobileMenuOpen()"
@@ -77,7 +78,7 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
       <nav id="mobile-nav-panel" aria-label="Navigation mobile"
            [attr.aria-hidden]="!isMobileMenuOpen()"
            [attr.inert]="isMobileMenuOpen() ? null : ''"
-           class="fixed top-0 right-0 h-full w-full bg-jacquier-cream z-50 transform transition-transform duration-700 ease-[cubic-bezier(.22,.61,.36,1)] xl:hidden flex flex-col shadow-2xl"
+           class="fixed inset-y-0 right-0 z-[90] flex h-[100dvh] w-full max-w-md flex-col bg-jacquier-cream shadow-2xl transform transition-transform duration-500 ease-[cubic-bezier(.22,.61,.36,1)] xl:hidden"
            [class.translate-x-0]="isMobileMenuOpen()"
            [class.translate-x-full]="!isMobileMenuOpen()">
         
@@ -88,19 +89,19 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
           </button>
         </div>
 
-        <div class="flex-1 overflow-y-auto px-8 py-10 flex flex-col justify-center space-y-7">
+        <div class="flex-1 min-h-0 overflow-y-auto overscroll-contain px-6 py-6 sm:px-8 sm:py-8 flex flex-col space-y-2">
           @for (link of navLinks; track link.path) {
             <a [routerLink]="link.path" 
                (click)="closeMobileMenu()"
                routerLinkActive="text-jacquier-gold font-bold pl-4 border-l-2 border-jacquier-gold"
                [routerLinkActiveOptions]="{exact: link.exact}"
-               class="text-jacquier-dark text-3xl font-serif tracking-wide transition-all duration-500 hover:text-jacquier-gold hover:translate-x-2">
+               class="block rounded-xl px-3 py-3 text-jacquier-dark text-2xl sm:text-3xl font-serif tracking-wide transition-all duration-300 hover:bg-white hover:text-jacquier-gold">
               {{ link.label }}
             </a>
           }
         </div>
 
-        <div class="p-6 border-t border-gray-100 bg-gray-50">
+        <div class="shrink-0 p-4 sm:p-6 border-t border-gray-100 bg-gray-50">
           <a routerLink="/reservation" 
              (click)="closeMobileMenu()"
              class="block w-full bg-jacquier-primary text-white text-center py-4 rounded-xl font-bold uppercase tracking-widest hover:bg-jacquier-burgundy transition-colors shadow-md">
@@ -114,10 +115,19 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
 export class HeaderComponent implements OnDestroy {
   readonly siteSettings = inject(SiteSettingsService);
   private readonly document = inject(DOCUMENT);
+  private readonly router = inject(Router);
   private readonly mobileCloseButton = viewChild<ElementRef<HTMLButtonElement>>('mobileCloseButton');
   private previousFocus: HTMLElement | null = null;
   isScrolled = signal(false);
   isMobileMenuOpen = signal(false);
+
+  constructor() {
+    this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe(() => {
+      // A route change must never leave the page locked or the mobile drawer layered over content.
+      this.isMobileMenuOpen.set(false);
+      this.document.body.style.overflow = '';
+    });
+  }
 
   navLinks = [
     { path: '/', label: 'Accueil', exact: true },

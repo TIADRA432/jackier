@@ -42,7 +42,16 @@ jobs:
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Build the code-only knowledge graph
-        run: graphify extract . --code-only
+        run: |
+          # A zero-byte/corrupt graph cannot be used for Graphify's incremental merge.
+          # Remove it so Graphify performs a clean rebuild instead of failing the workflow.
+          if test -f graphify-out/graph.json && ! python -c "import json; json.load(open('graphify-out/graph.json', encoding='utf-8'))" 2>/dev/null; then
+            echo "Existing graph.json is invalid; forcing a clean Graphify rebuild."
+            rm -f graphify-out/graph.json
+          fi
+          graphify extract . --code-only
+          # Refresh community names and GRAPH_REPORT.md from the newly extracted graph.
+          graphify cluster-only .
 
       - name: Commit updated graph artefacts
         run: |
@@ -56,7 +65,21 @@ jobs:
             exit 0
           fi
 
+          remote_head="$(git ls-remote origin "refs/heads/${{ github.ref_name }}" | cut -f1)"
+          if test "$remote_head" != "$GITHUB_SHA"; then
+            echo "Branch advanced from $GITHUB_SHA to $remote_head; a newer Graphify run will publish the graph."
+            exit 0
+          fi
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "chore(graphify): update knowledge graph [skip ci]"
-          git push origin "HEAD:${{ github.ref_name }}"
+
+          if ! git push origin "HEAD:${{ github.ref_name }}"; then
+            remote_head="$(git ls-remote origin "refs/heads/${{ github.ref_name }}" | cut -f1)"
+            if test "$remote_head" != "$GITHUB_SHA"; then
+              echo "Branch advanced during Graphify publish; leaving publication to the newer workflow run."
+              exit 0
+            fi
+            exit 1
+          fi

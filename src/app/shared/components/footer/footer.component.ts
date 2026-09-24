@@ -63,17 +63,27 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
         <div class="lg:col-span-1">
           <h4 class="text-sm font-bold text-white mb-6 uppercase tracking-widest">Contact</h4>
           <ul class="space-y-4 text-sm font-light">
-            <li class="leading-relaxed">{{ info().address }}</li>
-            <li><a [href]="phoneHref()" class="hover:text-jacquier-gold transition-colors">{{ info().phone }}</a></li>
-            <li><a [href]="'mailto:' + info().email" class="hover:text-jacquier-gold transition-colors">{{ info().email }}</a></li>
+            @if (info().address) {
+              <li class="leading-relaxed">{{ info().address }}</li>
+            }
+            @if (info().phone) {
+              <li><a [href]="phoneHref()" class="hover:text-jacquier-gold transition-colors">{{ info().phone }}</a></li>
+            }
+            @if (info().email) {
+              <li><a [href]="'mailto:' + info().email" class="hover:text-jacquier-gold transition-colors">{{ info().email }}</a></li>
+            }
           </ul>
         </div>
 
         <div class="lg:col-span-1">
           <h4 class="text-sm font-bold text-white mb-6 uppercase tracking-widest">Horaires</h4>
           <div class="bg-gray-800/30 border border-gray-700/50 p-6 rounded-2xl backdrop-blur-sm">
-            <p class="text-jacquier-gold font-bold mb-2 tracking-wide uppercase text-xs">{{ info().neighborhood }}</p>
-            <p class="text-white text-xl font-serif leading-relaxed">{{ info().openingHours }}</p>
+            @if (info().neighborhood) {
+              <p class="text-jacquier-gold font-bold mb-2 tracking-wide uppercase text-xs">{{ info().neighborhood }}</p>
+            }
+            @if (info().openingHours) {
+              <p class="text-white text-xl font-serif leading-relaxed">{{ info().openingHours }}</p>
+            }
             @if (siteSettings.openStatus().configured) {
               <div class="mt-4 flex items-center gap-2 border-t border-gray-700/50 pt-4 text-xs">
                 <span [class]="siteSettings.openStatus().isOpen ? 'h-2 w-2 rounded-full bg-emerald-400' : 'h-2 w-2 rounded-full bg-gray-500'"></span>
