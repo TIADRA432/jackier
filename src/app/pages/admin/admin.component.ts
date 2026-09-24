@@ -180,7 +180,8 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
               </a>
               <a
                 routerLink="/admin/vins"
-                routerLinkActive="text-jacquier-gold"
+                ariaCurrentWhenActive="page"
+                routerLinkActive="border-jacquier-gold text-jacquier-gold bg-jacquier-gold/5"
                 class="ml-9 mt-1 block rounded-lg border-l border-gray-800 px-3 py-2 text-xs text-gray-500 transition-colors hover:border-jacquier-gold/60 hover:bg-gray-800 hover:text-white"
               >
                 Carte des vins
@@ -665,7 +666,7 @@ const ADMIN_ROUTE_LABELS = new Map(ADMIN_SEARCH_ITEMS.map(item => [item.path, it
         </header>
 
         <!-- Page Content -->
-        <main class="admin-scroll-area flex-1 overflow-y-auto overflow-x-hidden p-6 lg:p-10 custom-scrollbar">
+        <main class="admin-scroll-area flex-1 overflow-y-auto overflow-x-hidden p-4 sm:p-6 lg:p-8 xl:p-10 custom-scrollbar">
           <router-outlet></router-outlet>
         </main>
       </div>
