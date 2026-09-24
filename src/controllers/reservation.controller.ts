@@ -26,6 +26,9 @@ const toMinutes = (value: string): number => {
   return (hours || 0) * 60 + (minutes || 0);
 };
 
+const normalizePhone = (value: string): string => value.replace(/\D/g, '');
+const normalizeEmail = (value: string): string => value.trim().toLowerCase();
+
 const conakryNow = () => {
   const parts = new Intl.DateTimeFormat('en-CA', {
     timeZone: 'Africa/Conakry',
@@ -74,11 +77,17 @@ const ensureNoDuplicateReservation = async (reservation: { date: string; time: s
     .eq('date', reservation.date);
   if (error) throw error;
 
+  const reservationEmail = normalizeEmail(reservation.email);
+  const reservationPhone = normalizePhone(reservation.phone);
   const duplicate = (data || []).some((row: any) => {
     if (['cancelled', 'rejected'].includes(row.status)) return false;
     const existing = row.data || {};
-    return existing.time === reservation.time &&
-      (existing.email === reservation.email || existing.phone === reservation.phone);
+    const sameEmail = typeof existing.email === 'string' &&
+      normalizeEmail(existing.email) === reservationEmail;
+    const samePhone = reservationPhone.length > 0 &&
+      typeof existing.phone === 'string' &&
+      normalizePhone(existing.phone) === reservationPhone;
+    return existing.time === reservation.time && (sameEmail || samePhone);
   });
 
   if (duplicate) {
@@ -133,6 +142,7 @@ export const validateReservation = (body: unknown) => {
     throw new Error('Invalid reservation date');
   }
   if (!/^\S+@\S+\.\S+$/.test(email)) throw new Error('Invalid email address');
+  if (!/^\+?[0-9 ()-]{6,30}$/.test(phone)) throw new Error('Invalid phone number');
   if (!ALLOWED_TIMES.has(time)) throw new Error('Invalid reservation time');
   if (typeof guests !== 'number' || !Number.isInteger(guests) || guests < 1 || guests > 8) {
     throw new Error('guests must be between 1 and 8');
