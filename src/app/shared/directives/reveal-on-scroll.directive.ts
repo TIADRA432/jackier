@@ -12,6 +12,7 @@ export class RevealOnScrollDirective implements AfterViewInit, OnDestroy {
   private readonly renderer = inject(Renderer2);
   private readonly platformId = inject(PLATFORM_ID);
   private observer?: IntersectionObserver;
+  private fallbackTimer?: ReturnType<typeof setTimeout>;
 
   @Input() revealVariant: RevealVariant = 'fade-up';
   @Input() revealDelay = 0;
@@ -51,13 +52,25 @@ export class RevealOnScrollDirective implements AfterViewInit, OnDestroy {
     }, { threshold: 0.12, rootMargin: '0px 0px -4% 0px' });
 
     this.observer.observe(node);
+
+    // Progressive enhancement: content must never remain invisible if the
+    // observer misses an element after a client-side route transition.
+    this.fallbackTimer = setTimeout(() => {
+      this.reveal(node);
+      this.observer?.disconnect();
+    }, Math.max(1600, delay + 900));
   }
 
   ngOnDestroy(): void {
     this.observer?.disconnect();
+    if (this.fallbackTimer) clearTimeout(this.fallbackTimer);
   }
 
   private reveal(node: HTMLElement): void {
+    if (this.fallbackTimer) {
+      clearTimeout(this.fallbackTimer);
+      this.fallbackTimer = undefined;
+    }
     this.renderer.setStyle(node, 'opacity', '1');
     this.renderer.setStyle(node, 'transform', 'translateY(0) scale(1)');
     this.renderer.setStyle(node, 'clip-path', 'inset(0 0 0 0 round 1.5rem)');
