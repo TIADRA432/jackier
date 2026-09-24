@@ -39,6 +39,17 @@ test('school registrations use an atomic database function to prevent overbookin
   assert.match(migration, /revoke all .* anon/);
 });
 
+test('reactivating a cancelled registration remains capacity-safe', async () => {
+  const controller = await source('src', 'controllers', 'school.controller.ts');
+  const migration = await source('supabase', 'migrations', '20260924094500_atomic_school_registration_status.sql');
+
+  assert.match(controller, /rpc\('update_school_registration_status'/);
+  assert.match(controller, /cannot be reactivated/);
+  assert.match(migration, /v_registration\.status = 'cancelled'/);
+  assert.match(migration, /v_count >= v_session\.capacity/);
+  assert.match(migration, /for update/);
+});
+
 test('school database keeps registrations private and only exposes published upcoming sessions', async () => {
   const migration = await source('supabase', 'migrations', '20260924090000_school_v1_sessions_registrations.sql');
 
@@ -61,6 +72,9 @@ test('school admin manages programme lifecycle sessions and registration statuse
   assert.match(admin, /Sessions & jauges/);
   assert.match(admin, /Inscriptions reçues/);
   assert.match(admin, /changeRegistrationStatus/);
+  assert.match(admin, /registrationPeriod/);
+  assert.match(admin, /À relancer/);
+  assert.match(admin, /needsFollowUp/);
   assert.match(service, /createSchoolSession/);
   assert.match(service, /updateSchoolRegistrationStatus/);
 });
