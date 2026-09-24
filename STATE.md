@@ -333,6 +333,18 @@ Contrôler :
 
 ### Phase E — QA pré-livraison — P1
 
+Avancement accessibilité au 24/09/2026 :
+
+- menu mobile : focus piégé pendant l’ouverture ;
+- retour du focus au déclencheur après fermeture ;
+- fermeture par Escape ;
+- scroll de fond verrouillé pendant l’ouverture ;
+- lightbox Galerie : rôle dialog, aria-modal, focus trap, Escape, flèches clavier et restauration du focus ;
+- formulaires Réservation et Traiteur : aria-invalid, aria-describedby, messages d’erreur reliés aux champs ;
+- autocomplete name/email/tel ajouté ;
+- carte Google Maps chargée en lazy ;
+- CI complète verte après ces corrections.
+
 Responsive :
 
 - petits Android ;
