@@ -126,7 +126,7 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
                 <!-- Nombre d'invités -->
                 <div class="space-y-2">
                   <label for="guests" class="block text-sm font-bold text-jacquier-dark uppercase tracking-widest">Nombre d'Invités *</label>
-                  <input type="number" id="guests" formControlName="guests" min="1" inputmode="numeric"
+                  <input type="number" id="guests" formControlName="guests" min="1" max="5000" inputmode="numeric"
                          [attr.aria-invalid]="devisForm.get('guests')?.touched && devisForm.get('guests')?.invalid"
                          [attr.aria-describedby]="devisForm.get('guests')?.touched && devisForm.get('guests')?.invalid ? 'catering-guests-error' : null"
                          class="w-full px-6 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-jacquier-gold focus:border-transparent transition-all outline-none text-jacquier-dark"
@@ -140,7 +140,7 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
                 <!-- Budget -->
                 <div class="space-y-2">
                   <label for="budget" class="block text-sm font-bold text-jacquier-dark uppercase tracking-widest">Budget estimé ({{ siteSettings.publicInfo().currency }})</label>
-                  <input type="text" id="budget" formControlName="budget" 
+                  <input type="text" id="budget" formControlName="budget" maxlength="120" 
                          class="w-full px-6 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-jacquier-gold focus:border-transparent transition-all outline-none text-jacquier-dark"
                          [placeholder]="'Ex: 10 000 000 ' + siteSettings.publicInfo().currency">
                 </div>
@@ -148,7 +148,7 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
                 <!-- Message -->
                 <div class="space-y-2 md:col-span-2">
                   <label for="message" class="block text-sm font-bold text-jacquier-dark uppercase tracking-widest">Détails & Besoins Spécifiques *</label>
-                  <textarea id="message" formControlName="message" rows="5"
+                  <textarea id="message" formControlName="message" rows="5" maxlength="2000"
                             [attr.aria-invalid]="devisForm.get('message')?.touched && devisForm.get('message')?.invalid"
                             [attr.aria-describedby]="devisForm.get('message')?.touched && devisForm.get('message')?.invalid ? 'catering-message-error' : null"
                             class="w-full px-6 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-jacquier-gold focus:border-transparent transition-all outline-none text-jacquier-dark resize-none"
