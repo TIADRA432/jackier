@@ -65,6 +65,7 @@ const contentSecurityPolicy = [
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
   "font-src 'self' data: https://fonts.gstatic.com",
   "img-src 'self' data: blob: https:",
+  "frame-src 'self' https://maps.google.com https://www.google.com",
   `connect-src 'self' ${SUPABASE_ORIGIN} ${SUPABASE_ORIGIN.replace('https://', 'wss://')}`,
 ].join('; ');
 
@@ -104,6 +105,7 @@ export const configureSecurity = (app: Application, options: { cloudflare?: bool
           styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
           fontSrc: ["'self'", 'data:', 'https://fonts.gstatic.com'],
           imgSrc: ["'self'", 'data:', 'blob:', 'https:'],
+          frameSrc: ["'self'", 'https://maps.google.com', 'https://www.google.com'],
           connectSrc: ["'self'", SUPABASE_ORIGIN, SUPABASE_ORIGIN.replace('https://', 'wss://')],
           upgradeInsecureRequests: process.env.NODE_ENV === 'production' ? [] : null,
         },
