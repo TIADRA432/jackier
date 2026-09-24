@@ -51,43 +51,51 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
                 <!-- Nom Complet -->
                 <div class="space-y-2">
                   <label for="name" class="block text-sm font-bold text-jacquier-dark uppercase tracking-widest">Nom Complet *</label>
-                  <input type="text" id="name" formControlName="name" 
+                  <input type="text" id="name" formControlName="name" autocomplete="name"
+                         [attr.aria-invalid]="devisForm.get('name')?.touched && devisForm.get('name')?.invalid"
+                         [attr.aria-describedby]="devisForm.get('name')?.touched && devisForm.get('name')?.invalid ? 'catering-name-error' : null" 
                          class="w-full px-6 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-jacquier-gold focus:border-transparent transition-all outline-none text-jacquier-dark"
                          [class.border-red-500]="devisForm.get('name')?.invalid && devisForm.get('name')?.touched"
                          placeholder="Jean Dupont">
                   @if (devisForm.get('name')?.invalid && devisForm.get('name')?.touched) {
-                    <p class="text-red-500 text-xs mt-1 font-medium" role="alert">Ce champ est requis.</p>
+                    <p id="catering-name-error" class="text-red-500 text-xs mt-1 font-medium" role="alert">Ce champ est requis.</p>
                   }
                 </div>
                 
                 <!-- Téléphone -->
                 <div class="space-y-2">
                   <label for="phone" class="block text-sm font-bold text-jacquier-dark uppercase tracking-widest">Téléphone *</label>
-                  <input type="tel" id="phone" formControlName="phone" 
+                  <input type="tel" id="phone" formControlName="phone" autocomplete="tel" inputmode="tel"
+                         [attr.aria-invalid]="devisForm.get('phone')?.touched && devisForm.get('phone')?.invalid"
+                         [attr.aria-describedby]="devisForm.get('phone')?.touched && devisForm.get('phone')?.invalid ? 'catering-phone-error' : null" 
                          class="w-full px-6 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-jacquier-gold focus:border-transparent transition-all outline-none text-jacquier-dark"
                          [class.border-red-500]="devisForm.get('phone')?.invalid && devisForm.get('phone')?.touched"
                          placeholder="+224 620 00 00 00">
                   @if (devisForm.get('phone')?.invalid && devisForm.get('phone')?.touched) {
-                    <p class="text-red-500 text-xs mt-1 font-medium" role="alert">Un numéro de téléphone valide est requis.</p>
+                    <p id="catering-phone-error" class="text-red-500 text-xs mt-1 font-medium" role="alert">Un numéro de téléphone valide est requis.</p>
                   }
                 </div>
                 
                 <!-- Email -->
                 <div class="space-y-2 md:col-span-2">
                   <label for="email" class="block text-sm font-bold text-jacquier-dark uppercase tracking-widest">Email *</label>
-                  <input type="email" id="email" formControlName="email" 
+                  <input type="email" id="email" formControlName="email" autocomplete="email" inputmode="email"
+                         [attr.aria-invalid]="devisForm.get('email')?.touched && devisForm.get('email')?.invalid"
+                         [attr.aria-describedby]="devisForm.get('email')?.touched && devisForm.get('email')?.invalid ? 'catering-email-error' : null" 
                          class="w-full px-6 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-jacquier-gold focus:border-transparent transition-all outline-none text-jacquier-dark"
                          [class.border-red-500]="devisForm.get('email')?.invalid && devisForm.get('email')?.touched"
                          placeholder="jean.dupont@exemple.com">
                   @if (devisForm.get('email')?.invalid && devisForm.get('email')?.touched) {
-                    <p class="text-red-500 text-xs mt-1 font-medium" role="alert">Une adresse email valide est requise.</p>
+                    <p id="catering-email-error" class="text-red-500 text-xs mt-1 font-medium" role="alert">Une adresse email valide est requise.</p>
                   }
                 </div>
                 
                 <!-- Type d'événement -->
                 <div class="space-y-2">
                   <label for="eventType" class="block text-sm font-bold text-jacquier-dark uppercase tracking-widest">Type d'Événement *</label>
-                  <select id="eventType" formControlName="eventType" 
+                  <select id="eventType" formControlName="eventType"
+                          [attr.aria-invalid]="devisForm.get('eventType')?.touched && devisForm.get('eventType')?.invalid"
+                          [attr.aria-describedby]="devisForm.get('eventType')?.touched && devisForm.get('eventType')?.invalid ? 'catering-type-error' : null" 
                           class="w-full px-6 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-jacquier-gold focus:border-transparent transition-all outline-none text-jacquier-dark appearance-none"
                           [class.border-red-500]="devisForm.get('eventType')?.invalid && devisForm.get('eventType')?.touched">
                     <option value="" disabled selected>Sélectionnez un type</option>
@@ -98,30 +106,34 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
                     <option value="autre">Autre</option>
                   </select>
                   @if (devisForm.get('eventType')?.invalid && devisForm.get('eventType')?.touched) {
-                    <p class="text-red-500 text-xs mt-1 font-medium" role="alert">Veuillez sélectionner un type d'événement.</p>
+                    <p id="catering-type-error" class="text-red-500 text-xs mt-1 font-medium" role="alert">Veuillez sélectionner un type d'événement.</p>
                   }
                 </div>
                 
                 <!-- Date -->
                 <div class="space-y-2">
                   <label for="date" class="block text-sm font-bold text-jacquier-dark uppercase tracking-widest">Date Prévue *</label>
-                  <input type="date" id="date" formControlName="date" [min]="todayDate" 
+                  <input type="date" id="date" formControlName="date" [min]="todayDate"
+                         [attr.aria-invalid]="devisForm.get('date')?.touched && devisForm.get('date')?.invalid"
+                         [attr.aria-describedby]="devisForm.get('date')?.touched && devisForm.get('date')?.invalid ? 'catering-date-error' : null" 
                          class="w-full px-6 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-jacquier-gold focus:border-transparent transition-all outline-none text-jacquier-dark"
                          [class.border-red-500]="devisForm.get('date')?.invalid && devisForm.get('date')?.touched">
                   @if (devisForm.get('date')?.invalid && devisForm.get('date')?.touched) {
-                    <p class="text-red-500 text-xs mt-1 font-medium" role="alert">Veuillez sélectionner une date.</p>
+                    <p id="catering-date-error" class="text-red-500 text-xs mt-1 font-medium" role="alert">Veuillez sélectionner une date.</p>
                   }
                 </div>
                 
                 <!-- Nombre d'invités -->
                 <div class="space-y-2">
                   <label for="guests" class="block text-sm font-bold text-jacquier-dark uppercase tracking-widest">Nombre d'Invités *</label>
-                  <input type="number" id="guests" formControlName="guests" min="1"
+                  <input type="number" id="guests" formControlName="guests" min="1" inputmode="numeric"
+                         [attr.aria-invalid]="devisForm.get('guests')?.touched && devisForm.get('guests')?.invalid"
+                         [attr.aria-describedby]="devisForm.get('guests')?.touched && devisForm.get('guests')?.invalid ? 'catering-guests-error' : null"
                          class="w-full px-6 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-jacquier-gold focus:border-transparent transition-all outline-none text-jacquier-dark"
                          [class.border-red-500]="devisForm.get('guests')?.invalid && devisForm.get('guests')?.touched"
                          placeholder="Ex: 50">
                   @if (devisForm.get('guests')?.invalid && devisForm.get('guests')?.touched) {
-                    <p class="text-red-500 text-xs mt-1 font-medium" role="alert">Veuillez indiquer le nombre d'invités.</p>
+                    <p id="catering-guests-error" class="text-red-500 text-xs mt-1 font-medium" role="alert">Veuillez indiquer le nombre d'invités.</p>
                   }
                 </div>
                 
@@ -137,11 +149,13 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
                 <div class="space-y-2 md:col-span-2">
                   <label for="message" class="block text-sm font-bold text-jacquier-dark uppercase tracking-widest">Détails & Besoins Spécifiques *</label>
                   <textarea id="message" formControlName="message" rows="5"
+                            [attr.aria-invalid]="devisForm.get('message')?.touched && devisForm.get('message')?.invalid"
+                            [attr.aria-describedby]="devisForm.get('message')?.touched && devisForm.get('message')?.invalid ? 'catering-message-error' : null"
                             class="w-full px-6 py-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-jacquier-gold focus:border-transparent transition-all outline-none text-jacquier-dark resize-none"
                             [class.border-red-500]="devisForm.get('message')?.invalid && devisForm.get('message')?.touched"
                             placeholder="Décrivez votre événement, vos envies, le lieu..."></textarea>
                   @if (devisForm.get('message')?.invalid && devisForm.get('message')?.touched) {
-                    <p class="text-red-500 text-xs mt-1 font-medium" role="alert">Veuillez fournir quelques détails sur votre événement.</p>
+                    <p id="catering-message-error" class="text-red-500 text-xs mt-1 font-medium" role="alert">Veuillez fournir quelques détails sur votre événement.</p>
                   }
                 </div>
               </div>
