@@ -122,3 +122,22 @@ test('reservation receipt exposes only supported booking statuses', async () => 
   assert.doesNotMatch(service, /approved/);
   assert.doesNotMatch(service, /rejected/);
 });
+
+
+test('reservation server normalizes legacy booking statuses before admin rendering', async () => {
+  const controller = await source('src', 'controllers', 'reservation.controller.ts');
+  const model = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+
+  assert.match(controller, /value === 'approved'\) return 'confirmed'/);
+  assert.match(controller, /value === 'rejected'\) return 'cancelled'/);
+  assert.match(controller, /status: normalizeReservationStatus\(row\.status\)/);
+  assert.doesNotMatch(model, /export type ReservationStatus =/);
+});
+
+test('reservation status update returns 404 when the booking no longer exists', async () => {
+  const controller = await source('src', 'controllers', 'reservation.controller.ts');
+
+  assert.match(controller, /maybeSingle\(\)/);
+  assert.match(controller, /if \(!current\) return res\.status\(404\)/);
+  assert.match(controller, /Reservation not found/);
+});
