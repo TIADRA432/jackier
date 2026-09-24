@@ -1,0 +1,76 @@
+name: Deploy Cloudflare Staging
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-cloudflare-staging
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build and deploy staging Worker
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment: staging
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Require develop branch
+        run: |
+          test "$GITHUB_REF" = "refs/heads/develop" || {
+            echo "::error title=Wrong branch::Staging can only be deployed manually from develop"
+            exit 1
+          }
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm install --no-package-lock
+
+      - name: Verify the application
+        run: |
+          npm test
+          npm run lint
+          npm run build
+
+      - name: Verify staging credentials
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          STAGING_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.STAGING_SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN" || { echo "::error::Missing CLOUDFLARE_API_TOKEN"; exit 1; }
+          test -n "$CLOUDFLARE_ACCOUNT_ID" || { echo "::error::Missing CLOUDFLARE_ACCOUNT_ID"; exit 1; }
+          test -n "$STAGING_SUPABASE_SERVICE_ROLE_KEY" || { echo "::error::Missing STAGING_SUPABASE_SERVICE_ROLE_KEY"; exit 1; }
+
+      - name: Validate staging Worker configuration
+        run: npx wrangler deploy --config wrangler.staging.jsonc --dry-run --keep-vars
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Deploy staging Worker and static assets
+        run: npx wrangler deploy --config wrangler.staging.jsonc --keep-vars
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      - name: Install staging Supabase service-role secret
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          STAGING_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.STAGING_SUPABASE_SERVICE_ROLE_KEY }}
+        run: printf '%s' "$STAGING_SUPABASE_SERVICE_ROLE_KEY" | npx wrangler secret put SUPABASE_SERVICE_ROLE_KEY --config wrangler.staging.jsonc
+
+      - name: Smoke-test staging
+        env:
+          PRODUCTION_URL: https://jackier-staging.abdourahmane591.workers.dev
+        run: bash scripts/smoke-production.sh
