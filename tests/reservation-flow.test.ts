@@ -159,3 +159,31 @@ test('reservation admin WhatsApp links canonicalize local Guinea numbers', async
   assert.match(admin, /224\$\{phone\}/);
   assert.match(admin, /https:\/\/wa\.me/);
 });
+
+
+test('reservation API distinguishes validation failures from operational failures', async () => {
+  const controller = await source('src', 'controllers', 'reservation.controller.ts');
+
+  assert.match(controller, /class ReservationValidationError extends Error/);
+  assert.match(controller, /error instanceof ReservationValidationError/);
+  assert.doesNotMatch(controller, /startsWith\('Invalid '\)/);
+  assert.match(controller, /reservation\.create_failed/);
+  assert.match(controller, /reservation\.status_update_failed/);
+});
+
+test('reservation visitor receives French validation guidance instead of raw backend text', async () => {
+  const service = await source('src', 'app', 'core', 'services', 'reservation.service.ts');
+
+  assert.match(service, /describeValidationError/);
+  assert.match(service, /Une demande similaire existe déjà/);
+  assert.match(service, /Ce créneau est déjà passé/);
+  assert.match(service, /Le numéro de téléphone n’est pas valide/);
+  assert.match(service, /Certaines informations du formulaire sont invalides/);
+});
+
+test('reservation form distinguishes exhausted today slots from a closed future day', async () => {
+  const component = await source('src', 'app', 'pages', 'reservation', 'reservation.component.ts');
+
+  assert.match(component, /Il n’y a plus de créneau de réservation disponible aujourd’hui/);
+  assert.match(component, /Le restaurant est fermé ce jour-là selon les horaires configurés/);
+});
