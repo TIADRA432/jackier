@@ -1,16 +1,20 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { AdminDataService, AdminReservation, ReservationStatus } from '../../../core/services/admin-data.service';
+import { ChangeDetectionStrategy, Component, PLATFORM_ID, computed, inject, signal } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { AdminDataService, AdminReservation, ReservationWorkflowStatus } from '../../../core/services/admin-data.service';
+import { SiteSettingsService } from '../../../core/services/site-settings.service';
 
-const STATUS_LABELS: Record<ReservationStatus, string> = {
-  pending: 'En attente', confirmed: 'Confirmée', cancelled: 'Annulée',
-  completed: 'Terminée', approved: 'Approuvée', rejected: 'Refusée'
+const STATUS_LABELS: Record<ReservationWorkflowStatus, string> = {
+  pending: 'En attente',
+  confirmed: 'Confirmée',
+  cancelled: 'Annulée',
+  completed: 'Terminée'
 };
 
-const STATUS_CLASSES: Record<ReservationStatus, string> = {
-  pending: 'bg-orange-500/10 text-orange-500', confirmed: 'bg-green-500/10 text-green-500',
-  cancelled: 'bg-red-500/10 text-red-500', completed: 'bg-blue-500/10 text-blue-500',
-  approved: 'bg-green-500/10 text-green-500', rejected: 'bg-red-500/10 text-red-500'
+const STATUS_CLASSES: Record<ReservationWorkflowStatus, string> = {
+  pending: 'bg-orange-500/10 text-orange-500',
+  confirmed: 'bg-green-500/10 text-green-500',
+  cancelled: 'bg-red-500/10 text-red-500',
+  completed: 'bg-blue-500/10 text-blue-500'
 };
 
 @Component({
@@ -50,7 +54,7 @@ const STATUS_CLASSES: Record<ReservationStatus, string> = {
             <div class="overflow-x-auto p-6">
               <table class="w-full border-collapse text-left text-sm">
                 <thead><tr class="border-b border-gray-800 text-[10px] font-bold uppercase tracking-widest text-gray-500">
-                  <th class="pb-4">Client</th><th class="pb-4">Contact</th><th class="pb-4">Date</th><th class="pb-4">Heure</th><th class="pb-4">Couverts</th><th class="pb-4">Statut</th><th class="pb-4 text-right">Modifier</th>
+                  <th class="pb-4">Client</th><th class="pb-4">Contact</th><th class="pb-4">Date</th><th class="pb-4">Heure</th><th class="pb-4">Couverts</th><th class="pb-4">Statut</th><th class="pb-4">Communication</th><th class="pb-4 text-right">Modifier</th>
                 </tr></thead>
                 <tbody>
                   @for (reservation of reservations(); track reservation.id) {
@@ -67,6 +71,26 @@ const STATUS_CLASSES: Record<ReservationStatus, string> = {
                       <td class="py-4 text-gray-300">{{ reservation.time }}</td>
                       <td class="py-4 text-gray-300">{{ reservation.guests }} pers.</td>
                       <td class="py-4"><span [class]="'rounded-md px-2 py-1 text-[10px] font-bold uppercase ' + statusClass(reservation.status)">{{ statusLabel(reservation.status) }}</span></td>
+                      <td class="py-4">
+                        <div class="flex flex-wrap gap-2">
+                          @if (reservation.phone) {
+                            <a [href]="whatsappHref(reservation)" target="_blank" rel="noopener noreferrer"
+                              class="rounded-lg border border-emerald-800/70 px-2 py-1 text-[10px] font-bold text-emerald-300 hover:bg-emerald-500/10">
+                              WhatsApp
+                            </a>
+                          }
+                          @if (reservation.email) {
+                            <a [href]="emailHref(reservation)"
+                              class="rounded-lg border border-gray-700 px-2 py-1 text-[10px] font-bold text-gray-300 hover:border-jacquier-gold hover:text-jacquier-gold">
+                              E-mail
+                            </a>
+                          }
+                          <button type="button" (click)="copyCustomerMessage(reservation)"
+                            class="rounded-lg border border-gray-700 px-2 py-1 text-[10px] font-bold text-gray-300 hover:border-jacquier-gold hover:text-jacquier-gold">
+                            Copier
+                          </button>
+                        </div>
+                      </td>
                       <td class="py-4 text-right">
                         <label class="sr-only" [for]="'status-' + reservation.id">Statut de {{ reservation.name }}</label>
                         <select [id]="'status-' + reservation.id" [value]="reservation.status" (change)="updateStatus(reservation, $any($event.target).value)" [disabled]="updatingId() === reservation.id" class="rounded-lg border border-gray-700 bg-[#121212] px-2 py-1 text-xs text-white outline-none focus:border-jacquier-gold disabled:opacity-50">
@@ -87,6 +111,13 @@ const STATUS_CLASSES: Record<ReservationStatus, string> = {
             <p class="text-4xl font-serif font-bold text-jacquier-gold">{{ pendingCount() }}</p>
             <p class="mt-1 text-[10px] font-bold uppercase text-gray-500">réservation(s) en attente</p>
           </section>
+          <section class="rounded-2xl border border-amber-700/40 bg-amber-500/5 p-6">
+            <h2 class="text-lg font-serif font-bold text-white">Communication client</h2>
+            <p class="mt-2 text-xs leading-relaxed text-gray-400">Aucune notification automatique n’est envoyée actuellement. Après changement de statut, utilisez WhatsApp, e-mail ou « Copier » pour informer le client avec un message cohérent.</p>
+            @if (copyFeedback()) {
+              <p class="mt-3 text-xs font-bold text-emerald-300" role="status">{{ copyFeedback() }}</p>
+            }
+          </section>
           <section class="rounded-2xl border border-gray-800 bg-[#1a1a1a] p-6">
             <h2 class="mb-4 text-lg font-serif font-bold text-white">Notes clients</h2>
             @for (reservation of reservationsWithNotes(); track reservation.id) {
@@ -103,12 +134,15 @@ const STATUS_CLASSES: Record<ReservationStatus, string> = {
 })
 export class ReservationsComponent {
   private readonly adminData = inject(AdminDataService);
+  private readonly platformId = inject(PLATFORM_ID);
+  private readonly siteSettings = inject(SiteSettingsService);
 
   readonly reservations = signal<AdminReservation[]>([]);
   readonly loading = signal(true);
   readonly updatingId = signal<string | null>(null);
   readonly errorMessage = signal('');
-  readonly statuses: ReservationStatus[] = ['pending', 'confirmed', 'completed', 'cancelled', 'approved', 'rejected'];
+  readonly copyFeedback = signal('');
+  readonly statuses: ReservationWorkflowStatus[] = ['pending', 'confirmed', 'completed', 'cancelled'];
   readonly pendingCount = computed(() => this.reservations().filter(({ status }) => status === 'pending').length);
   readonly reservationsWithNotes = computed(() => this.reservations().filter(({ notes }) => Boolean(notes?.trim())).slice(0, 4));
 
@@ -124,10 +158,10 @@ export class ReservationsComponent {
   }
 
   async updateStatus(reservation: AdminReservation, value: string): Promise<void> {
-    if (!this.statuses.includes(value as ReservationStatus) || value === reservation.status) return;
+    if (!this.statuses.includes(value as ReservationWorkflowStatus) || value === reservation.status) return;
     this.updatingId.set(reservation.id); this.errorMessage.set('');
     try {
-      const updated = await this.adminData.updateReservationStatus(reservation.id, value as ReservationStatus);
+      const updated = await this.adminData.updateReservationStatus(reservation.id, value as ReservationWorkflowStatus);
       this.reservations.update(items => items.map(item => item.id === updated.id ? updated : item));
     } catch {
       this.errorMessage.set('La mise à jour du statut a échoué. Aucune modification locale n’a été conservée.');
@@ -136,6 +170,45 @@ export class ReservationsComponent {
 
   shortReference(id: string): string { return id.split('-')[0]?.toUpperCase() || id; }
 
-  statusLabel(status: ReservationStatus): string { return STATUS_LABELS[status]; }
-  statusClass(status: ReservationStatus): string { return STATUS_CLASSES[status]; }
+  customerMessage(reservation: AdminReservation): string {
+    const restaurant = this.siteSettings.publicInfo().restaurantName;
+    const reference = this.shortReference(reservation.id);
+    const intro = `Bonjour ${reservation.name},`;
+    const detail = `votre demande #${reference} pour le ${reservation.date} à ${reservation.time} (${reservation.guests} personne${reservation.guests > 1 ? 's' : ''})`;
+    const messages: Record<ReservationWorkflowStatus, string> = {
+      pending: `${intro} ${detail} a bien été reçue par ${restaurant} et reste en attente de confirmation.`,
+      confirmed: `${intro} ${detail} est confirmée par ${restaurant}. Nous serons heureux de vous accueillir.`,
+      cancelled: `${intro} ${detail} a été annulée. Pour une autre date, vous pouvez nous contacter ou effectuer une nouvelle demande.`,
+      completed: `${intro} merci d’avoir choisi ${restaurant}. Votre réservation #${reference} est maintenant terminée. Au plaisir de vous revoir.`
+    };
+    return messages[reservation.status];
+  }
+
+  whatsappHref(reservation: AdminReservation): string {
+    const phone = (reservation.phone ?? '').replace(/\D/g, '');
+    return `https://wa.me/${phone}?text=${encodeURIComponent(this.customerMessage(reservation))}`;
+  }
+
+  emailHref(reservation: AdminReservation): string {
+    const subject = encodeURIComponent(`Réservation #${this.shortReference(reservation.id)} — ${this.siteSettings.publicInfo().restaurantName}`);
+    const body = encodeURIComponent(this.customerMessage(reservation));
+    return `mailto:${reservation.email ?? ''}?subject=${subject}&body=${body}`;
+  }
+
+  async copyCustomerMessage(reservation: AdminReservation): Promise<void> {
+    if (!isPlatformBrowser(this.platformId) || !navigator.clipboard) {
+      this.copyFeedback.set('Copie indisponible sur cet appareil.');
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(this.customerMessage(reservation));
+      this.copyFeedback.set(`Message #${this.shortReference(reservation.id)} copié.`);
+      window.setTimeout(() => this.copyFeedback.set(''), 2500);
+    } catch {
+      this.copyFeedback.set('Copie impossible. Réessayez.');
+    }
+  }
+
+  statusLabel(status: ReservationWorkflowStatus): string { return STATUS_LABELS[status]; }
+  statusClass(status: ReservationWorkflowStatus): string { return STATUS_CLASSES[status]; }
 }

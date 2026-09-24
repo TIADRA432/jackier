@@ -57,3 +57,39 @@ test('reservation admin exposes contact details and request reference', async ()
   assert.match(admin, /tel:/);
   assert.match(admin, /shortReference/);
 });
+
+
+test('reservation workflow uses only booking-specific statuses while catering keeps its own statuses', async () => {
+  const controller = await source('src', 'controllers', 'reservation.controller.ts');
+  const model = await source('src', 'app', 'core', 'services', 'admin-data.service.ts');
+  const admin = await source('src', 'app', 'pages', 'admin', 'reservations', 'reservations.component.ts');
+
+  assert.match(model, /ReservationWorkflowStatus = 'pending' \| 'confirmed' \| 'cancelled' \| 'completed'/);
+  assert.match(model, /status: ReservationWorkflowStatus/);
+  assert.match(model, /export interface CateringEvent[\s\S]*status: ReservationStatus/);
+  assert.match(controller, /ALLOWED_STATUSES = new Set\(\['pending', 'confirmed', 'cancelled', 'completed'\]\)/);
+  assert.match(admin, /statuses: ReservationWorkflowStatus\[\] = \['pending', 'confirmed', 'completed', 'cancelled'\]/);
+  assert.doesNotMatch(admin, /approved: 'Approuvée'/);
+  assert.doesNotMatch(admin, /rejected: 'Refusée'/);
+});
+
+test('reservation status updates are written to the activity log', async () => {
+  const controller = await source('src', 'controllers', 'reservation.controller.ts');
+
+  assert.match(controller, /UPDATE_RESERVATION_STATUS/);
+  assert.match(controller, /Reservation #/);
+  assert.match(controller, /req\.user\?\.id \|\| 'system'/);
+});
+
+test('reservation admin provides explicit manual client communication tools', async () => {
+  const admin = await source('src', 'app', 'pages', 'admin', 'reservations', 'reservations.component.ts');
+
+  assert.match(admin, /Aucune notification automatique n’est envoyée actuellement/);
+  assert.match(admin, /whatsappHref\(reservation\)/);
+  assert.match(admin, /emailHref\(reservation\)/);
+  assert.match(admin, /copyCustomerMessage\(reservation\)/);
+  assert.match(admin, /customerMessage\(reservation/);
+  assert.match(admin, /wa\.me/);
+  assert.match(admin, /navigator\.clipboard\.writeText/);
+  assert.match(admin, /Réservation #/);
+});

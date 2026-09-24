@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { supabase } from '../config/supabase';
+import { AuthenticatedRequest } from '../middleware/auth.middleware';
 
 const MAX_NAME = 100;
 const MAX_EMAIL = 254;
@@ -9,7 +10,7 @@ const ALLOWED_TIMES = new Set([
   '12:00', '12:30', '13:00', '13:30', '14:00',
   '19:00', '19:30', '20:00', '20:30', '21:00', '21:30',
 ]);
-const ALLOWED_STATUSES = new Set(['pending', 'confirmed', 'cancelled', 'completed', 'approved', 'rejected']);
+const ALLOWED_STATUSES = new Set(['pending', 'confirmed', 'cancelled', 'completed']);
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const WEEKDAY_KEYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'] as const;
 
@@ -169,7 +170,7 @@ export const createReservation = async (req: Request, res: Response) => {
   }
 };
 
-export const updateReservationStatus = async (req: Request, res: Response) => {
+export const updateReservationStatus = async (req: AuthenticatedRequest, res: Response) => {
   try {
     const id = validateUuid(req.params.id);
     if (!isRecord(req.body) || typeof req.body.status !== 'string' || !ALLOWED_STATUSES.has(req.body.status)) {
@@ -177,6 +178,16 @@ export const updateReservationStatus = async (req: Request, res: Response) => {
     }
     const { data, error } = await supabase.from('reservations').update({ status: req.body.status }).eq('id', id).select('*').single();
     if (error) throw error;
+
+    const reference = id.split('-')[0]?.toUpperCase() || id;
+    const { error: logError } = await supabase.from('logs').insert({
+      action: 'UPDATE_RESERVATION_STATUS',
+      details: `Reservation #${reference} changed to ${req.body.status}`,
+      user_id: req.user?.id || 'system',
+      timestamp: new Date().toISOString()
+    });
+    if (logError) console.warn('Unable to write reservation status log:', logError.message);
+
     res.json(format(data));
   } catch (error) {
     const message = error instanceof Error ? error.message : '';
