@@ -101,11 +101,13 @@ interface SessionDraft {
                 <input required maxlength="160" [ngModel]="programDraft().title" (ngModelChange)="patchProgram({ title: $event })" name="programTitle"
                   class="rounded-lg border border-gray-700 bg-[#121212] px-3 py-2 text-white outline-none focus:border-jacquier-gold" />
               </label>
-              <label class="grid gap-1 text-sm text-gray-300">Niveau
-                <select [ngModel]="programDraft().level" (ngModelChange)="patchProgram({ level: $event })" name="programLevel"
-                  class="rounded-lg border border-gray-700 bg-[#121212] px-3 py-2 text-white">
-                  @for (level of levels; track level) { <option [value]="level">{{ level }}</option> }
-                </select>
+              <label class="grid gap-1 text-sm text-gray-300">Niveau / public
+                <input list="school-level-options" maxlength="120" [ngModel]="programDraft().level" (ngModelChange)="patchProgram({ level: $event })" name="programLevel"
+                  placeholder="Débutant, Intermédiaire, Pro…"
+                  class="rounded-lg border border-gray-700 bg-[#121212] px-3 py-2 text-white" />
+                <datalist id="school-level-options">
+                  @for (level of levels; track level) { <option [value]="level"></option> }
+                </datalist>
               </label>
               <label class="grid gap-1 text-sm text-gray-300">Durée
                 <input maxlength="120" [ngModel]="programDraft().duration" (ngModelChange)="patchProgram({ duration: $event })" name="programDuration"
