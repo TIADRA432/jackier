@@ -81,7 +81,8 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
       </div>
     </section>
 
-    <section class="bg-white px-4 py-24">
+    @if (team().length || teamLoading() || teamError()) {
+      <section class="bg-white px-4 py-24">
       <div class="max-w-7xl mx-auto">
         <div class="text-center mb-16">
           <span class="text-jacquier-gold font-bold tracking-widest uppercase text-sm block mb-2">Nos talents</span>
@@ -97,11 +98,10 @@ import { SiteSettingsService } from '../../core/services/site-settings.service';
           </div>
         } @else if (team().length) {
           <app-team-grid [members]="team()" />
-        } @else {
-          <p class="py-12 text-center text-jacquier-text/60">Aucun profil d’équipe n’est publié pour le moment.</p>
         }
       </div>
-    </section>
+      </section>
+    }
   `
 })
 export class AboutComponent {

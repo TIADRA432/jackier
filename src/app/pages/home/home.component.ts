@@ -15,7 +15,7 @@ import { ParallaxDirective } from '../../shared/directives/parallax.directive';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <!-- Hero Section -->
-    <section class="relative h-screen flex items-center justify-center text-center px-4 overflow-hidden">
+    <section class="relative h-[100svh] min-h-[680px] md:min-h-[720px] flex items-center justify-center text-center px-4 overflow-hidden">
       <div class="absolute inset-0 z-0 overflow-hidden bg-jacquier-dark">
         @for (slide of heroSlides(); track slide.url; let i = $index) {
           @if (i === 0) {
@@ -177,8 +177,8 @@ import { ParallaxDirective } from '../../shared/directives/parallax.directive';
             <span class="text-jacquier-gold font-bold uppercase tracking-widest text-sm mb-2 block">Patrimoine Culinaire</span>
             <h2 class="text-4xl md:text-5xl font-serif font-bold text-jacquier-primary mb-6">L'Âme de la Guinée</h2>
             <p class="text-jacquier-text leading-relaxed mb-8 text-lg font-light">
-              Découvrez notre sélection de plats traditionnels revisités avec élégance. 
-              Du Poulet Yassa au Riz Gras Royal, chaque recette est un hommage aux saveurs authentiques de notre terroir, préparée avec des ingrédients locaux d'exception.
+              Découvrez une carte qui évolue avec les propositions réellement publiées par le restaurant.
+              Les inspirations guinéennes et les produits de saison y sont présentés au rythme de la cuisine du Jacquier.
             </p>
             <a routerLink="/menu" class="inline-flex items-center text-jacquier-primary font-bold hover:text-jacquier-gold transition-colors group">
               Explorer nos spécialités locales
@@ -192,7 +192,8 @@ import { ParallaxDirective } from '../../shared/directives/parallax.directive';
     </section>
 
     <!-- Seafood Section -->
-    <section appRevealOnScroll class="py-24 bg-jacquier-primary text-jacquier-light relative overflow-hidden px-4">
+    @if (seafoodDishes().length || isMenuLoading()) {
+      <section appRevealOnScroll class="py-24 bg-jacquier-primary text-jacquier-light relative overflow-hidden px-4">
       <div class="absolute inset-0 opacity-10">
         <img ngSrc="/og-image.png" fill class="object-cover" alt="" aria-hidden="true" referrerPolicy="no-referrer">
       </div>
@@ -230,10 +231,12 @@ import { ParallaxDirective } from '../../shared/directives/parallax.directive';
           </div>
         }
       </div>
-    </section>
+      </section>
+    }
 
     <!-- Bar & Boissons -->
-    <section appRevealOnScroll class="py-24 bg-jacquier-cream px-4">
+    @if (wines().length || isWinesLoading()) {
+      <section appRevealOnScroll class="py-24 bg-jacquier-cream px-4">
       <div class="max-w-7xl mx-auto text-center">
         <span class="text-jacquier-gold font-bold tracking-widest uppercase text-sm">Lounge & Mixologie</span>
         <h2 class="text-4xl md:text-5xl font-serif font-bold text-jacquier-primary mt-2 mb-16">Bar & Boissons</h2>
@@ -265,7 +268,8 @@ import { ParallaxDirective } from '../../shared/directives/parallax.directive';
           </div>
         </div>
       </div>
-    </section>
+      </section>
+    }
 
     <!-- Catering Teaser -->
     <section appRevealOnScroll class="py-24 bg-jacquier-burgundy text-white px-4">
@@ -339,9 +343,7 @@ import { ParallaxDirective } from '../../shared/directives/parallax.directive';
                   <img [src]="image.imageUrl" [alt]="image.title || 'Photo du Jacquier'"
                     class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105" />
                   <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-                  @if (image.title) {
-                    <p class="absolute bottom-4 left-4 right-4 font-serif text-sm font-bold text-white md:text-lg">{{ image.title }}</p>
-                  }
+                  <span class="sr-only">{{ image.title || 'Photo du restaurant Le Jacquier' }}</span>
                 </a>
               }
             </div>
@@ -415,6 +417,8 @@ export class HomeComponent implements OnDestroy {
   readonly activeHeroIndex = signal(0);
   private heroRotation?: number;
   isMenuLoading = this.restaurantService.isLoadingMenu();
+  wines = this.restaurantService.getWines();
+  isWinesLoading = this.restaurantService.isLoadingWines();
   isGalleryLoading = this.restaurantService.isLoadingGallery();
   isSchoolLoading = this.restaurantService.isLoadingSchool();
   isTeamLoading = this.restaurantService.isLoadingTeam();

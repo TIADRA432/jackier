@@ -24,7 +24,7 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
         </a>
 
         <!-- Desktop Nav -->
-        <nav class="hidden lg:flex space-x-8 items-center" aria-label="Navigation principale">
+        <nav class="hidden xl:flex items-center gap-5 2xl:gap-7" aria-label="Navigation principale">
           @for (link of navLinks; track link.path) {
             <a [routerLink]="link.path" 
                routerLinkActive="text-jacquier-gold after:w-full"
@@ -36,13 +36,13 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
             </a>
           }
           <a routerLink="/reservation" 
-             class="bg-jacquier-primary text-white px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-jacquier-burgundy transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-300">
+             class="bg-jacquier-primary text-white px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-jacquier-burgundy transition-colors shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 duration-300">
             Réserver
           </a>
         </nav>
 
         <!-- Mobile Menu Button -->
-        <button class="lg:hidden rounded-lg p-2 -mr-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacquier-gold focus-visible:ring-offset-2" (click)="toggleMobileMenu()"
+        <button class="xl:hidden rounded-lg p-2 -mr-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-jacquier-gold focus-visible:ring-offset-2" (click)="toggleMobileMenu()"
                 [attr.aria-label]="isMobileMenuOpen() ? 'Fermer le menu' : 'Ouvrir le menu'"
                 [attr.aria-expanded]="isMobileMenuOpen()" aria-controls="mobile-nav-panel">
           <div class="w-6 h-5 relative flex flex-col justify-between" aria-hidden="true">
@@ -65,7 +65,7 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
       </div>
 
       <!-- Mobile Nav Overlay -->
-      <div class="fixed inset-0 bg-jacquier-dark/50 backdrop-blur-sm z-40 transition-opacity duration-300 lg:hidden"
+      <div class="fixed inset-0 bg-jacquier-dark/50 backdrop-blur-sm z-40 transition-opacity duration-300 xl:hidden"
            [class.opacity-100]="isMobileMenuOpen()"
            [class.opacity-0]="!isMobileMenuOpen()"
            [class.pointer-events-auto]="isMobileMenuOpen()"
@@ -77,7 +77,7 @@ import { SiteSettingsService } from '../../../core/services/site-settings.servic
       <nav id="mobile-nav-panel" aria-label="Navigation mobile"
            [attr.aria-hidden]="!isMobileMenuOpen()"
            [attr.inert]="isMobileMenuOpen() ? null : ''"
-           class="fixed top-0 right-0 h-full w-full bg-jacquier-cream z-50 transform transition-transform duration-700 ease-[cubic-bezier(.22,.61,.36,1)] lg:hidden flex flex-col shadow-2xl"
+           class="fixed top-0 right-0 h-full w-full bg-jacquier-cream z-50 transform transition-transform duration-700 ease-[cubic-bezier(.22,.61,.36,1)] xl:hidden flex flex-col shadow-2xl"
            [class.translate-x-0]="isMobileMenuOpen()"
            [class.translate-x-full]="!isMobileMenuOpen()">
         
