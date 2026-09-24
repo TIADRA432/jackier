@@ -49,3 +49,19 @@ test('production smoke test covers the complete public shell and security header
   assert.match(workflow, /frame-src 'self' https:\/\/maps\.google\.com https:\/\/www\.google\.com/);
   assert.match(workflow, /item\?\.active === false/);
 });
+
+
+test('Cloudflare static assets receive the same security headers as Worker responses', async () => {
+  const headers = await source('public', '_headers');
+  const angular = await source('angular.json');
+
+  assert.match(angular, /"input": "public"/);
+  assert.match(headers, /\/\*/);
+  assert.match(headers, /Content-Security-Policy:/);
+  assert.match(headers, /script-src 'self'/);
+  assert.match(headers, /frame-src 'self' https:\/\/maps\.google\.com https:\/\/www\.google\.com/);
+  assert.match(headers, /Strict-Transport-Security: max-age=15552000; includeSubDomains/);
+  assert.match(headers, /X-Content-Type-Options: nosniff/);
+  assert.match(headers, /X-Frame-Options: DENY/);
+  assert.match(headers, /Referrer-Policy: no-referrer/);
+});
