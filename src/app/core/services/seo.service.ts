@@ -19,25 +19,37 @@ export class SeoService {
   private readonly siteSettings = inject(SiteSettingsService);
   private readonly currentUrl = signal('/');
   private readonly noindex = signal(false);
+  private readonly currentConfig = signal<SeoConfig | null>(null);
+  private readonly currentPageTitle = signal('');
 
   constructor() {
     effect(() => {
       this.siteSettings.publicInfo();
       this.siteSettings.settings();
-      this.currentUrl();
+      const config = this.currentConfig();
+      const pageTitle = this.currentPageTitle();
+      const url = this.currentUrl();
       this.noindex();
+
+      if (config) this.updateMetadata(url, config, pageTitle);
       this.updateRestaurantStructuredData();
     });
   }
 
   apply(url: string, config: SeoConfig, routeTitle?: string): void {
     const cleanPath = this.cleanPath(url);
-    const canonical = `${this.siteOrigin()}${cleanPath === '/' ? '/' : cleanPath}`;
     const pageTitle = routeTitle?.trim() || this.title.getTitle() || this.siteSettings.publicInfo().restaurantName;
     if (routeTitle?.trim()) this.title.setTitle(routeTitle);
 
     this.currentUrl.set(cleanPath);
     this.noindex.set(Boolean(config.noindex));
+    this.currentConfig.set(config);
+    this.currentPageTitle.set(pageTitle);
+    this.updateMetadata(cleanPath, config, pageTitle);
+  }
+
+  private updateMetadata(cleanPath: string, config: SeoConfig, pageTitle: string): void {
+    const canonical = `${this.siteOrigin()}${cleanPath === '/' ? '/' : cleanPath}`;
     this.meta.updateTag({ name: 'description', content: config.description });
     this.meta.updateTag({ name: 'robots', content: config.noindex ? 'noindex, nofollow' : 'index, follow' });
     this.meta.updateTag({ property: 'og:type', content: 'website' });

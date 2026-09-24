@@ -54,6 +54,15 @@ test('mobile visitor actions are mounted globally but hidden from admin', async 
   assert.match(actionBar, /startsWith\('\/reservation'\)/);
 });
 
+test('mobile action bar avoids duplicating opening status on reservation and contact', async () => {
+  const actionBar = await source('src', 'app', 'shared', 'components', 'visitor-action-bar', 'visitor-action-bar.component.ts');
+
+  assert.match(actionBar, /showStatus = computed/);
+  assert.match(actionBar, /!this\.currentUrl\(\)\.startsWith\('\/reservation'\)/);
+  assert.match(actionBar, /!this\.currentUrl\(\)\.startsWith\('\/contact'\)/);
+  assert.match(actionBar, /@if \(showStatus\(\)\)/);
+});
+
 test('scroll reveal respects reduced motion and SSR', async () => {
   const directive = await source('src', 'app', 'shared', 'directives', 'reveal-on-scroll.directive.ts');
 
@@ -296,6 +305,14 @@ test('catering form connects invalid controls with announced error messages', as
   assert.match(form, /catering-date-error/);
   assert.match(form, /catering-guests-error/);
   assert.match(form, /catering-message-error/);
+});
+
+test('contact map uses a restrained mobile height', async () => {
+  const contact = await source('src', 'app', 'pages', 'contact', 'contact.component.ts');
+
+  assert.match(contact, /h-\[420px\]/);
+  assert.match(contact, /sm:h-\[500px\]/);
+  assert.match(contact, /lg:h-auto/);
 });
 
 test('contact map is deferred to protect initial page performance', async () => {
