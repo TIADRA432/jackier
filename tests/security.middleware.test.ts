@@ -52,6 +52,21 @@ test('allows only configured browser origins and sends security headers', async 
   }
 });
 
+
+test('production build keeps external CSS compatible with strict script-src-attr CSP', async () => {
+  const angular = JSON.parse(await import('node:fs/promises').then(({ readFile }) =>
+    readFile(new URL('../angular.json', import.meta.url), 'utf8')
+  ));
+  const production = angular.projects.app.architect.build.configurations.production;
+  const preview = angular.projects.app.architect.build.configurations.preview;
+
+  assert.equal(production.optimization.styles.inlineCritical, false);
+  assert.equal(preview.optimization.styles.inlineCritical, false);
+
+  const csp = staticAssetSecurityHeaders['Content-Security-Policy'];
+  assert.match(csp, /script-src-attr 'none'/);
+});
+
 test('limits public write requests after five requests per client', async () => {
   const app = express();
   app.post('/write', publicWriteRateLimiter, (_req, res) => res.status(201).end());
