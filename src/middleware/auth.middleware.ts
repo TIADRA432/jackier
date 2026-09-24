@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { supabase } from '../config/supabase';
 import { getProfile } from '../services/db.service';
+import { serverLog } from '../utils/server-log';
 
 export interface AuthenticatedRequest extends Request {
   user?: any;
@@ -17,7 +18,7 @@ export const verifyToken = async (req: AuthenticatedRequest, res: Response, next
     req.user = data.user;
     next();
   } catch (error) {
-    console.error('Error verifying Supabase token:', error);
+    serverLog('warn', 'auth.verify_token_failed', error, { method: req.method, path: req.path });
     return res.status(401).json({ error: 'Unauthorized' });
   }
 };
@@ -30,7 +31,7 @@ export const requireRole = (roles: string[]) => async (req: AuthenticatedRequest
     req.user.profile = profile;
     next();
   } catch (error) {
-    console.error('Error checking user role:', error);
+    serverLog('warn', 'auth.role_check_failed', error, { method: req.method, path: req.path });
     return res.status(403).json({ error: 'Forbidden' });
   }
 };
