@@ -32,3 +32,20 @@ test('compiled global motion respects reduced-motion preferences', async () => {
   assert.match(styles, /scroll-behavior: auto/);
   assert.match(styles, /animate-fade-in-up/);
 });
+
+
+test('production smoke test covers the complete public shell and security headers', async () => {
+  const workflow = await source('.github', 'workflows', 'deploy-cloudflare.yml');
+
+  for (const route of ['/about', '/gallery', '/services-traiteur', '/ecole-gastronomie', '/admin/login']) {
+    assert.match(workflow, new RegExp(route.replace(/\//g, '\\/')));
+  }
+
+  assert.match(workflow, /security-headers\.txt/);
+  assert.match(workflow, /content-security-policy/);
+  assert.match(workflow, /x-content-type-options: nosniff/);
+  assert.match(workflow, /x-frame-options: DENY/);
+  assert.match(workflow, /strict-transport-security/);
+  assert.match(workflow, /frame-src 'self' https:\/\/maps\.google\.com https:\/\/www\.google\.com/);
+  assert.match(workflow, /item\?\.active === false/);
+});

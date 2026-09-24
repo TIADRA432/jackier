@@ -33,7 +33,12 @@ test('allows only configured browser origins and sends security headers', async 
     assert.equal(allowed.status, 200);
     assert.equal(allowed.headers.get('access-control-allow-origin'), 'https://client.example');
     assert.equal(allowed.headers.get('x-content-type-options'), 'nosniff');
-    assert.match(allowed.headers.get('content-security-policy') ?? '', /frame-ancestors 'none'/);
+    const csp = allowed.headers.get('content-security-policy') ?? '';
+    assert.match(csp, /frame-ancestors 'none'/);
+    assert.match(csp, /script-src 'self'/);
+    assert.doesNotMatch(csp, /cdn\.tailwindcss\.com/);
+    assert.doesNotMatch(csp, /esm\.sh/);
+    assert.doesNotMatch(csp, /script-src[^;]*'unsafe-inline'/);
 
     const denied = await fetch(`${server.url}/health`, { headers: { Origin: 'https://untrusted.example' } });
     assert.equal(denied.status, 403);
@@ -72,7 +77,10 @@ test('limits public write requests after five requests per client', async () => 
 test('keeps the equivalent security headers for Cloudflare static assets', () => {
   assert.equal(staticAssetSecurityHeaders['X-Frame-Options'], 'DENY');
   assert.equal(staticAssetSecurityHeaders['X-Content-Type-Options'], 'nosniff');
-  assert.match(staticAssetSecurityHeaders['Content-Security-Policy'], /default-src 'self'/);
+  const csp = staticAssetSecurityHeaders['Content-Security-Policy'];
+  assert.match(csp, /default-src 'self'/);
+  assert.match(csp, /script-src 'self'/);
+  assert.doesNotMatch(csp, /cdn\.tailwindcss\.com|esm\.sh/);
 });
 
 test('Worker clients without a socket IP keep separate quotas and cannot rotate X-Forwarded-For', async () => {
