@@ -42,8 +42,9 @@ test('admin school screen supports draft publication and CRUD', async () => {
 test('public school page remains truthful when no program is published', async () => {
   const page = await source('src', 'app', 'pages', 'school', 'school.component.ts');
 
-  assert.match(page, /Aucun programme publié actuellement/);
-  assert.match(page, /programmes en brouillon/);
+  assert.match(page, /Le prochain programme sera annoncé ici/);
+  assert.match(page, /contactez directement Le Jacquier/);
+  assert.doesNotMatch(page, /programmes en brouillon/);
   assert.doesNotMatch(page, /étudiants inscrits/i);
   assert.doesNotMatch(page, /certification reconnue/i);
 });
