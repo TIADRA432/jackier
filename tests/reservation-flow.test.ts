@@ -69,7 +69,7 @@ test('reservation workflow uses only booking-specific statuses while catering ke
   assert.match(model, /status: ReservationWorkflowStatus/);
   assert.match(model, /CateringWorkflowStatus = 'pending' \| 'contacted' \| 'quoted' \| 'confirmed' \| 'completed' \| 'cancelled'/);
   assert.match(model, /export interface CateringEvent[\s\S]*status: CateringWorkflowStatus/);
-  assert.match(controller, /ALLOWED_STATUSES = new Set\(\['pending', 'confirmed', 'cancelled', 'completed'\]\)/);
+  assert.match(controller, /ALLOWED_STATUSES = new Set(?:<ReservationWorkflowStatus>)?\(\['pending', 'confirmed', 'cancelled', 'completed'\]\)/);
   assert.match(admin, /statuses: ReservationWorkflowStatus\[\] = \['pending', 'confirmed', 'completed', 'cancelled'\]/);
   assert.doesNotMatch(admin, /approved: 'Approuvée'/);
   assert.doesNotMatch(admin, /rejected: 'Refusée'/);
