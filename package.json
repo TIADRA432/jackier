@@ -47,6 +47,8 @@
     "@types/multer": "^2.1.0",
     "concurrently": "^9.2.1",
     "tsx": "^4.21.0",
-    "wrangler": "^4.35.0"
+    "wrangler": "^4.35.0",
+    "@tailwindcss/postcss": "latest",
+    "postcss": "latest"
   }
 }
