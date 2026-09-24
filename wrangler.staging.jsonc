@@ -1,0 +1,24 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "jackier-staging",
+  "main": "worker.ts",
+  "compatibility_date": "2026-09-04",
+  "compatibility_flags": ["nodejs_compat"],
+  "preview_urls": false,
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application"
+  },
+  "vars": {
+    "SUPABASE_URL": "https://ojqjfxejixjakyflrubx.supabase.co",
+    "CORS_ORIGINS": "https://jackier-staging.abdourahmane591.workers.dev"
+  },
+  "secrets": {
+    "required": ["SUPABASE_SERVICE_ROLE_KEY"]
+  },
+  "observability": {
+    "logs": { "enabled": true, "head_sampling_rate": 1, "invocation_logs": true },
+    "traces": { "enabled": true, "head_sampling_rate": 1 }
+  }
+}
