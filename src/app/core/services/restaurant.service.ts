@@ -2,7 +2,7 @@
 import { Injectable, signal, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
-import { Dish, TeamMember, SchoolProgram, Wine, GalleryImage } from '../models';
+import { Dish, TeamMember, SchoolProgram, SchoolSession, SchoolRegistrationReceipt, Wine, GalleryImage } from '../models';
 import { environment } from '../../../environments/environment';
 import { MenuCategory } from '../models/menu-catalog';
 
@@ -19,17 +19,20 @@ export class RestaurantService {
   private wines = signal<Wine[]>([]);
   private galleryImages = signal<GalleryImage[]>([]);
   private schoolPrograms = signal<SchoolProgram[]>([]);
+  private schoolSessions = signal<SchoolSession[]>([]);
   private team = signal<TeamMember[]>([]);
 
   private loadingMenu = signal(true);
   private loadingWines = signal(true);
   private loadingGallery = signal(true);
   private loadingSchool = signal(true);
+  private loadingSchoolSessions = signal(true);
   private loadingTeam = signal(true);
   private errorMenu = signal<string | null>(null);
   private errorWines = signal<string | null>(null);
   private errorGallery = signal<string | null>(null);
   private errorSchool = signal<string | null>(null);
+  private errorSchoolSessions = signal<string | null>(null);
   private errorTeam = signal<string | null>(null);
 
 
@@ -39,6 +42,7 @@ export class RestaurantService {
     this.loadWines();
     this.loadGallery();
     this.loadSchoolPrograms();
+    this.loadSchoolSessions();
     this.loadTeam();
   }
 
@@ -163,23 +167,50 @@ export class RestaurantService {
     }
   }
 
+  private async loadSchoolSessions() {
+    this.loadingSchoolSessions.set(true);
+    this.errorSchoolSessions.set(null);
+    try {
+      const raw = await firstValueFrom(this.http.get<SchoolSession[]>(`${this.apiUrl}/school/sessions`));
+      this.schoolSessions.set((raw || []).sort((a, b) => new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime()));
+    } catch (err) {
+      console.error('Impossible de charger les sessions école depuis l\'API', err);
+      this.errorSchoolSessions.set('Les prochaines sessions n\'ont pas pu être chargées.');
+    } finally {
+      this.loadingSchoolSessions.set(false);
+    }
+  }
+
+  async submitSchoolRegistration(payload: {
+    sessionId: string;
+    fullName: string;
+    email: string;
+    phone: string;
+    notes?: string;
+  }): Promise<SchoolRegistrationReceipt> {
+    return firstValueFrom(this.http.post<SchoolRegistrationReceipt>(`${this.apiUrl}/school/registrations`, payload));
+  }
+
   // Readonly exposures
   getDishes() { return this.dishes.asReadonly(); }
   getWines() { return this.wines.asReadonly(); }
   getGalleryImages() { return this.galleryImages.asReadonly(); }
   getTeam() { return this.team.asReadonly(); }
   getSchoolPrograms() { return this.schoolPrograms.asReadonly(); }
+  getSchoolSessions() { return this.schoolSessions.asReadonly(); }
 
   // États de chargement/erreur (lecture seule) pour piloter spinners/messages côté pages
   isLoadingMenu() { return this.loadingMenu.asReadonly(); }
   isLoadingWines() { return this.loadingWines.asReadonly(); }
   isLoadingGallery() { return this.loadingGallery.asReadonly(); }
   isLoadingSchool() { return this.loadingSchool.asReadonly(); }
+  isLoadingSchoolSessions() { return this.loadingSchoolSessions.asReadonly(); }
   isLoadingTeam() { return this.loadingTeam.asReadonly(); }
   getMenuError() { return this.errorMenu.asReadonly(); }
   getWinesError() { return this.errorWines.asReadonly(); }
   getGalleryError() { return this.errorGallery.asReadonly(); }
   getSchoolError() { return this.errorSchool.asReadonly(); }
+  getSchoolSessionsError() { return this.errorSchoolSessions.asReadonly(); }
   getTeamError() { return this.errorTeam.asReadonly(); }
 
   /** Relance le chargement du menu après une erreur (bouton "Réessayer"). */
@@ -187,6 +218,7 @@ export class RestaurantService {
   retryLoadWines() { return this.loadWines(); }
   retryLoadGallery() { return this.loadGallery(); }
   retryLoadSchoolPrograms() { return this.loadSchoolPrograms(); }
+  retryLoadSchoolSessions() { return this.loadSchoolSessions(); }
   retryLoadTeam() { return this.loadTeam(); }
 
   getDailySpecial() {

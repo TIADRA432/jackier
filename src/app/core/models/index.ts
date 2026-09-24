@@ -67,5 +67,31 @@ export interface SchoolProgram {
   title: string;
   duration: string;
   description: string;
-  level: string;
+  level: 'Débutant' | 'Intermédiaire' | 'Pro' | string;
+  price?: number | null;
+  capacity?: number;
+  prerequisites?: string | null;
+  instructor?: string | null;
+  materialsIncluded?: string[];
+  status?: 'draft' | 'published' | 'archived';
+  displayOrder?: number;
+}
+
+export interface SchoolSession {
+  id: string;
+  programId: string;
+  startsAt: string;
+  endsAt: string;
+  capacity: number;
+  location?: string | null;
+  status: 'scheduled' | 'cancelled' | 'completed';
+  registeredCount: number;
+  remainingPlaces: number;
+}
+
+export interface SchoolRegistrationReceipt {
+  id: string;
+  sessionId: string;
+  status: 'pending' | 'confirmed' | 'paid' | 'cancelled';
+  createdAt?: string;
 }

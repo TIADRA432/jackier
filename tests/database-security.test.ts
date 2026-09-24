@@ -6,15 +6,18 @@ import test from 'node:test';
 const root = process.cwd();
 const source = (...parts: string[]) => readFile(path.join(root, ...parts), 'utf8');
 
-test('public catalogue RLS exposes only active menu wine and school content', async () => {
-  const migration = await source('supabase', 'migrations', '20260924061000_harden_public_catalog_rls.sql');
+test('public catalogue RLS exposes active menu and wine content while school is fail-closed to published status', async () => {
+  const baseMigration = await source('supabase', 'migrations', '20260924061000_harden_public_catalog_rls.sql');
+  const schoolMigration = await source('supabase', 'migrations', '20260924090000_school_v1_sessions_registrations.sql');
 
-  assert.match(migration, /Public read active menu_items/);
-  assert.match(migration, /using \(active = true\)/);
-  assert.match(migration, /Public read active menu_categories/);
-  assert.match(migration, /Public read active wine_items/);
-  assert.match(migration, /Public read active school_programs/);
-  assert.match(migration, /coalesce\(data->>'active', 'true'\) = 'true'/);
+  assert.match(baseMigration, /Public read active menu_items/);
+  assert.match(baseMigration, /using \(active = true\)/);
+  assert.match(baseMigration, /Public read active menu_categories/);
+  assert.match(baseMigration, /Public read active wine_items/);
+
+  assert.match(schoolMigration, /drop policy if exists "Public read active school_programs"/);
+  assert.match(schoolMigration, /create policy "Public read published school_programs"/);
+  assert.match(schoolMigration, /coalesce\(data->>'status', 'draft'\) = 'published'/);
 });
 
 test('gallery writes are server-only at the database layer', async () => {

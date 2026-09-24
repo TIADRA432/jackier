@@ -63,14 +63,52 @@ export interface CateringEvent {
   status: CateringWorkflowStatus;
 }
 
+export type SchoolProgramStatus = 'draft' | 'published' | 'archived';
+export type SchoolLevel = 'Débutant' | 'Intermédiaire' | 'Pro';
+export type SchoolSessionStatus = 'scheduled' | 'cancelled' | 'completed';
+export type SchoolRegistrationStatus = 'pending' | 'confirmed' | 'paid' | 'cancelled';
+
 export interface SchoolProgram {
   id: string;
   title?: string;
   description?: string;
   duration?: string;
-  level?: string;
+  level?: SchoolLevel;
+  price?: number | null;
+  capacity?: number;
+  prerequisites?: string | null;
+  instructor?: string | null;
+  materialsIncluded?: string[];
+  status?: SchoolProgramStatus;
   active?: boolean;
   displayOrder?: number;
+}
+
+export interface SchoolSession {
+  id: string;
+  programId: string;
+  startsAt: string;
+  endsAt: string;
+  capacity: number;
+  location?: string | null;
+  status: SchoolSessionStatus;
+  registeredCount: number;
+  remainingPlaces: number;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface SchoolRegistration {
+  id: string;
+  sessionId: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  notes?: string | null;
+  status: SchoolRegistrationStatus;
+  priceSnapshot?: number | null;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 // Catégories historiques ; les filtres publics utilisent les catégories du catalogue.
@@ -291,6 +329,30 @@ export class AdminDataService {
 
   async deleteSchoolProgram(id: string): Promise<void> {
     await firstValueFrom(this.http.delete(`${this.apiUrl}/school/${id}`));
+  }
+
+  async getSchoolSessions(): Promise<SchoolSession[]> {
+    return firstValueFrom(this.http.get<SchoolSession[]>(`${this.apiUrl}/admin/school/sessions`));
+  }
+
+  async createSchoolSession(payload: Omit<SchoolSession, 'id' | 'registeredCount' | 'remainingPlaces' | 'createdAt' | 'updatedAt'>): Promise<SchoolSession> {
+    return firstValueFrom(this.http.post<SchoolSession>(`${this.apiUrl}/school/sessions`, payload));
+  }
+
+  async updateSchoolSession(id: string, payload: Partial<Omit<SchoolSession, 'id' | 'registeredCount' | 'remainingPlaces' | 'createdAt' | 'updatedAt'>>): Promise<SchoolSession> {
+    return firstValueFrom(this.http.put<SchoolSession>(`${this.apiUrl}/school/sessions/${id}`, payload));
+  }
+
+  async deleteSchoolSession(id: string): Promise<void | SchoolSession> {
+    return firstValueFrom(this.http.delete<void | SchoolSession>(`${this.apiUrl}/school/sessions/${id}`));
+  }
+
+  async getSchoolRegistrations(): Promise<SchoolRegistration[]> {
+    return firstValueFrom(this.http.get<SchoolRegistration[]>(`${this.apiUrl}/admin/school/registrations`));
+  }
+
+  async updateSchoolRegistrationStatus(id: string, status: SchoolRegistrationStatus): Promise<SchoolRegistration> {
+    return firstValueFrom(this.http.put<SchoolRegistration>(`${this.apiUrl}/school/registrations/${id}/status`, { status }));
   }
 
   async getMenuItems(): Promise<MenuItem[]> {

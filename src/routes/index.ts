@@ -9,7 +9,11 @@ import { getGalleryImages, createGalleryImage, updateGalleryImage, deleteGallery
 import { getDashboardOverview } from '../controllers/dashboard.controller';
 import { getReservations, createReservation, updateReservationStatus, deleteReservation } from '../controllers/reservation.controller';
 import { getCateringEvents, createCateringEvent, updateCateringEvent, deleteCateringEvent } from '../controllers/catering.controller';
-import { getSchoolPrograms, getPublicSchoolPrograms, createSchoolProgram, updateSchoolProgram, deleteSchoolProgram } from '../controllers/school.controller';
+import {
+  getSchoolPrograms, getPublicSchoolPrograms, createSchoolProgram, updateSchoolProgram, deleteSchoolProgram,
+  getPublicSchoolSessions, getAdminSchoolSessions, createSchoolSession, updateSchoolSession, deleteSchoolSession,
+  createSchoolRegistration, getSchoolRegistrations, updateSchoolRegistrationStatus
+} from '../controllers/school.controller';
 import { getExpenses, getReports, addExpense, dailyClose } from '../controllers/finance.controller';
 import { getSettings, updateSettings, getLogs } from '../controllers/settings.controller';
 import { createInventoryItem, deleteInventoryItem, getInventoryItems, updateInventoryItem } from '../controllers/inventory.controller';
@@ -49,12 +53,21 @@ router.post('/catering', publicWriteRateLimiter, createCateringEvent); // Public
 router.put('/catering/:id', verifyToken, requireRole(['ADMIN']), updateCateringEvent);
 router.delete('/catering/:id', verifyToken, requireRole(['ADMIN']), deleteCateringEvent);
 
-// School. Public catalogue exposes only active programs; admin keeps drafts editable.
+// School. Public catalogue and upcoming sessions are read-only; registrations are public writes through the server.
 router.get('/school', getPublicSchoolPrograms);
+router.get('/school/sessions', getPublicSchoolSessions);
+router.post('/school/registrations', publicWriteRateLimiter, createSchoolRegistration);
+
 router.get('/admin/school', verifyToken, requireRole(['ADMIN']), getSchoolPrograms);
+router.get('/admin/school/sessions', verifyToken, requireRole(['ADMIN']), getAdminSchoolSessions);
+router.get('/admin/school/registrations', verifyToken, requireRole(['ADMIN']), getSchoolRegistrations);
 router.post('/school', verifyToken, requireRole(['ADMIN']), createSchoolProgram);
 router.put('/school/:id', verifyToken, requireRole(['ADMIN']), updateSchoolProgram);
 router.delete('/school/:id', verifyToken, requireRole(['ADMIN']), deleteSchoolProgram);
+router.post('/school/sessions', verifyToken, requireRole(['ADMIN']), createSchoolSession);
+router.put('/school/sessions/:id', verifyToken, requireRole(['ADMIN']), updateSchoolSession);
+router.delete('/school/sessions/:id', verifyToken, requireRole(['ADMIN']), deleteSchoolSession);
+router.put('/school/registrations/:id/status', verifyToken, requireRole(['ADMIN']), updateSchoolRegistrationStatus);
 
 // Finance
 router.get('/finance/expenses', verifyToken, requireRole(['ADMIN']), getExpenses);
