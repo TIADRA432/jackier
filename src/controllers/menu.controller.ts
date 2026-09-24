@@ -33,6 +33,12 @@ const optionalNullableText = (value: unknown, field: string, maxLength: number):
   return requiredText(value, field, maxLength);
 };
 
+const optionalUuid = (value: unknown, field: string): string | undefined => {
+  const id = optionalText(value, field, 64);
+  if (id !== undefined && !UUID_PATTERN.test(id)) throw new ValidationError(`Invalid ${field}`);
+  return id;
+};
+
 const optionalBoolean = (value: unknown, field: string): boolean | undefined => {
   if (value === undefined) return undefined;
   if (typeof value !== 'boolean') throw new ValidationError(`Invalid ${field}`);
@@ -84,7 +90,7 @@ export const validateMenuPayload = (body: unknown, partial: boolean): MenuPayloa
   const result: MenuPayload = {};
   const name = partial ? optionalText(body.name, 'name', 120) : requiredText(body.name, 'name', 120);
   const category = partial ? optionalText(body.category, 'category', 80) : requiredText(body.category, 'category', 80);
-  const categoryId = optionalText(body.categoryId, 'category id', 64);
+  const categoryId = optionalUuid(body.categoryId, 'category id');
   const price = optionalPrice(body.price);
 
   if (!partial && price === undefined) throw new ValidationError('price is required');
