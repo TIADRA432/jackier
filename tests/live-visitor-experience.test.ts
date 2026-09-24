@@ -204,6 +204,7 @@ test('premium motion primitives remain accessible and SSR-safe', async () => {
   assert.match(reveal, /prefers-reduced-motion: reduce/);
   assert.match(reveal, /isPlatformBrowser/);
   assert.match(reveal, /clip-path/);
+  assert.ok(reveal.indexOf("setStyle(node, 'transition-delay'") > reveal.indexOf("setStyle(node, 'transition'"), 'reveal delay must be applied after the transition shorthand');
   assert.match(parallax, /prefers-reduced-motion: reduce/);
   assert.match(parallax, /isPlatformBrowser/);
   assert.match(parallax, /requestAnimationFrame/);
